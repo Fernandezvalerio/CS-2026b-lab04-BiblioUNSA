@@ -1,0 +1,42 @@
+@startuml
+skinparam dpi 220
+skinparam componentStyle rectangle
+skinparam defaultFontName Arial
+skinparam backgroundColor white
+title Alternativa A (descartada): BiblioUNSA con monolito en capas
+
+actor "Estudiante" as ES
+actor "Bibliotecario" as BI
+
+node "Servidor único (VPS)" {
+  package "Capa de presentación" {
+    [Web responsive / API REST] as UI
+  }
+  package "Capa de lógica de negocio" {
+    [Servicios de negocio\n(autenticación, catálogo, reservas,\npréstamos, multas, matrícula)] as BL
+  }
+  package "Capa de acceso a datos" {
+    [Repositorios y clientes externos] as DAL
+  }
+}
+
+database "PostgreSQL\n(esquema compartido)" as DB
+cloud "Proveedor de identidad\n(correo institucional)" as IDP
+cloud "Sistema académico UNSA\n(API)" as SA
+
+ES --> UI
+BI --> UI
+UI --> BL
+BL --> DAL
+DAL --> DB
+DAL --> IDP
+DAL --> SA
+
+note bottom of BL
+  Puntaje 4,05 frente a 4,20 del monolito modular.
+  Obtuvo 3 en seguridad e interoperabilidad: el acceso
+  al sistema académico queda disperso en la lógica.
+  Obtuvo 2 en modificabilidad: los módulos están
+  acoplados y cambiar el adaptador (QA-03) es costoso.
+end note
+@enduml
