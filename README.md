@@ -20,8 +20,8 @@ Monolito modular: un solo despliegue, con módulos separados y la integración a
 
 ## Decisiones arquitectónicas
 - [ADR-001: Estilo arquitectónico](docs/architecture/adr/001-estilo-arquitectonico.md)
-- [ADR-002: ...](docs/architecture/adr/002-....md)
-- [ADR-003: ...](docs/architecture/adr/003-....md)
+- [ADR-002: ...](docs/architecture/adr/002-autenticacion.md)
+- [ADR-003: ...](docs/architecture/adr/003-integracion-academica.md)
 
 ## Reflexión sobre el uso de la IA (5–8 líneas)
 <¿En qué ayudó? ¿Qué errores cometió? ¿Qué aprendimos a verificar?>
