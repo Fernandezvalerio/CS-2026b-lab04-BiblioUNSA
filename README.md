@@ -1,5 +1,5 @@
 # BiblioUNSA — Laboratorio 04: Fundamentos de arquitectura de software
-Construcción de Software · EPIS-UNSA · 2026-B · Grupo XX
+Construcción de Software · EPIS-UNSA · 2026-B · Grupo 04
  
 ## Integrantes
 | Nombre | Rol en el laboratorio |
@@ -52,4 +52,4 @@ flowchart TB
 - [ADR-003: Integración Académica](docs/architecture/adr/003-integracion-academica.md)
 
 ## Reflexión sobre el uso de la IA (5–8 líneas)
-<¿En qué ayudó? ¿Qué errores cometió? ¿Qué aprendimos a verificar?>
+La IA (Claude) nos ayudó a generar alternativas de estilo, redactar el borrador de los drivers y escenarios de calidad, puntuar la matriz de decisión y escribir el código Mermaid del diagrama. También cometió errores: recomendó microservicios, que no encajan con el plazo de 1 mes, los 3 developers ni el presupuesto de un VPS, y afirmó sin evidencia que el sistema académico de la UNSA tiene una API REST pública y documentada. Además, propuso un proveedor de identidad OAuth/OIDC que aún no está confirmado. Aprendimos a contrastar cada recomendación con nuestras restricciones, a recalcular a mano los totales de la matriz, a validar el diagrama en mermaid.live y GitHub, y a confirmar con la oficina responsable cualquier afirmación sobre sistemas reales. Por eso aislamos la integración en un adaptador con caché. La IA propone, pero el equipo decide y verifica; todo quedó registrado en la [bitácora](docs/architecture/bitacora-ia.md).
