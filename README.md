@@ -15,7 +15,35 @@ BiblioUNSA es una plataforma para el préstamo y la reserva de libros de las bib
 Monolito modular: un solo despliegue, con módulos separados y la integración académica aislada en un adaptador.
 
 ```mermaid
-<pegar aquí el contenido de docs/architecture/diagramas/arquitectura.mmd>
+flowchart TB
+    ES["Estudiante"]
+    BI["Bibliotecario"]
+    subgraph APP["BiblioUNSA — Monolito modular (un solo despliegue)"]
+        API["Capa de presentación: API REST + web responsive"]
+        M1["Autenticación<br/>y acceso"]
+        M2["Catálogo"]
+        M3["Reservas"]
+        M4["Préstamos y<br/>devoluciones (QR)"]
+        M5["Multas"]
+        M6["Integración<br/>académica"]
+        INF["Capa de infraestructura: repositorios y adaptadores externos"]
+    end
+    DB[("PostgreSQL<br/>(un esquema por módulo)")]
+    IDP["Proveedor de identidad<br/>(correo institucional)"]
+    SA["Sistema académico UNSA<br/>(API)"]
+    ES & BI --> API
+    API --> M1 & M2 & M3 & M4 & M5
+    M3 & M4 --> M6
+    M1 & M2 & M3 & M4 & M5 & M6 --> INF
+    INF --> DB
+    INF --> IDP
+    INF --> SA
+    classDef mod fill:#E8F5E9,stroke:#2E7D32,color:#000
+    classDef ext fill:#F2F2F2,stroke:#7F7F7F,color:#000,stroke-dasharray: 4 3
+    classDef usr fill:#FDEDEC,stroke:#C8310E,color:#000
+    class M1,M2,M3,M4,M5,M6 mod
+    class IDP,SA ext
+    class ES,BI usr
 ```
 
 ## Decisiones arquitectónicas
