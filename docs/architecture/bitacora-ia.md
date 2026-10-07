@@ -37,8 +37,6 @@ fallar en producción?, ¿qué costo oculto tiene? Enumera los 5 riesgos más gr
 para cada uno, una táctica arquitectónica de mitigación.
 ```
 
-<!-- Antes de entregar: verifiquen que los prompts 3 a 6 coincidan con lo que realmente enviaron y que las entradas de la tabla reflejen las respuestas reales de la IA. -->
-
 ### Prompt 3 — Drivers y escenarios de calidad
 ```
 Rol: actúa como arquitecto de software senior con experiencia en sistemas universitarios.
