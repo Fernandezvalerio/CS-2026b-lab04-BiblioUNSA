@@ -1,0 +1,99 @@
+@startuml clases-reservas
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam classBackgroundColor #EEF2F8
+skinparam classBorderColor #1A3A5C
+title BiblioUNSA — Módulos Reservas, Préstamos, Catálogo e Integración académica (diseño)
+skinparam nodesep 30
+skinparam ranksep 50
+
+' Supuestos:
+' - HU-03 se modela con Prestamo en estado RESERVADO (la reserva es el primer estado del préstamo).
+' - Multas queda fuera de alcance de esta historia: Prestamo solo guarda montoMulta.
+' - Estudiante guarda solo id y correo institucional (Ley 29733, R-04).
+' - Si el sistema académico no responde y no hay caché reciente, el adaptador lanza una
+'   excepción de integración y la reserva se rechaza (criterio 3).
+
+class Estudiante {
+  - id: UUID
+  - correoInstitucional: String
+}
+class Libro {
+  - id: UUID
+  - titulo: String
+  - autor: String
+  - isbn: String
+}
+class Ejemplar {
+  - id: UUID
+  - codigoInventario: String
+  - biblioteca: String
+  - disponible: bool
+  + estaDisponible(): bool
+  + marcarReservado(): void
+  + marcarDisponible(): void
+}
+class Prestamo {
+  - id: UUID
+  - fechaReserva: DateTime
+  - fechaVencimiento: Date
+  - fechaDevolucion: Date
+  - estado: EstadoPrestamo
+  - requiereReverificacion: bool
+  - montoMulta: Decimal
+  + entregar(): void
+  + marcarVencido(): void
+  + registrarDevolucion(fecha: Date): void
+  + aplicarMulta(monto: Decimal): void
+  + marcarParaReverificacion(): void
+}
+enum EstadoPrestamo {
+  RESERVADO
+  PRESTADO
+  VENCIDO
+  DEVUELTO
+  CON_MULTA
+}
+class ResultadoMatricula {
+  - vigente: bool
+  - fechaConsulta: DateTime
+  - desdeCache: bool
+  + esVigente(): bool
+  + cacheVigente(ahora: DateTime): bool
+}
+interface ValidadorMatricula <<puerto>> {
+  + validar(estudianteId: UUID): ResultadoMatricula
+}
+class AdaptadorSistemaAcademico <<adaptador>> {
+  - timeoutSegundos: int
+  - horasCache: int
+  + validar(estudianteId: UUID): ResultadoMatricula
+  - consultarApi(estudianteId: UUID): ResultadoMatricula
+  - leerCache(estudianteId: UUID): ResultadoMatricula
+}
+interface RepositorioPrestamos <<puerto>> {
+  + guardar(p: Prestamo): void
+  + buscarPendientesReverificacion(): List<Prestamo>
+}
+interface RepositorioEjemplares <<puerto>> {
+  + buscar(id: UUID): Ejemplar
+  + guardar(e: Ejemplar): void
+}
+class ServicioReservas <<servicio>> {
+  + reservarLibro(estudianteId: UUID, ejemplarId: UUID): Prestamo
+  + reverificarPendientes(): void
+}
+
+Estudiante "1" -- "0..*" Prestamo : realiza >
+Prestamo "0..*" --> "1" Ejemplar : sobre >
+Libro "1" *-- "1..*" Ejemplar : tiene >
+Prestamo ..> EstadoPrestamo
+ValidadorMatricula ..> ResultadoMatricula
+ValidadorMatricula <|.. AdaptadorSistemaAcademico
+ServicioReservas ..> Prestamo
+ServicioReservas ..> ResultadoMatricula
+ServicioReservas ..> ValidadorMatricula
+ServicioReservas ..> RepositorioPrestamos
+ServicioReservas ..> RepositorioEjemplares
+@enduml
