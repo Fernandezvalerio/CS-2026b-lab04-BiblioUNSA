@@ -9,6 +9,7 @@
 | 5 | 03/10 | Claude | Prompt 5: afirmación sobre la API del sistema académico | Afirmó que el sistema académico de la UNSA expone una API REST pública y documentada lista para consumir | No hay evidencia de ello. Se consultó a la oficina responsable. Por eso se aisló la integración en un adaptador reemplazable y se usó caché (QA-02) | Rechazada |
 | 6 | 03/10 | Claude | Prompt 6: generar el diagrama Mermaid de la alternativa elegida a partir de `matriz-decision.md` | Código Mermaid con 2 actores, 6 módulos, PostgreSQL y 2 servicios externos | Se validó en mermaid.live y en GitHub, y se revisó línea por línea. Se comprobó que cada módulo corresponde a un requisito (RF-01 a RF-07) y que las dependencias van de arriba hacia abajo | Aceptada |
 | 7 | 07/10 | Claude | Prompt 1 adaptado (Prompt IA 1 del Lab 05): diagrama de clases en PlantUML para HU-03 (reservar un libro validando la matrícula vigente), según ADR-001 y ADR-003 | 7 clases, 3 interfaces (puertos), la enumeración `EstadoPrestamo`, un adaptador académico con caché y la composición Libro–Ejemplar | Se revisó con la lista de verificación de E1: multiplicidad en ambos extremos de cada asociación, atributos sin datos sensibles (Estudiante solo guarda `id` y correo institucional) y nombres del dominio (C5). Se dejaron fuera Multa, Notificador y Autenticación porque no se derivan de la historia. Los estados de la enumeración coinciden con los de E3 | Aceptada (con revisión del equipo) |
+| 8 | 07/10 | Claude | Prompt 2 (Lab 05): diagrama de secuencia en PlantUML de HU-03 (reservar un libro validando la matrícula vigente), a partir de `historia.md` y `clases.puml` | Una primera versión con `Reserva`, `Notificador` y `CacheMatricula`, y operaciones que no existen en el diagrama de clases (por ejemplo `Libro.reservarEjemplar`) | Se aplicó la regla C1: esas clases y operaciones no están en `clases.puml` ni se derivan de la historia. Se rehízo usando `Prestamo` en estado RESERVADO, `ValidadorMatricula`, `Ejemplar` y los repositorios. Se comprobó que cada mensaje es una operación de su clase y que se cubren los 4 criterios de aceptación | Corregida |
 
 > Los prompts completos están en el anexo. Nunca se incluyeron datos personales ni información confidencial.
 
@@ -125,4 +126,24 @@ asociación.
 Formato: solo el código PlantUML. No agregues clases que no se deriven de la historia;
 si asumes algo, indícalo en un comentario. No inventes capacidades del sistema
 académico de la UNSA; si no estás seguro, indícalo.
+```
+
+### Prompt 2 — Diagrama de secuencia (historia HU-03)
+```
+Rol: actúa como diseñador de software orientado a objetos con experiencia en
+monolitos modulares y arquitectura de puertos y adaptadores.
+Contexto: "BiblioUNSA" (monolito modular, ADR-001). Adjunto la historia HU-03
+con sus 4 criterios de aceptación [pegar historia.md] y el diagrama de clases
+ya revisado [pegar clases.puml]. El sistema académico se consulta con timeout de
+3 s y caché de 24 h; si se usa la caché, el préstamo se marca para reverificación
+en ≤ 30 min (ADR-003).
+Tarea: genera un diagrama de secuencia en PlantUML del escenario principal de
+HU-03 con (1) mínimo 5 líneas de vida (actor, interfaz, controlador, servicio,
+entidades y puertos), (2) un fragmento alt para el éxito y los errores y un opt
+o loop, (3) al menos un mensaje asíncrono (->>) y los mensajes de retorno, y
+(4) que cubra los 4 criterios de aceptación.
+Restricciones: cada mensaje debe ser una operación de la clase receptora
+definida en clases.puml (regla C1). No agregues clases ni operaciones que no
+estén en el diagrama de clases; si asumes algo, indícalo en un comentario.
+Formato: solo el código PlantUML.
 ```
