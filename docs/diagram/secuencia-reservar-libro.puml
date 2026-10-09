@@ -1,0 +1,79 @@
+@startuml secuencia-reservar-libro
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam sequenceMessageAlign center
+title BiblioUNSA — HU-03: reservar un libro validando la matrícula vigente
+autonumber
+
+' Supuestos (coherentes con clases.puml):
+' - La reserva es un Prestamo en estado RESERVADO (no existe clase Reserva).
+' - Notificador, Multas y Autenticación quedan fuera de esta historia.
+' - IntegracionException es la excepción del adaptador cuando no hay API ni caché reciente.
+
+actor Estudiante
+participant "Web responsive" as UI
+participant "ReservaController" as C
+participant "ServicioReservas" as S
+participant "ValidadorMatricula\n(AdaptadorSistemaAcademico)" as V
+participant "ResultadoMatricula" as RM
+participant "RepositorioEjemplares" as RE
+participant "Ejemplar" as E
+participant "Prestamo" as P
+participant "RepositorioPrestamos" as RP
+
+Estudiante -> UI : Reservar ejemplar
+UI -> C : POST /reservas {ejemplarId}
+note right of C : Sesión ya autenticada\ncon correo institucional (ADR-002)
+C -> S : reservarLibro(estudianteId, ejemplarId)
+
+S -> V : validar(estudianteId)
+V -> V : consultarApi(estudianteId)
+note right of V : HTTP a la API académica\n(timeout 3 s)
+alt responde a tiempo
+  V --> S : resultado (desdeCache = false)
+else timeout (> 3 s)
+  V -> V : leerCache(estudianteId)
+  V -> RM : cacheVigente(ahora)
+  RM --> V : true / false
+  alt caché de ≤ 24 h
+    V --> S : resultado (desdeCache = true)
+  else sin caché reciente
+    V --> S : IntegracionException
+  end
+end
+
+alt IntegracionException (sin API ni caché)
+  S --> C : error de integración
+  C --> UI : 503 "Intente nuevamente en unos minutos"
+else hay resultado de matrícula
+  S -> RM : esVigente()
+  RM --> S : true / false
+  alt matrícula NO vigente
+    S --> C : MatriculaNoVigente
+    C --> UI : 403 Matrícula no vigente
+  else matrícula vigente
+    S -> RE : buscar(ejemplarId)
+    RE --> S : ejemplar
+    S -> E : estaDisponible()
+    E --> S : true / false
+    alt ejemplar disponible
+      S -> E : marcarReservado()
+      S -> RE : guardar(ejemplar)
+      create P
+      S -> P : <<create>> estado = RESERVADO
+      opt la validación vino de caché
+        S -> P : marcarParaReverificacion()
+        S ->> S : reverificarPendientes()
+        note right of S : tarea programada,\nse ejecuta en ≤ 30 min\n(ADR-003)
+      end
+      S -> RP : guardar(prestamo)
+      S --> C : prestamo RESERVADO
+      C --> UI : 201 Reserva creada
+    else ejemplar no disponible
+      S --> C : EjemplarNoDisponible
+      C --> UI : 409 Ejemplar no disponible
+    end
+  end
+end
+UI --> Estudiante : Muestra el resultado
+@enduml
