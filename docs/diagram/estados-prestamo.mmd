@@ -1,0 +1,27 @@
+---
+title: BiblioUNSA — Máquina de estados del Préstamo (Lab 05, E3)
+---
+%% Entidad: Prestamo (clases.puml). Estados = enum EstadoPrestamo.
+%% Cada transición se nombra con una operación de la clase Prestamo (regla C2):
+%%   entregar(), marcarVencido(), registrarDevolucion(fecha),
+%%   aplicarMulta(monto), marcarParaReverificacion().
+%% Supuestos:
+%%  - La creación del Prestamo en RESERVADO es el constructor Prestamo() (ver secuencia-reservar-libro.puml).
+%%  - Multas está fuera de alcance de HU-03: CON_MULTA es final en este diseño.
+stateDiagram-v2
+    [*] --> RESERVADO : Prestamo() [matrícula vigente y ejemplar disponible]
+    RESERVADO --> RESERVADO : marcarParaReverificacion() [validación proveniente de caché]
+    RESERVADO --> PRESTADO : entregar() [estudiante recoge el libro con carné QR]
+    PRESTADO --> DEVUELTO : registrarDevolucion(fecha) [fecha <= fechaVencimiento]
+    PRESTADO --> VENCIDO : marcarVencido() [hoy > fechaVencimiento]
+    VENCIDO --> CON_MULTA : registrarDevolucion(fecha) / aplicarMulta(monto) [fecha > fechaVencimiento]
+    DEVUELTO --> [*]
+    CON_MULTA --> [*] : multa pagada (módulo Multas)
+    note right of RESERVADO
+        requiereReverificacion = true
+        si la matrícula vino de caché
+        (reverificar en ≤ 30 min, ADR-003)
+    end note
+    note right of CON_MULTA
+        montoMulta > 0
+    end note
