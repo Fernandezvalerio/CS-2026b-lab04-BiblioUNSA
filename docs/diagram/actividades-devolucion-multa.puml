@@ -1,0 +1,55 @@
+@startuml actividades-devolucion-multa
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam ActivityBackgroundColor #EEF2F8
+skinparam ActivityBorderColor #1A3A5C
+title BiblioUNSA — Proceso: devolución de un libro con cálculo de multa
+
+' Supuestos (coherentes con clases.puml y estados-prestamo.mmd):
+' - Las operaciones citadas existen en Prestamo / Ejemplar:
+'   registrarDevolucion(fecha), aplicarMulta(monto), marcarDisponible().
+' - El monto de la multa se calcula con los días de retraso (tarifa por día: supuesto del equipo).
+' - El pago de la multa pertenece al módulo Multas (fuera de alcance de HU-03).
+
+|Estudiante|
+start
+:Entrega el libro en el mostrador\ny presenta su carné QR;
+|Bibliotecario|
+:Escanea el carné QR y el código\ndel ejemplar;
+|Sistema|
+:Busca el préstamo PRESTADO o VENCIDO\ndel ejemplar;
+if (¿Existe un préstamo activo\npara ese ejemplar?) then (no)
+  |Bibliotecario|
+  :Informa que no hay préstamo activo;
+  stop
+else (sí)
+  |Sistema|
+  :registrarDevolucion(fecha);
+  if (¿fecha > fechaVencimiento?) then (sí)
+    :Calcula los días de retraso y el monto;
+    :aplicarMulta(monto)\nestado = CON_MULTA;
+    |Bibliotecario|
+    :Informa la multa al estudiante;
+    |Estudiante|
+    :Recibe el aviso de multa;
+  else (no)
+    |Sistema|
+    :estado = DEVUELTO;
+  endif
+endif
+|Sistema|
+fork
+  :marcarDisponible()\ndel ejemplar;
+fork again
+  :Genera el comprobante\nde devolución;
+end fork
+|Bibliotecario|
+if (¿El ejemplar está en buen estado?) then (sí)
+  :Coloca el libro en la estantería;
+else (no)
+  :Reporta el daño a la biblioteca;
+endif
+|Estudiante|
+:Recibe el comprobante de devolución;
+stop
+@enduml
