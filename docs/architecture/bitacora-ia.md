@@ -10,6 +10,7 @@
 | 6 | 03/10 | Claude | Prompt 6: generar el diagrama Mermaid de la alternativa elegida a partir de `matriz-decision.md` | Código Mermaid con 2 actores, 6 módulos, PostgreSQL y 2 servicios externos | Se validó en mermaid.live y en GitHub, y se revisó línea por línea. Se comprobó que cada módulo corresponde a un requisito (RF-01 a RF-07) y que las dependencias van de arriba hacia abajo | Aceptada |
 | 7 | 07/10 | Claude | Prompt 1 adaptado (Prompt IA 1 del Lab 05): diagrama de clases en PlantUML para HU-03 (reservar un libro validando la matrícula vigente), según ADR-001 y ADR-003 | 7 clases, 3 interfaces (puertos), la enumeración `EstadoPrestamo`, un adaptador académico con caché y la composición Libro–Ejemplar | Se revisó con la lista de verificación de E1: multiplicidad en ambos extremos de cada asociación, atributos sin datos sensibles (Estudiante solo guarda `id` y correo institucional) y nombres del dominio (C5). Se dejaron fuera Multa, Notificador y Autenticación porque no se derivan de la historia. Los estados de la enumeración coinciden con los de E3 | Aceptada (con revisión del equipo) |
 | 8 | 07/10 | Claude | Prompt 2 (Lab 05): diagrama de secuencia en PlantUML de HU-03 (reservar un libro validando la matrícula vigente), a partir de `historia.md` y `clases.puml` | Una primera versión con `Reserva`, `Notificador` y `CacheMatricula`, y operaciones que no existen en el diagrama de clases (por ejemplo `Libro.reservarEjemplar`) | Se aplicó la regla C1: esas clases y operaciones no están en `clases.puml` ni se derivan de la historia. Se rehízo usando `Prestamo` en estado RESERVADO, `ValidadorMatricula`, `Ejemplar` y los repositorios. Se comprobó que cada mensaje es una operación de su clase y que se cubren los 4 criterios de aceptación | Corregida |
+| 9 | 10/10 | Claude | Prompt 3 (Lab 05): diagrama de actividades en PlantUML del proceso "devolución con cálculo de multa" (E4), a partir de `clases.puml` y `estados-prestamo.mmd` | Diagrama con 3 particiones (Estudiante, Bibliotecario, Sistema), 3 decisiones (¿existe préstamo activo?, ¿fecha > fechaVencimiento?, ¿ejemplar en buen estado?) y un fork/join (`marcarDisponible()` y comprobante en paralelo). Asumió una tarifa de multa por día de retraso y una rama "reporta el daño" que no figuran en el caso | Se renderizó con PlantUML y se comprobó que cumple lo mínimo de E4 (≥ 3 particiones, ≥ 2 decisiones, fork/join). Se verificó que las acciones usan operaciones existentes en `clases.puml` (`registrarDevolucion`, `aplicarMulta`, `marcarDisponible`) y que los estados `DEVUELTO` y `CON_MULTA` coinciden con E3 (C2, C5). La tarifa por día y la rama de daño son supuestos del equipo, marcados en un comentario del `.puml`. Pendiente: validar el flujo con un compañero que actúe como usuario | Aceptada (con supuestos documentados) |
 
 > Los prompts completos están en el anexo. Nunca se incluyeron datos personales ni información confidencial.
 
@@ -145,5 +146,24 @@ o loop, (3) al menos un mensaje asíncrono (->>) y los mensajes de retorno, y
 Restricciones: cada mensaje debe ser una operación de la clase receptora
 definida en clases.puml (regla C1). No agregues clases ni operaciones que no
 estén en el diagrama de clases; si asumes algo, indícalo en un comentario.
+Formato: solo el código PlantUML.
+```
+
+### Prompt 3 — Diagrama de actividades (devolución con cálculo de multa)
+```
+Rol: actúa como diseñador de software orientado a objetos con experiencia en
+modelado de procesos de negocio.
+Contexto: "BiblioUNSA" (monolito modular, ADR-001). Adjunto el diagrama de clases
+ya revisado [pegar clases.puml] y la máquina de estados del préstamo
+[pegar estados-prestamo.mmd]. El bibliotecario registra la devolución con el
+carné QR del estudiante; si el libro se devuelve después de fechaVencimiento, se
+aplica una multa.
+Tarea: genera un diagrama de actividades en PlantUML del proceso "devolución con
+cálculo de multa" con (1) mínimo 3 particiones (|Partición|), (2) mínimo 2
+decisiones (if / else) y (3) una ejecución paralela (fork / end fork).
+Restricciones: las acciones del sistema deben usar operaciones que existan en
+clases.puml, y los estados nombrados deben coincidir con la enumeración
+EstadoPrestamo (reglas C2 y C5). No agregues reglas de negocio que no estén en el
+caso; si asumes algo (por ejemplo, la tarifa de la multa), indícalo en un comentario.
 Formato: solo el código PlantUML.
 ```
