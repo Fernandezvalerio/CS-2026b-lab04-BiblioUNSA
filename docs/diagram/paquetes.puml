@@ -1,0 +1,54 @@
+@startuml paquetes
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam packageStyle rectangle
+skinparam nodesep 40
+skinparam ranksep 60
+title BiblioUNSA — Paquetes del monolito modular (vista de desarrollo)
+
+' Un paquete por cada módulo del ADR-001, más "compartido".
+' Supuestos (coherentes con clases.puml):
+' - Prestamo (con su ciclo de vida) vive en "prestamos"; "reservas" lo crea en estado RESERVADO.
+' - Estudiante vive en "autenticacion" (solo id y correo institucional, Ley 29733).
+' - Ejemplar y RepositorioEjemplares viven en "catalogo".
+' - ValidadorMatricula (puerto) y AdaptadorSistemaAcademico viven en "integracion".
+' - "multas" calcula el monto de la multa y llama a Prestamo.aplicarMulta(monto) (existe en clases.puml);
+'   "prestamos" no conoce a "multas", por eso no hay ciclo. La capa de presentación (API) invoca
+'   a "multas" después de registrarDevolucion(fecha) cuando la devolución es tardía (ver actividades-devolucion-multa.puml).
+' - "prestamos" NO depende de "integracion": la reverificación de matrícula (reverificarPendientes)
+'   la hace ServicioReservas. El diagrama de arquitectura del Lab 04 era una vista gruesa
+'   (Reservas y Préstamos → Integración); aquí solo "reservas" usa el puerto ValidadorMatricula.
+
+package "biblioteca (monolito modular)" {
+  package "autenticacion" as AUT
+  package "catalogo" as CAT
+  package "reservas" as RES
+  package "prestamos" as PRE
+  package "multas" as MUL
+  package "integracion" as INT
+  package "compartido" as COM
+}
+
+RES ..> PRE : usa Prestamo\n(crea en RESERVADO)
+RES ..> CAT : usa Ejemplar y\nRepositorioEjemplares
+RES ..> INT : usa ValidadorMatricula\n(puerto)
+RES ..> AUT : usa Estudiante
+PRE ..> CAT : usa Ejemplar\n(marcarDisponible)
+MUL ..> PRE : usa Prestamo\n(aplicarMulta)
+PRE ..> AUT : usa Estudiante
+AUT ..> COM
+CAT ..> COM
+RES ..> COM
+PRE ..> COM
+MUL ..> COM
+INT ..> COM
+
+note bottom of COM
+  Regla (ADR-001): los módulos se comunican solo por interfaces
+  públicas y las dependencias no forman ciclos.
+  - integracion es el único punto de contacto con el sistema académico (ADR-003)
+  - prestamos no conoce a multas; multas actúa sobre Prestamo (aplicarMulta)
+  - integracion, catalogo y autenticacion NO dependen de reservas, prestamos ni multas
+  - compartido no depende de ningún módulo
+end note
+@enduml
