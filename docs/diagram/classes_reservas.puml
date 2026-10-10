@@ -1,0 +1,79 @@
+@startuml classes_reservas
+set namespaceSeparator none
+class "AdaptadorSistemaAcademico" as reservas.dominio.AdaptadorSistemaAcademico {
+  horas_cache : int
+  timeout_segundos : int
+  {abstract}validar(estudiante_id: UUID) -> ResultadoMatricula
+}
+class "Ejemplar" as reservas.dominio.Ejemplar {
+  biblioteca : str
+  codigo_inventario : str
+  disponible : bool
+  id : UUID
+  esta_disponible() -> bool
+  marcar_disponible() -> None
+  marcar_reservado() -> None
+}
+class "EstadoPrestamo" as reservas.dominio.EstadoPrestamo {
+  name
+}
+class "Estudiante" as reservas.dominio.Estudiante {
+  correo_institucional : str
+  id : UUID
+}
+class "Libro" as reservas.dominio.Libro {
+  autor : str
+  ejemplares : list[Ejemplar]
+  id : UUID
+  isbn : str
+  titulo : str
+}
+class "Prestamo" as reservas.dominio.Prestamo {
+  ejemplar
+  estado
+  estudiante
+  fecha_devolucion : date | None
+  fecha_reserva : datetime
+  fecha_vencimiento : date | None
+  id : UUID
+  monto_multa
+  requiere_reverificacion : bool
+  aplicar_multa(monto: Decimal) -> None
+  entregar() -> None
+  marcar_para_reverificacion() -> None
+  marcar_vencido() -> None
+  registrar_devolucion(fecha: date) -> None
+}
+class "RepositorioEjemplares" as reservas.dominio.RepositorioEjemplares {
+  {abstract}buscar(id: UUID) -> Ejemplar
+  {abstract}guardar(e: Ejemplar) -> None
+}
+class "RepositorioPrestamos" as reservas.dominio.RepositorioPrestamos {
+  {abstract}buscar_pendientes_reverificacion() -> list[Prestamo]
+  {abstract}guardar(p: Prestamo) -> None
+}
+class "ResultadoMatricula" as reservas.dominio.ResultadoMatricula {
+  desde_cache : bool
+  fecha_consulta : datetime
+  vigente : bool
+  {abstract}cache_vigente(ahora: datetime) -> bool
+  es_vigente() -> bool
+}
+class "ServicioReservas" as reservas.dominio.ServicioReservas {
+  repo_ejemplares
+  repo_prestamos
+  validador
+  {abstract}reservar_libro(estudiante_id: UUID, ejemplar_id: UUID) -> Prestamo
+  {abstract}reverificar_pendientes() -> None
+}
+class "ValidadorMatricula" as reservas.dominio.ValidadorMatricula {
+  {abstract}validar(estudiante_id: UUID) -> ResultadoMatricula
+}
+reservas.dominio.AdaptadorSistemaAcademico --|> reservas.dominio.ValidadorMatricula
+reservas.dominio.Prestamo --> reservas.dominio.Ejemplar : ejemplar
+reservas.dominio.Prestamo --> reservas.dominio.EstadoPrestamo : estado
+reservas.dominio.Prestamo --> reservas.dominio.Estudiante : estudiante
+reservas.dominio.RepositorioEjemplares --o reservas.dominio.ServicioReservas : repo_ejemplares
+reservas.dominio.RepositorioPrestamos --o reservas.dominio.ServicioReservas : repo_prestamos
+reservas.dominio.ValidadorMatricula --o reservas.dominio.ServicioReservas : validador
+@enduml
