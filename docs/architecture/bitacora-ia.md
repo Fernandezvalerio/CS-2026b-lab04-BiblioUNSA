@@ -11,6 +11,7 @@
 | 7 | 07/10 | Claude | Prompt 1 adaptado (Prompt IA 1 del Lab 05): diagrama de clases en PlantUML para HU-03 (reservar un libro validando la matrícula vigente), según ADR-001 y ADR-003 | 7 clases, 3 interfaces (puertos), la enumeración `EstadoPrestamo`, un adaptador académico con caché y la composición Libro–Ejemplar | Se revisó con la lista de verificación de E1: multiplicidad en ambos extremos de cada asociación, atributos sin datos sensibles (Estudiante solo guarda `id` y correo institucional) y nombres del dominio (C5). Se dejaron fuera Multa, Notificador y Autenticación porque no se derivan de la historia. Los estados de la enumeración coinciden con los de E3 | Aceptada (con revisión del equipo) |
 | 8 | 07/10 | Claude | Prompt 2 (Lab 05): diagrama de secuencia en PlantUML de HU-03 (reservar un libro validando la matrícula vigente), a partir de `historia.md` y `clases.puml` | Una primera versión con `Reserva`, `Notificador` y `CacheMatricula`, y operaciones que no existen en el diagrama de clases (por ejemplo `Libro.reservarEjemplar`) | Se aplicó la regla C1: esas clases y operaciones no están en `clases.puml` ni se derivan de la historia. Se rehízo usando `Prestamo` en estado RESERVADO, `ValidadorMatricula`, `Ejemplar` y los repositorios. Se comprobó que cada mensaje es una operación de su clase y que se cubren los 4 criterios de aceptación | Corregida |
 | 9 | 10/10 | Claude | Prompt 3 (Lab 05): diagrama de actividades en PlantUML del proceso "devolución con cálculo de multa" (E4), a partir de `clases.puml` y `estados-prestamo.mmd` | Diagrama con 3 particiones (Estudiante, Bibliotecario, Sistema), 3 decisiones (¿existe préstamo activo?, ¿fecha > fechaVencimiento?, ¿ejemplar en buen estado?) y un fork/join (`marcarDisponible()` y comprobante en paralelo). Asumió una tarifa de multa por día de retraso y una rama "reporta el daño" que no figuran en el caso | Se renderizó con PlantUML y se comprobó que cumple lo mínimo de E4 (≥ 3 particiones, ≥ 2 decisiones, fork/join). Se verificó que las acciones usan operaciones existentes en `clases.puml` (`registrarDevolucion`, `aplicarMulta`, `marcarDisponible`) y que los estados `DEVUELTO` y `CON_MULTA` coinciden con E3 (C2, C5). La tarifa por día y la rama de daño son supuestos del equipo, marcados en un comentario del `.puml`. Pendiente: validar el flujo con un compañero que actúe como usuario | Aceptada (con supuestos documentados) |
+| 10 | 10/10 | Claude | Prompt 4 (Lab 05, Prompt IA 2 adaptado): esqueleto en Python 3.10+ (dataclasses, type hints, ABC) de `clases.puml` en `src/reservas/` (E6) | `dominio.py` con las 11 clases, la enumeración `EstadoPrestamo` y los puertos como clases abstractas (ABC). Lógica solo en `Ejemplar` y `Prestamo` (transiciones de E3); el adaptador y el servicio lanzan `NotImplementedError` | Se revisaron nombres y operaciones contra `clases.puml` (C5) y las transiciones contra `estados-prestamo.mmd` (C2). Se probó con un script el flujo RESERVADO → PRESTADO → VENCIDO → CON_MULTA, el flujo a DEVUELTO, el rechazo de una transición inválida y que el puerto no se instancia. Se ejecutó `pyreverse` y se compararon ambos diagramas: 10 diferencias en `round-trip.md` (sin multiplicidades, composición Libro–Ejemplar perdida, puertos como clases, agregación en lugar de dependencia, enum sin valores, visibilidad perdida, entre otras), cada una con su causa y acción | Aceptada (con revisión del equipo) |
 
 > Los prompts completos están en el anexo. Nunca se incluyeron datos personales ni información confidencial.
 
@@ -166,4 +167,22 @@ clases.puml, y los estados nombrados deben coincidir con la enumeración
 EstadoPrestamo (reglas C2 y C5). No agregues reglas de negocio que no estén en el
 caso; si asumes algo (por ejemplo, la tarifa de la multa), indícalo en un comentario.
 Formato: solo el código PlantUML.
+```
+
+### Prompt 4 — Ingeniería directa (clases a código Python)
+```
+Rol: actúa como desarrollador Python senior con experiencia en arquitectura de
+puertos y adaptadores.
+Contexto: "BiblioUNSA" (monolito modular, ADR-001). Adjunto el diagrama de clases
+ya revisado [pegar clases.puml] y la máquina de estados del préstamo
+[pegar estados-prestamo.mmd].
+Tarea: genera el esqueleto en Python 3.10+ (dataclasses y type hints) en
+src/reservas/dominio.py. Respeta exactamente los nombres de clases, atributos y
+operaciones (en snake_case), la enumeración EstadoPrestamo, los puertos como clases
+abstractas (ABC) y las multiplicidades cuando sea posible. Implementa solo la lógica
+mínima de las operaciones de Prestamo y Ejemplar (transiciones de estado válidas);
+el adaptador del sistema académico y el servicio deben lanzar NotImplementedError.
+Restricciones: no agregues clases ni operaciones que no estén en el diagrama; si
+asumes algo, indícalo en un comentario o docstring.
+Formato: solo el código Python.
 ```
