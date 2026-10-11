@@ -53,3 +53,42 @@ flowchart TB
 
 ## Reflexión sobre el uso de la IA (5–8 líneas)
 La IA (Claude) nos ayudó a generar alternativas de estilo, redactar el borrador de los drivers y escenarios de calidad, puntuar la matriz de decisión y escribir el código Mermaid del diagrama. También cometió errores: recomendó microservicios, que no encajan con el plazo de 1 mes, los 3 developers ni el presupuesto de un VPS, y afirmó sin evidencia que el sistema académico de la UNSA tiene una API REST pública y documentada. Además, propuso un proveedor de identidad OAuth/OIDC que aún no está confirmado. Aprendimos a contrastar cada recomendación con nuestras restricciones, a recalcular a mano los totales de la matriz, a validar el diagrama en mermaid.live y GitHub, y a confirmar con la oficina responsable cualquier afirmación sobre sistemas reales. Por eso aislamos la integración en un adaptador con caché. La IA propone, pero el equipo decide y verifica; todo quedó registrado en la [bitácora](docs/architecture/bitacora-ia.md).
+
+## Diseño UML (Lab 05)
+Diseño detallado de la historia **HU-03: reservar un libro validando la matrícula vigente**, escrito como código (PlantUML y Mermaid), coherente con el ADR-001 y el ADR-003. La IA propuso los diagramas y el equipo los revisó con las reglas de consistencia C1–C5; todo quedó en la [bitácora de IA del Lab 05](docs/design/bitacora-ia.md).
+
+### Máquina de estados del préstamo
+Cada transición se nombra con una operación de la clase `Prestamo` (regla C2) y los estados coinciden con la enumeración `EstadoPrestamo`.
+
+```mermaid
+stateDiagram-v2
+    [*] --> RESERVADO : Prestamo() [matrícula vigente y ejemplar disponible]
+    RESERVADO --> RESERVADO : marcarParaReverificacion() [validación proveniente de caché]
+    RESERVADO --> PRESTADO : entregar() [estudiante recoge el libro con carné QR]
+    PRESTADO --> DEVUELTO : registrarDevolucion(fecha) [fecha <= fechaVencimiento]
+    PRESTADO --> VENCIDO : marcarVencido() [hoy > fechaVencimiento]
+    VENCIDO --> CON_MULTA : registrarDevolucion(fecha) / aplicarMulta(monto) [fecha > fechaVencimiento]
+    DEVUELTO --> [*]
+    CON_MULTA --> [*] : multa pagada (módulo Multas)
+    note right of RESERVADO
+        requiereReverificacion = true
+        si la matrícula vino de caché
+        (reverificar en ≤ 30 min, ADR-003)
+    end note
+    note right of CON_MULTA
+        montoMulta > 0
+    end note
+```
+
+### Diagramas y documentos
+| Entregable | Fuente | Imagen |
+|------------|--------|--------|
+| E1 Historia de usuario | [historia.md](docs/design/historia.md) | — |
+| E1 Diagrama de clases | [clases.puml](docs/design/clases.puml) | [PNG](docs/design/img/diagrama_clases.png) |
+| E2 Diagrama de secuencia | [secuencia-reservar-libro.puml](docs/design/secuencia-reservar-libro.puml) | [PNG](docs/design/img/secuencia-reservar-libro.png) |
+| E3 Máquina de estados | [estados-prestamo.mmd](docs/design/estados-prestamo.mmd) | [PNG](docs/design/img/estados-prestamo.png) |
+| E4 Diagrama de actividades | [actividades-devolucion-multa.puml](docs/design/actividades-devolucion-multa.puml) | [PNG](docs/design/img/actividades-devolucion-multa.png) |
+| E5 Diagrama de paquetes | [paquetes.puml](docs/design/paquetes.puml) | [PNG](docs/design/img/paquetes.png) |
+| E6 Round-trip | [round-trip.md](docs/design/round-trip.md) · [dominio.py](src/reservas/dominio.py) | [PNG](docs/design/img/classes_reservas.png) |
+| E7 Consistencia C1–C5 | [consistencia.md](docs/design/consistencia.md) | — |
+| E7 Bitácora de IA (Lab 05) | [bitacora-ia.md](docs/design/bitacora-ia.md) | — |

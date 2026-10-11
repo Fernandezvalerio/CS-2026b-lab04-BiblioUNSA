@@ -6,6 +6,7 @@
 | 2 | 07/10 | Claude | Prompt 2 (Lab 05): diagrama de secuencia en PlantUML de HU-03 (reservar un libro validando la matrícula vigente), a partir de `historia.md` y `clases.puml` | Una primera versión con `Reserva`, `Notificador` y `CacheMatricula`, y operaciones que no existen en el diagrama de clases (por ejemplo `Libro.reservarEjemplar`) | Se aplicó la regla C1: esas clases y operaciones no están en `clases.puml` ni se derivan de la historia. Se rehízo usando `Prestamo` en estado RESERVADO, `ValidadorMatricula`, `Ejemplar` y los repositorios. Se comprobó que cada mensaje es una operación de su clase y que se cubren los 4 criterios de aceptación | Corregida |
 | 3 | 10/10 | Claude | Prompt 3 (Lab 05): diagrama de actividades en PlantUML del proceso "devolución con cálculo de multa" (E4), a partir de `clases.puml` y `estados-prestamo.mmd` | Diagrama con 3 particiones (Estudiante, Bibliotecario, Sistema), 3 decisiones (¿existe préstamo activo?, ¿fecha > fechaVencimiento?, ¿ejemplar en buen estado?) y un fork/join (`marcarDisponible()` y comprobante en paralelo). Asumió una tarifa de multa por día de retraso y una rama "reporta el daño" que no figuran en el caso | Se renderizó con PlantUML y se comprobó que cumple lo mínimo de E4 (≥ 3 particiones, ≥ 2 decisiones, fork/join). Se verificó que las acciones usan operaciones existentes en `clases.puml` (`registrarDevolucion`, `aplicarMulta`, `marcarDisponible`) y que los estados `DEVUELTO` y `CON_MULTA` coinciden con E3 (C2, C5). La tarifa por día y la rama de daño son supuestos del equipo, marcados en un comentario del `.puml`. Pendiente: validar el flujo con un compañero que actúe como usuario | Aceptada (con supuestos documentados) |
 | 4 | 10/10 | Claude | Prompt 4 (Lab 05, Prompt IA 2 adaptado): esqueleto en Python 3.10+ (dataclasses, type hints, ABC) de `clases.puml` en `src/reservas/` (E6) | `dominio.py` con las 11 clases, la enumeración `EstadoPrestamo` y los puertos como clases abstractas (ABC). Lógica solo en `Ejemplar` y `Prestamo` (transiciones de E3); el adaptador y el servicio lanzan `NotImplementedError` | Se revisaron nombres y operaciones contra `clases.puml` (C5) y las transiciones contra `estados-prestamo.mmd` (C2). Se probó con un script el flujo RESERVADO → PRESTADO → VENCIDO → CON_MULTA, el flujo a DEVUELTO, el rechazo de una transición inválida y que el puerto no se instancia. Se ejecutó `pyreverse` y se compararon ambos diagramas: 10 diferencias en `round-trip.md` (sin multiplicidades, composición Libro–Ejemplar perdida, puertos como clases, agregación en lugar de dependencia, enum sin valores, visibilidad perdida, entre otras), cada una con su causa y acción | Aceptada (con revisión del equipo) |
+| 5 | 10/10 | Claude | Prompt 5 (Lab 05, Prompt IA 3): auditor de consistencia sobre los cinco diagramas (clases, secuencia, estados, actividades y paquetes), con las reglas C1–C5 (E7) | 8 hallazgos en una tabla (regla, elemento, problema y corrección): una incoherencia entre actividades y estados (multa sin pasar por `VENCIDO`), una transición sin operación (`CON_MULTA → [*]`), excepciones de la secuencia ausentes en `clases.puml`, nombres de paquetes distintos a los del ADR-001, una multiplicidad que no expresa el criterio 4, y tres alertas sobre el constructor, el controlador y una dependencia hacia Integración | Se contrastó cada hallazgo con los archivos y con un script que compara operaciones, estados y ciclos. Se confirmaron 5 y se rechazaron 3 como falsos positivos: `Prestamo()` es el constructor, `ReservaController` pertenece a la capa de presentación (fuera del diagrama de clases) y `prestamos` no necesita depender de `integracion`. Resultado en `consistencia.md`; los 5 cambios confirmados quedan pendientes de aplicar | Aceptada (5 confirmados y 3 rechazados) |
 
 > Los prompts completos están en el anexo. Nunca se incluyeron datos personales ni información confidencial.
 
@@ -90,4 +91,19 @@ el adaptador del sistema académico y el servicio deben lanzar NotImplementedErr
 Restricciones: no agregues clases ni operaciones que no estén en el diagrama; si
 asumes algo, indícalo en un comentario o docstring.
 Formato: solo el código Python.
+```
+
+### Prompt 5 — Auditor de consistencia
+```
+Actúa como revisor de diseño. Te paso cinco diagramas UML de BiblioUNSA en
+PlantUML/Mermaid: clases, secuencia, estados, actividades y paquetes
+[pegar los cinco archivos]. Contexto: monolito modular (ADR-001) y adaptador con
+caché para el sistema académico (ADR-003).
+Verifica estas reglas y responde en una tabla (regla, elemento, problema,
+corrección sugerida): C1 cada mensaje de secuencia es una operación de la clase
+receptora; C2 cada transición de estados corresponde a una operación de la clase;
+C3 las multiplicidades son coherentes con los criterios de aceptación; C4 los
+paquetes no tienen ciclos y respetan el ADR-001; C5 los nombres son consistentes
+en todos los diagramas.
+No reescribas los diagramas; solo reporta hallazgos y cita el archivo y la línea.
 ```
