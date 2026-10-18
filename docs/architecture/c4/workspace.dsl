@@ -68,6 +68,21 @@ workspace "BiblioUNSA" "Modelo C4 de la plataforma de préstamo y reserva de lib
         biblio.api.prestamos -> biblio.db "Lee y escribe" "SQL/TCP"
         biblio.api.multas -> biblio.db "Lee y escribe" "SQL/TCP"
         biblio.worker -> biblio.api.reservas "Ejecuta reverificarPendientes()" "Tarea Celery"
+
+        # --- Despliegue ---
+        produccion = deploymentEnvironment "Producción" {
+            deploymentNode "Celular o PC del usuario" "Estudiante (celular) o bibliotecario (PC con lector QR)." "Android / navegador web" {
+                containerInstance biblio.web
+            }
+            deploymentNode "Servidor en la nube (VPS)" "Único servidor del MVP (presupuesto bajo)." "Ubuntu 24.04 · 2 vCPU · 4 GB RAM" {
+                deploymentNode "Docker Compose" "Orquesta los contenedores en el VPS." "Docker" {
+                    containerInstance biblio.api
+                    containerInstance biblio.worker
+                    containerInstance biblio.db
+                    containerInstance biblio.cola
+                }
+            }
+        }
     }
 
     views {
@@ -97,6 +112,11 @@ workspace "BiblioUNSA" "Modelo C4 de la plataforma de préstamo y reserva de lib
             biblio.api.integracion -> biblio.cola "Guarda el resultado en caché (≤ 24 h)"
             biblio.api.reservas -> biblio.api.catalogo "Reserva el ejemplar"
             biblio.api.reservas -> biblio.api.prestamos "Crea el préstamo en estado RESERVADO"
+            autolayout lr
+        }
+
+        deployment biblio produccion "Despliegue" "Despliegue en producción (MVP en un solo VPS)." {
+            include *
             autolayout lr
         }
 
