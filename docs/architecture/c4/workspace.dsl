@@ -10,7 +10,14 @@ workspace "BiblioUNSA" "Modelo C4 de la plataforma de préstamo y reserva de lib
 
             web = container "Interfaz web responsive" "Interfaz para estudiantes (celular) y bibliotecarios (PC con lector QR)." "HTML + JavaScript" "Web Browser"
 
-            api = container "Monolito modular BiblioUNSA" "Un solo despliegue con seis módulos de dominio; expone la API REST que consume la interfaz web." "Python / Django"
+            api = container "Monolito modular BiblioUNSA" "Un solo despliegue con seis módulos de dominio; expone la API REST que consume la interfaz web." "Python / Django" {
+                autenticacion = component "Módulo Autenticación y acceso" "Inicia sesión con el correo institucional y rechaza y registra los intentos con correos ajenos a la UNSA." "Django app"
+                catalogo = component "Módulo Catálogo" "Busca libros y gestiona la disponibilidad de los ejemplares." "Django app"
+                reservas = component "Módulo Reservas" "Reserva libros validando la matrícula vigente y reverifica las validaciones hechas con caché." "Django app"
+                prestamos = component "Módulo Préstamos y devoluciones" "Registra la entrega y la devolución con carné QR y controla el ciclo de vida del préstamo." "Django app"
+                multas = component "Módulo Multas" "Calcula y controla las multas por devolución tardía." "Django app"
+                integracion = component "Módulo Integración académica" "Único punto de contacto con el sistema académico: adaptador con timeout de 3 s y caché de ≤ 24 h." "Django app"
+            }
 
             db = container "Base de datos" "Usuarios, catálogo, préstamos y multas (un esquema por módulo)." "PostgreSQL" "Database"
             cola = container "Caché y cola de tareas" "Guarda la última validación de matrícula y las tareas de reverificación." "Redis" "Queue"
@@ -36,6 +43,31 @@ workspace "BiblioUNSA" "Modelo C4 de la plataforma de préstamo y reserva de lib
         biblio.api -> idp "Verifica la identidad institucional" "OpenID Connect"
         biblio.worker -> biblio.cola "Consume tareas" "Redis protocol"
         biblio.worker -> biblio.api "Ejecuta la reverificación" "Tarea Celery"
+
+        # --- Nivel 3: componentes de la API ---
+        biblio.web -> biblio.api.autenticacion "Inicia sesión" "HTTPS/JSON"
+        biblio.web -> biblio.api.catalogo "Consulta el catálogo" "HTTPS/JSON"
+        biblio.web -> biblio.api.reservas "Reserva libros" "HTTPS/JSON"
+        biblio.web -> biblio.api.prestamos "Registra préstamos y devoluciones" "HTTPS/JSON"
+        biblio.web -> biblio.api.multas "Consulta y cobra multas" "HTTPS/JSON"
+
+        biblio.api.reservas -> biblio.api.integracion "Valida la matrícula vigente" "Llamada interna (Python)"
+        biblio.api.reservas -> biblio.api.catalogo "Reserva el ejemplar" "Llamada interna (Python)"
+        biblio.api.reservas -> biblio.api.prestamos "Crea el préstamo en estado RESERVADO" "Llamada interna (Python)"
+        biblio.api.reservas -> biblio.api.autenticacion "Identifica al estudiante" "Llamada interna (Python)"
+        biblio.api.prestamos -> biblio.api.catalogo "Libera el ejemplar al devolverlo" "Llamada interna (Python)"
+        biblio.api.prestamos -> biblio.api.autenticacion "Identifica al estudiante" "Llamada interna (Python)"
+        biblio.api.multas -> biblio.api.prestamos "Aplica la multa al préstamo" "Llamada interna (Python)"
+
+        biblio.api.autenticacion -> idp "Verifica identidad y dominio" "OpenID Connect"
+        biblio.api.integracion -> sa "Consulta la matrícula (timeout 3 s)" "HTTPS/JSON"
+        biblio.api.integracion -> biblio.cola "Lee y guarda la caché de matrícula (≤ 24 h)" "Redis protocol"
+        biblio.api.reservas -> biblio.cola "Encola la reverificación" "Redis protocol"
+        biblio.api.autenticacion -> biblio.db "Lee y escribe" "SQL/TCP"
+        biblio.api.catalogo -> biblio.db "Lee y escribe" "SQL/TCP"
+        biblio.api.prestamos -> biblio.db "Lee y escribe" "SQL/TCP"
+        biblio.api.multas -> biblio.db "Lee y escribe" "SQL/TCP"
+        biblio.worker -> biblio.api.reservas "Ejecuta reverificarPendientes()" "Tarea Celery"
     }
 
     views {
@@ -49,6 +81,11 @@ workspace "BiblioUNSA" "Modelo C4 de la plataforma de préstamo y reserva de lib
         }
 
         container biblio "Contenedores" "Nivel 2: contenedores de BiblioUNSA." {
+            include *
+            autolayout lr
+        }
+
+        component biblio.api "Componentes" "Nivel 3: módulos del monolito modular." {
             include *
             autolayout lr
         }
@@ -70,6 +107,10 @@ workspace "BiblioUNSA" "Modelo C4 de la plataforma de préstamo y reserva de lib
             element "Container" {
                 background #438DD5
                 color #ffffff
+            }
+            element "Component" {
+                background #85BBF0
+                color #000000
             }
             element "Database" {
                 shape cylinder
