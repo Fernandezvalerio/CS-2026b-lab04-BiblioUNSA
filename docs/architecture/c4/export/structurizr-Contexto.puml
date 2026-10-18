@@ -1,0 +1,36 @@
+@startuml
+title <size:24>System Context View: BiblioUNSA</size>\n<size:24>Nivel 1: BiblioUNSA y su entorno.</size>
+
+set separator none
+left to right direction
+
+<style>
+  root {
+    BackgroundColor: #ffffff
+    FontColor: #444444
+  }
+</style>
+
+!include <C4/C4>
+!include <C4/C4_Context>
+
+AddElementTag("Software System,Externo", $bgColor="#999999", $borderColor="#6b6b6b", $fontColor="#ffffff", $sprite="", $shadowing="", $borderStyle="solid")
+AddElementTag("Software System", $bgColor="#1168bd", $borderColor="#0b4884", $fontColor="#ffffff", $sprite="", $shadowing="", $borderStyle="solid")
+AddElementTag("Person", $bgColor="#08427b", $borderColor="#052e56", $fontColor="#ffffff", $sprite="", $shadowing="", $borderStyle="solid")
+
+AddRelTag("Relationship", $textColor="#444444", $lineColor="#444444", $lineStyle = DashedLine())
+
+Person(Estudiante, "Estudiante", $descr="Consulta el catálogo, reserva libros y revisa sus préstamos y multas.", $tags="Person", $link="")
+System(SistemaacadémicoUNSA, "Sistema académico UNSA", $descr="Informa si la matrícula del estudiante está vigente.", $tags="Software System,Externo", $link="")
+System(Proveedordeidentidad, "Proveedor de identidad", $descr="Autentica con el correo institucional de la UNSA.", $tags="Software System,Externo", $link="")
+Person(Bibliotecario, "Bibliotecario", $descr="Registra préstamos y devoluciones con el carné QR y controla las multas.", $tags="Person", $link="")
+System(BiblioUNSA, "BiblioUNSA", $descr="Permite consultar el catálogo, reservar libros, registrar préstamos y devoluciones y controlar multas en las bibliotecas de la UNSA.", $tags="Software System", $link="")
+
+Rel(Estudiante, BiblioUNSA, "Consulta el catálogo y reserva libros", $techn="", $tags="Relationship", $link="")
+Rel(Bibliotecario, BiblioUNSA, "Registra préstamos y devoluciones y controla multas", $techn="", $tags="Relationship", $link="")
+Rel(BiblioUNSA, SistemaacadémicoUNSA, "Consulta la matrícula vigente", $techn="HTTPS/JSON", $tags="Relationship", $link="")
+Rel(BiblioUNSA, Proveedordeidentidad, "Verifica la identidad institucional", $techn="OpenID Connect", $tags="Relationship", $link="")
+
+SHOW_LEGEND(true)
+hide stereotypes
+@enduml

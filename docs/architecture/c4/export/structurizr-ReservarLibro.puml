@@ -1,0 +1,55 @@
+@startuml
+title <size:24>Dynamic View: BiblioUNSA - Monolito modular BiblioUNSA</size>\n<size:24>Dinámico: reservar un libro validando la matrícula vigente (historia de usuario HU-03, camino con respuesta a tiempo).</size>
+
+set separator none
+left to right direction
+
+<style>
+  root {
+    BackgroundColor: #ffffff
+    FontColor: #444444
+  }
+</style>
+
+!include <C4/C4>
+!include <C4/C4_Context>
+!include <C4/C4_Container>
+!include <C4/C4_Component>
+
+AddElementTag("Software System,Externo", $bgColor="#999999", $borderColor="#6b6b6b", $fontColor="#ffffff", $sprite="", $shadowing="", $borderStyle="solid")
+AddElementTag("Component", $bgColor="#85bbf0", $borderColor="#5d82a8", $fontColor="#000000", $sprite="", $shadowing="", $borderStyle="solid")
+AddElementTag("Container,Queue", $bgColor="#438dd5", $borderColor="#2e6295", $fontColor="#ffffff", $sprite="", $shadowing="", $borderStyle="solid")
+AddElementTag("Container,Web Browser", $bgColor="#438dd5", $borderColor="#2e6295", $fontColor="#ffffff", $sprite="", $shadowing="", $borderStyle="solid")
+
+AddRelTag("Relationship", $textColor="#444444", $lineColor="#444444", $lineStyle = DashedLine())
+
+AddBoundaryTag("Container", $bgColor="#ffffff", $borderColor="#2e6295", $fontColor="#2e6295", $shadowing="", $borderStyle="solid")
+
+System(SistemaacadémicoUNSA, "Sistema académico UNSA", $descr="Informa si la matrícula del estudiante está vigente.", $tags="Software System,Externo", $link="")
+
+System_Boundary("BiblioUNSA_boundary", "BiblioUNSA", $tags="Software System") {
+  Container_Boundary("BiblioUNSA.MonolitomodularBiblioUNSA_boundary", "Monolito modular BiblioUNSA", $tags="Container") {
+    Component(BiblioUNSA.MonolitomodularBiblioUNSA.MóduloIntegraciónacadémica, "Módulo Integración académica", $techn="Django app", $descr="Único punto de contacto con el sistema académico: adaptador con timeout de 3 s y caché de ≤ 24 h.", $tags="Component", $link="")
+    Component(BiblioUNSA.MonolitomodularBiblioUNSA.MóduloCatálogo, "Módulo Catálogo", $techn="Django app", $descr="Busca libros y gestiona la disponibilidad de los ejemplares.", $tags="Component", $link="")
+    Component(BiblioUNSA.MonolitomodularBiblioUNSA.MóduloReservas, "Módulo Reservas", $techn="Django app", $descr="Reserva libros validando la matrícula vigente y reverifica las validaciones hechas con caché.", $tags="Component", $link="")
+    Component(BiblioUNSA.MonolitomodularBiblioUNSA.MóduloPréstamosydevoluciones, "Módulo Préstamos y devoluciones", $techn="Django app", $descr="Registra la entrega y la devolución con carné QR y controla el ciclo de vida del préstamo.", $tags="Component", $link="")
+  }
+
+  ContainerQueue(BiblioUNSA.Cachéycoladetareas, "Caché y cola de tareas", $techn="Redis", $descr="Guarda la última validación de matrícula y las tareas de reverificación.", $tags="Container,Queue", $link="")
+  Container(BiblioUNSA.Interfazwebresponsive, "Interfaz web responsive", $techn="HTML + JavaScript", $descr="Interfaz para estudiantes (celular) y bibliotecarios (PC con lector QR).", $tags="Container,Web Browser", $link="")
+}
+
+Container(BiblioUNSA.Interfazwebresponsive, "Interfaz web responsive", $techn="HTML + JavaScript", $descr="Interfaz para estudiantes (celular) y bibliotecarios (PC con lector QR).", $tags="Container,Web Browser", $link="")
+ContainerQueue(BiblioUNSA.Cachéycoladetareas, "Caché y cola de tareas", $techn="Redis", $descr="Guarda la última validación de matrícula y las tareas de reverificación.", $tags="Container,Queue", $link="")
+System(SistemaacadémicoUNSA, "Sistema académico UNSA", $descr="Informa si la matrícula del estudiante está vigente.", $tags="Software System,Externo", $link="")
+
+Rel(BiblioUNSA.Interfazwebresponsive, BiblioUNSA.MonolitomodularBiblioUNSA.MóduloReservas, "1: POST /reservas {ejemplarId}", $techn="HTTPS/JSON", $tags="Relationship", $link="")
+Rel(BiblioUNSA.MonolitomodularBiblioUNSA.MóduloReservas, BiblioUNSA.MonolitomodularBiblioUNSA.MóduloIntegraciónacadémica, "2: validar(estudianteId)", $techn="Llamada interna (Python)", $tags="Relationship", $link="")
+Rel(BiblioUNSA.MonolitomodularBiblioUNSA.MóduloIntegraciónacadémica, SistemaacadémicoUNSA, "3: Consulta la matrícula (timeout 3 s)", $techn="HTTPS/JSON", $tags="Relationship", $link="")
+Rel(BiblioUNSA.MonolitomodularBiblioUNSA.MóduloIntegraciónacadémica, BiblioUNSA.Cachéycoladetareas, "4: Guarda el resultado en caché (≤ 24 h)", $techn="Redis protocol", $tags="Relationship", $link="")
+Rel(BiblioUNSA.MonolitomodularBiblioUNSA.MóduloReservas, BiblioUNSA.MonolitomodularBiblioUNSA.MóduloCatálogo, "5: Reserva el ejemplar", $techn="Llamada interna (Python)", $tags="Relationship", $link="")
+Rel(BiblioUNSA.MonolitomodularBiblioUNSA.MóduloReservas, BiblioUNSA.MonolitomodularBiblioUNSA.MóduloPréstamosydevoluciones, "6: Crea el préstamo en estado RESERVADO", $techn="Llamada interna (Python)", $tags="Relationship", $link="")
+
+SHOW_LEGEND(true)
+hide stereotypes
+@enduml

@@ -1,0 +1,46 @@
+graph LR
+  linkStyle default fill:#ffffff
+
+  subgraph diagram ["Dynamic View: BiblioUNSA - Monolito modular BiblioUNSA"]
+    style diagram fill:#ffffff,stroke:#ffffff
+
+    15["<div style='font-weight: bold'>Sistema académico UNSA</div><div style='font-size: 70%; margin-top: 0px'>[Software System]</div><div style='font-size: 80%; margin-top:10px'>Informa si la matrícula del<br />estudiante está vigente.</div>"]
+    style 15 fill:#999999,stroke:#6b6b6b,color:#ffffff
+
+    subgraph 3 ["BiblioUNSA"]
+      style 3 fill:#ffffff,stroke:#0b4884,color:#0b4884
+
+      subgraph 5 ["Monolito modular BiblioUNSA"]
+        style 5 fill:#ffffff,stroke:#2e6295,color:#2e6295
+
+        11["<div style='font-weight: bold'>Módulo Integración académica</div><div style='font-size: 70%; margin-top: 0px'>[Component: Django app]</div><div style='font-size: 80%; margin-top:10px'>Único punto de contacto con<br />el sistema académico:<br />adaptador con timeout de 3 s<br />y caché de ≤ 24 h.</div>"]
+        style 11 fill:#85bbf0,stroke:#5d82a8,color:#000000
+        7["<div style='font-weight: bold'>Módulo Catálogo</div><div style='font-size: 70%; margin-top: 0px'>[Component: Django app]</div><div style='font-size: 80%; margin-top:10px'>Busca libros y gestiona la<br />disponibilidad de los<br />ejemplares.</div>"]
+        style 7 fill:#85bbf0,stroke:#5d82a8,color:#000000
+        8["<div style='font-weight: bold'>Módulo Reservas</div><div style='font-size: 70%; margin-top: 0px'>[Component: Django app]</div><div style='font-size: 80%; margin-top:10px'>Reserva libros validando la<br />matrícula vigente y<br />reverifica las validaciones<br />hechas con caché.</div>"]
+        style 8 fill:#85bbf0,stroke:#5d82a8,color:#000000
+        9["<div style='font-weight: bold'>Módulo Préstamos y devoluciones</div><div style='font-size: 70%; margin-top: 0px'>[Component: Django app]</div><div style='font-size: 80%; margin-top:10px'>Registra la entrega y la<br />devolución con carné QR y<br />controla el ciclo de vida del<br />préstamo.</div>"]
+        style 9 fill:#85bbf0,stroke:#5d82a8,color:#000000
+      end
+
+      13["<div style='font-weight: bold'>Caché y cola de tareas</div><div style='font-size: 70%; margin-top: 0px'>[Container: Redis]</div><div style='font-size: 80%; margin-top:10px'>Guarda la última validación<br />de matrícula y las tareas de<br />reverificación.</div>"]
+      style 13 fill:#438dd5,stroke:#2e6295,color:#ffffff
+      4["<div style='font-weight: bold'>Interfaz web responsive</div><div style='font-size: 70%; margin-top: 0px'>[Container: HTML + JavaScript]</div><div style='font-size: 80%; margin-top:10px'>Interfaz para estudiantes<br />(celular) y bibliotecarios<br />(PC con lector QR).</div>"]
+      style 4 fill:#438dd5,stroke:#2e6295,color:#ffffff
+    end
+
+    4["<div style='font-weight: bold'>Interfaz web responsive</div><div style='font-size: 70%; margin-top: 0px'>[Container: HTML + JavaScript]</div><div style='font-size: 80%; margin-top:10px'>Interfaz para estudiantes<br />(celular) y bibliotecarios<br />(PC con lector QR).</div>"]
+    style 4 fill:#438dd5,stroke:#2e6295,color:#ffffff
+    13["<div style='font-weight: bold'>Caché y cola de tareas</div><div style='font-size: 70%; margin-top: 0px'>[Container: Redis]</div><div style='font-size: 80%; margin-top:10px'>Guarda la última validación<br />de matrícula y las tareas de<br />reverificación.</div>"]
+    style 13 fill:#438dd5,stroke:#2e6295,color:#ffffff
+    15["<div style='font-weight: bold'>Sistema académico UNSA</div><div style='font-size: 70%; margin-top: 0px'>[Software System]</div><div style='font-size: 80%; margin-top:10px'>Informa si la matrícula del<br />estudiante está vigente.</div>"]
+    style 15 fill:#999999,stroke:#6b6b6b,color:#ffffff
+
+    4-. "<div>1. POST /reservas<br />{ejemplarId}</div><div style='font-size: 70%'>[HTTPS/JSON]</div>" .->8
+    8-. "<div>2. validar(estudianteId)</div><div style='font-size: 70%'>[Llamada interna (Python)]</div>" .->11
+    11-. "<div>3. Consulta la matrícula<br />(timeout 3 s)</div><div style='font-size: 70%'>[HTTPS/JSON]</div>" .->15
+    11-. "<div>4. Guarda el resultado en<br />caché (≤ 24 h)</div><div style='font-size: 70%'>[Redis protocol]</div>" .->13
+    8-. "<div>5. Reserva el ejemplar</div><div style='font-size: 70%'>[Llamada interna (Python)]</div>" .->7
+    8-. "<div>6. Crea el préstamo en estado<br />RESERVADO</div><div style='font-size: 70%'>[Llamada interna (Python)]</div>" .->9
+
+  end

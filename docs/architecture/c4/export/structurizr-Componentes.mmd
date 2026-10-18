@@ -1,0 +1,65 @@
+graph LR
+  linkStyle default fill:#ffffff
+
+  subgraph diagram ["Component View: BiblioUNSA - Monolito modular BiblioUNSA"]
+    style diagram fill:#ffffff,stroke:#ffffff
+
+    15["<div style='font-weight: bold'>Sistema académico UNSA</div><div style='font-size: 70%; margin-top: 0px'>[Software System]</div><div style='font-size: 80%; margin-top:10px'>Informa si la matrícula del<br />estudiante está vigente.</div>"]
+    style 15 fill:#999999,stroke:#6b6b6b,color:#ffffff
+    16["<div style='font-weight: bold'>Proveedor de identidad</div><div style='font-size: 70%; margin-top: 0px'>[Software System]</div><div style='font-size: 80%; margin-top:10px'>Autentica con el correo<br />institucional de la UNSA.</div>"]
+    style 16 fill:#999999,stroke:#6b6b6b,color:#ffffff
+
+    subgraph 3 ["BiblioUNSA"]
+      style 3 fill:#ffffff,stroke:#0b4884,color:#0b4884
+
+      subgraph 5 ["Monolito modular BiblioUNSA"]
+        style 5 fill:#ffffff,stroke:#2e6295,color:#2e6295
+
+        10["<div style='font-weight: bold'>Módulo Multas</div><div style='font-size: 70%; margin-top: 0px'>[Component: Django app]</div><div style='font-size: 80%; margin-top:10px'>Calcula y controla las multas<br />por devolución tardía.</div>"]
+        style 10 fill:#85bbf0,stroke:#5d82a8,color:#000000
+        11["<div style='font-weight: bold'>Módulo Integración académica</div><div style='font-size: 70%; margin-top: 0px'>[Component: Django app]</div><div style='font-size: 80%; margin-top:10px'>Único punto de contacto con<br />el sistema académico:<br />adaptador con timeout de 3 s<br />y caché de ≤ 24 h.</div>"]
+        style 11 fill:#85bbf0,stroke:#5d82a8,color:#000000
+        6["<div style='font-weight: bold'>Módulo Autenticación y acceso</div><div style='font-size: 70%; margin-top: 0px'>[Component: Django app]</div><div style='font-size: 80%; margin-top:10px'>Inicia sesión con el correo<br />institucional y rechaza y<br />registra los intentos con<br />correos ajenos a la UNSA.</div>"]
+        style 6 fill:#85bbf0,stroke:#5d82a8,color:#000000
+        7["<div style='font-weight: bold'>Módulo Catálogo</div><div style='font-size: 70%; margin-top: 0px'>[Component: Django app]</div><div style='font-size: 80%; margin-top:10px'>Busca libros y gestiona la<br />disponibilidad de los<br />ejemplares.</div>"]
+        style 7 fill:#85bbf0,stroke:#5d82a8,color:#000000
+        8["<div style='font-weight: bold'>Módulo Reservas</div><div style='font-size: 70%; margin-top: 0px'>[Component: Django app]</div><div style='font-size: 80%; margin-top:10px'>Reserva libros validando la<br />matrícula vigente y<br />reverifica las validaciones<br />hechas con caché.</div>"]
+        style 8 fill:#85bbf0,stroke:#5d82a8,color:#000000
+        9["<div style='font-weight: bold'>Módulo Préstamos y devoluciones</div><div style='font-size: 70%; margin-top: 0px'>[Component: Django app]</div><div style='font-size: 80%; margin-top:10px'>Registra la entrega y la<br />devolución con carné QR y<br />controla el ciclo de vida del<br />préstamo.</div>"]
+        style 9 fill:#85bbf0,stroke:#5d82a8,color:#000000
+      end
+
+      12[("<div style='font-weight: bold'>Base de datos</div><div style='font-size: 70%; margin-top: 0px'>[Container: PostgreSQL]</div><div style='font-size: 80%; margin-top:10px'>Usuarios, catálogo, préstamos<br />y multas (un esquema por<br />módulo).</div>")]
+      style 12 fill:#438dd5,stroke:#2e6295,color:#ffffff
+      13["<div style='font-weight: bold'>Caché y cola de tareas</div><div style='font-size: 70%; margin-top: 0px'>[Container: Redis]</div><div style='font-size: 80%; margin-top:10px'>Guarda la última validación<br />de matrícula y las tareas de<br />reverificación.</div>"]
+      style 13 fill:#438dd5,stroke:#2e6295,color:#ffffff
+      14["<div style='font-weight: bold'>Worker de reverificación</div><div style='font-size: 70%; margin-top: 0px'>[Container: Celery]</div><div style='font-size: 80%; margin-top:10px'>Reverifica en ≤ 30 min las<br />matrículas validadas con<br />caché.</div>"]
+      style 14 fill:#438dd5,stroke:#2e6295,color:#ffffff
+      4["<div style='font-weight: bold'>Interfaz web responsive</div><div style='font-size: 70%; margin-top: 0px'>[Container: HTML + JavaScript]</div><div style='font-size: 80%; margin-top:10px'>Interfaz para estudiantes<br />(celular) y bibliotecarios<br />(PC con lector QR).</div>"]
+      style 4 fill:#438dd5,stroke:#2e6295,color:#ffffff
+    end
+
+    14-. "<div>Consume tareas</div><div style='font-size: 70%'>[Redis protocol]</div>" .->13
+    4-. "<div>Inicia sesión</div><div style='font-size: 70%'>[HTTPS/JSON]</div>" .->6
+    4-. "<div>Consulta el catálogo</div><div style='font-size: 70%'>[HTTPS/JSON]</div>" .->7
+    4-. "<div>Reserva libros</div><div style='font-size: 70%'>[HTTPS/JSON]</div>" .->8
+    4-. "<div>Registra préstamos y<br />devoluciones</div><div style='font-size: 70%'>[HTTPS/JSON]</div>" .->9
+    4-. "<div>Consulta y cobra multas</div><div style='font-size: 70%'>[HTTPS/JSON]</div>" .->10
+    8-. "<div>Valida la matrícula vigente</div><div style='font-size: 70%'>[Llamada interna (Python)]</div>" .->11
+    8-. "<div>Reserva el ejemplar</div><div style='font-size: 70%'>[Llamada interna (Python)]</div>" .->7
+    8-. "<div>Crea el préstamo en estado<br />RESERVADO</div><div style='font-size: 70%'>[Llamada interna (Python)]</div>" .->9
+    8-. "<div>Identifica al estudiante</div><div style='font-size: 70%'>[Llamada interna (Python)]</div>" .->6
+    9-. "<div>Libera el ejemplar al<br />devolverlo</div><div style='font-size: 70%'>[Llamada interna (Python)]</div>" .->7
+    9-. "<div>Identifica al estudiante</div><div style='font-size: 70%'>[Llamada interna (Python)]</div>" .->6
+    10-. "<div>Aplica la multa al préstamo</div><div style='font-size: 70%'>[Llamada interna (Python)]</div>" .->9
+    6-. "<div>Verifica identidad y dominio</div><div style='font-size: 70%'>[OpenID Connect]</div>" .->16
+    11-. "<div>Consulta la matrícula<br />(timeout 3 s)</div><div style='font-size: 70%'>[HTTPS/JSON]</div>" .->15
+    11-. "<div>Lee y guarda la caché de<br />matrícula (≤ 24 h)</div><div style='font-size: 70%'>[Redis protocol]</div>" .->13
+    8-. "<div>Encola la reverificación</div><div style='font-size: 70%'>[Redis protocol]</div>" .->13
+    6-. "<div>Lee y escribe</div><div style='font-size: 70%'>[SQL/TCP]</div>" .->12
+    7-. "<div>Lee y escribe</div><div style='font-size: 70%'>[SQL/TCP]</div>" .->12
+    9-. "<div>Lee y escribe</div><div style='font-size: 70%'>[SQL/TCP]</div>" .->12
+    10-. "<div>Lee y escribe</div><div style='font-size: 70%'>[SQL/TCP]</div>" .->12
+    14-. "<div>Ejecuta<br />reverificarPendientes()</div><div style='font-size: 70%'>[Tarea Celery]</div>" .->8
+
+  end

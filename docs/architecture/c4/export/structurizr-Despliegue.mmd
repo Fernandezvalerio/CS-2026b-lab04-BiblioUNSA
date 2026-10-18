@@ -1,0 +1,38 @@
+graph LR
+  linkStyle default fill:#ffffff
+
+  subgraph diagram ["Deployment View: BiblioUNSA - Producción"]
+    style diagram fill:#ffffff,stroke:#ffffff
+
+    subgraph 51 ["Celular o PC del usuario"]
+      style 51 fill:#ffffff,stroke:#444444,color:#444444
+
+      52["<div style='font-weight: bold'>Interfaz web responsive</div><div style='font-size: 70%; margin-top: 0px'>[Container: HTML + JavaScript]</div><div style='font-size: 80%; margin-top:10px'>Interfaz para estudiantes<br />(celular) y bibliotecarios<br />(PC con lector QR).</div>"]
+      style 52 fill:#438dd5,stroke:#2e6295,color:#ffffff
+    end
+
+    subgraph 53 ["Servidor en la nube (VPS)"]
+      style 53 fill:#ffffff,stroke:#444444,color:#444444
+
+      subgraph 54 ["Docker Compose"]
+        style 54 fill:#ffffff,stroke:#444444,color:#444444
+
+        55["<div style='font-weight: bold'>Monolito modular BiblioUNSA</div><div style='font-size: 70%; margin-top: 0px'>[Container: Python / Django]</div><div style='font-size: 80%; margin-top:10px'>Un solo despliegue con seis<br />módulos de dominio; expone la<br />API REST que consume la<br />interfaz web.</div>"]
+        style 55 fill:#438dd5,stroke:#2e6295,color:#ffffff
+        57["<div style='font-weight: bold'>Worker de reverificación</div><div style='font-size: 70%; margin-top: 0px'>[Container: Celery]</div><div style='font-size: 80%; margin-top:10px'>Reverifica en ≤ 30 min las<br />matrículas validadas con<br />caché.</div>"]
+        style 57 fill:#438dd5,stroke:#2e6295,color:#ffffff
+        59[("<div style='font-weight: bold'>Base de datos</div><div style='font-size: 70%; margin-top: 0px'>[Container: PostgreSQL]</div><div style='font-size: 80%; margin-top:10px'>Usuarios, catálogo, préstamos<br />y multas (un esquema por<br />módulo).</div>")]
+        style 59 fill:#438dd5,stroke:#2e6295,color:#ffffff
+        61["<div style='font-weight: bold'>Caché y cola de tareas</div><div style='font-size: 70%; margin-top: 0px'>[Container: Redis]</div><div style='font-size: 80%; margin-top:10px'>Guarda la última validación<br />de matrícula y las tareas de<br />reverificación.</div>"]
+        style 61 fill:#438dd5,stroke:#2e6295,color:#ffffff
+      end
+
+    end
+
+    52-. "<div>Llama a</div><div style='font-size: 70%'>[HTTPS/JSON (REST)]</div>" .->55
+    57-. "<div>Ejecuta la reverificación</div><div style='font-size: 70%'>[Tarea Celery]</div>" .->55
+    55-. "<div>Lee y escribe</div><div style='font-size: 70%'>[SQL/TCP]</div>" .->59
+    55-. "<div>Lee y guarda la caché y<br />encola tareas</div><div style='font-size: 70%'>[Redis protocol]</div>" .->61
+    57-. "<div>Consume tareas</div><div style='font-size: 70%'>[Redis protocol]</div>" .->61
+
+  end
