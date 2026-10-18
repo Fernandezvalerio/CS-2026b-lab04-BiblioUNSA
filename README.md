@@ -127,11 +127,11 @@ graph LR
 ### Vistas
 | Vista | Imagen (C4-PlantUML) | Fuente exportada |
 |-------|----------------------|------------------|
-| Nivel 1 · Contexto | [PNG](docs/architecture/c4/img/structurizr-Contexto.png) | [puml](docs/architecture/c4/export/structurizr-Contexto.puml) · [mmd](docs/architecture/c4/export/structurizr-Contexto.mmd) |
-| Nivel 2 · Contenedores | [PNG](docs/architecture/c4/img/structurizr-Contenedores.png) | [puml](docs/architecture/c4/export/structurizr-Contenedores.puml) · [mmd](docs/architecture/c4/export/structurizr-Contenedores.mmd) |
-| Nivel 3 · Componentes de la API | [PNG](docs/architecture/c4/img/structurizr-Componentes.png) | [puml](docs/architecture/c4/export/structurizr-Componentes.puml) · [mmd](docs/architecture/c4/export/structurizr-Componentes.mmd) |
-| Dinámica · Reservar un libro (HU-03) | [PNG](docs/architecture/c4/img/structurizr-ReservarLibro.png) | [puml](docs/architecture/c4/export/structurizr-ReservarLibro.puml) · [mmd](docs/architecture/c4/export/structurizr-ReservarLibro.mmd) |
-| Despliegue · Producción | [PNG](docs/architecture/c4/img/structurizr-Despliegue.png) | [puml](docs/architecture/c4/export/structurizr-Despliegue.puml) · [mmd](docs/architecture/c4/export/structurizr-Despliegue.mmd) |
+| Nivel 1 · Contexto | [PNG](docs/architecture/c4/img/contexto.png) | [puml](docs/architecture/c4/export/structurizr-Contexto.puml) · [mmd](docs/architecture/c4/export/structurizr-Contexto.mmd) |
+| Nivel 2 · Contenedores | [PNG](docs/architecture/c4/img/contenedores.png) | [puml](docs/architecture/c4/export/structurizr-Contenedores.puml) · [mmd](docs/architecture/c4/export/structurizr-Contenedores.mmd) |
+| Nivel 3 · Componentes de la API | [PNG](docs/architecture/c4/img/componentes.png) | [puml](docs/architecture/c4/export/structurizr-Componentes.puml) · [mmd](docs/architecture/c4/export/structurizr-Componentes.mmd) |
+| Dinámica · Reservar un libro (HU-03) | [PNG](docs/architecture/c4/img/dynamicReservarLibro.png) | [puml](docs/architecture/c4/export/structurizr-ReservarLibro.puml) · [mmd](docs/architecture/c4/export/structurizr-ReservarLibro.mmd) |
+| Despliegue · Producción | [PNG](docs/architecture/c4/img/despliegue.png) | [puml](docs/architecture/c4/export/structurizr-Despliegue.puml) · [mmd](docs/architecture/c4/export/structurizr-Despliegue.mmd) |
 
 ### Documentos del Lab 06
 | Entregable | Archivo |
@@ -145,14 +145,3 @@ graph LR
 | E7 Bitácora de IA | [bitacora-ia.md](docs/architecture/c4/bitacora-ia.md) |
 | Cuestionario | [cuestionario.md](docs/architecture/c4/cuestionario.md) |
 
-### Cómo regenerar las vistas
-```bash
-cd docs/architecture/c4
-structurizr.sh validate -w workspace.dsl
-structurizr.sh export -w workspace.dsl -f plantuml/c4plantuml -o export
-structurizr.sh export -w workspace.dsl -f mermaid -o export
-java -jar plantuml.jar -tpng -o ../img export/*.puml   # genera los PNG en img/
-```
-Una GitHub Action ([c4.yml](.github/workflows/c4.yml)) ejecuta `validate` en cada push y regenera las imágenes; el push falla si el modelo tiene errores.
-
-> Uso de IA: la IA propuso el borrador del modelo y revisó las vistas; el equipo corrigió y verificó cada propuesta (ver la [bitácora](docs/architecture/c4/bitacora-ia.md) y [revision-c4.md](docs/architecture/c4/revision-c4.md)).
