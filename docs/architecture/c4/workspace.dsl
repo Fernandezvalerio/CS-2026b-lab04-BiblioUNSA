@@ -90,6 +90,16 @@ workspace "BiblioUNSA" "Modelo C4 de la plataforma de préstamo y reserva de lib
             autolayout lr
         }
 
+        dynamic biblio.api "ReservarLibro" "Dinámico: reservar un libro validando la matrícula vigente (historia de usuario HU-03, camino con respuesta a tiempo)." {
+            biblio.web -> biblio.api.reservas "POST /reservas {ejemplarId}"
+            biblio.api.reservas -> biblio.api.integracion "validar(estudianteId)"
+            biblio.api.integracion -> sa "Consulta la matrícula (timeout 3 s)"
+            biblio.api.integracion -> biblio.cola "Guarda el resultado en caché (≤ 24 h)"
+            biblio.api.reservas -> biblio.api.catalogo "Reserva el ejemplar"
+            biblio.api.reservas -> biblio.api.prestamos "Crea el préstamo en estado RESERVADO"
+            autolayout lr
+        }
+
         styles {
             element "Person" {
                 shape person
