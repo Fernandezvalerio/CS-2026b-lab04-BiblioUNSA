@@ -92,3 +92,22 @@ class RepositorioPrestamosMemoria:
 
     def buscar_pendientes_reverificacion(self) -> list[Prestamo]:
         return [p for p in self.prestamos if p.requiere_reverificacion]
+
+
+class MotorTextoSimulado:
+    """Servicio LLM externo simulado; no hace solicitudes de red.
+
+    Puede entregar varias respuestas en llamadas consecutivas, para comprobar
+    que la caché reduce consultas al motor.
+    """
+
+    def __init__(self, respuestas: str | list[str]) -> None:
+        self.respuestas = [respuestas] if isinstance(respuestas, str) else list(respuestas)
+        if not self.respuestas:
+            raise ValueError("El motor simulado necesita al menos una respuesta")
+        self.llamadas = 0
+
+    def completar(self, instrucciones: str) -> str:
+        self.llamadas += 1
+        indice = min(self.llamadas - 1, len(self.respuestas) - 1)
+        return self.respuestas[indice]
