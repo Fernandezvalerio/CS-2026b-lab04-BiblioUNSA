@@ -1,0 +1,90 @@
+Laboratorio 07 - E6 - BiblioUNSA
+Resultados medidos el 25/10/2026 con Radon 6.0.1
+Fuentes: codigo 'antes' de E1 y codigo 'despues' de E5, reunidos en E6.
+La copia del dominio original se encuentra en src/reservas/antes/dominio_e1.py.
+Todos los comandos siguientes funcionan desde la raiz del proyecto E6.
+
+=============================================================
+COMPLEJIDAD CICLOMATICA - METODO CRITICO ANTES
+Comando E6:
+  radon cc -s -a src/reservas/antes/servicio.py
+
+src/reservas/antes/servicio.py
+    M 61:4 ServicioReservas.reservar_libro - C (15)
+    C 38:0 ServicioReservas - B (10)
+    M 39:4 ServicioReservas.__init__ - A (3)
+    C 26:0 IntegracionException - A (1)
+    C 30:0 MatriculaNoVigente - A (1)
+    C 34:0 EjemplarNoDisponible - A (1)
+
+6 blocks (classes, functions, methods) analyzed.
+Average complexity: B (5.166666666666667)
+
+=============================================================
+COMPLEJIDAD CICLOMATICA - METODO CRITICO DESPUES
+Comando E6:
+  radon cc -s -a src/reservas/servicio.py
+
+src/reservas/servicio.py
+    C 42:0 ServicioReservas - B (9)
+    M 84:4 ServicioReservas.reservar_libro - B (9)
+    M 43:4 ServicioReservas.__init__ - B (6)
+    C 34:0 MatriculaNoVigente - A (1)
+    C 38:0 EjemplarNoDisponible - A (1)
+
+5 blocks (classes, functions, methods) analyzed.
+Average complexity: B (5.2)
+
+=============================================================
+PROMEDIOS CON ALCANCE FUNCIONAL DOCUMENTADO
+
+Comando E6 para antes:
+  radon cc -s -a src/reservas/antes/servicio.py src/reservas/antes/dominio_e1.py
+40 blocks (classes, functions, methods) analyzed.
+Average complexity: A (1.95)
+
+Comando E6 para despues:
+  radon cc -s -a src/reservas/servicio.py src/reservas/dominio.py src/reservas/validadores.py src/reservas/decoradores.py src/reservas/eventos.py src/reservas/estados.py
+87 blocks (classes, functions, methods) analyzed.
+Average complexity: A (1.8275862068965518)
+
+=============================================================
+LINEAS DE CODIGO SLOC - ANTES
+
+Comando E6 para antes:
+  radon raw -s src/reservas/antes/servicio.py src/reservas/antes/dominio_e1.py
+
+  src/reservas/antes/servicio.py  SLOC: 104
+  src/reservas/antes/dominio_e1.py SLOC: 118
+  Total                          SLOC: 222
+
+LINEAS DE CODIGO SLOC - DESPUES
+
+Comando E6 para despues:
+  radon raw -s src/reservas/servicio.py src/reservas/dominio.py src/reservas/validadores.py src/reservas/decoradores.py src/reservas/eventos.py src/reservas/estados.py
+
+  src/reservas/servicio.py       SLOC: 101
+  src/reservas/dominio.py        SLOC: 114
+  src/reservas/validadores.py    SLOC: 41
+  src/reservas/decoradores.py    SLOC: 17
+  src/reservas/eventos.py        SLOC: 35
+  src/reservas/estados.py        SLOC: 70
+  Total                          SLOC: 378
+
+IA DE E5 (NO COMPARABLE CON E1)
+Comando E6:
+  radon raw -s src/reservas/ia.py
+  src/reservas/ia.py             SLOC: 102
+
+  radon cc -s -a src/reservas/ia.py
+  M GuardrailFormato.validar     B (9)
+  M GuardrailCatalogo.validar    B (6)
+  M RecomendadorLibros.recomendar B (6)
+  Average complexity: A (3.238095238095238)
+
+PRUEBAS - E6, PROYECTO COMPLETO
+  pytest -q -s -p no:cacheprovider tests/
+  69 passed in 0.09s
+
+Nota: la comparacion no mezcla la copia 'antes' con el codigo refactorizado,
+ni suma IA a un caso de uso que antes no ofrecía recomendaciones.
