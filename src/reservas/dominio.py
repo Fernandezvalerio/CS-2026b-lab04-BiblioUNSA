@@ -1,11 +1,11 @@
-"""Esqueleto del dominio de BiblioUNSA (HU-03: reservar un libro).
+"""Dominio de BiblioUNSA (HU-03: reservar un libro).
 
 Generado con IA a partir de docs/diagram/clases.puml (ingeniería directa, Lab 05 - E6)
 y revisado por el equipo. Convenciones:
 - Clases y enumeraciones con los mismos nombres que el diagrama (C5).
 - Operaciones y atributos en snake_case (convención de Python).
-- Solo `Ejemplar` y `Prestamo` tienen lógica mínima; los adaptadores y el servicio
-  lanzan NotImplementedError.
+- `Prestamo` delega sus transiciones en objetos State (Lab 07, E3).
+- Los puertos y el servicio esquelético del Lab 05 se conservan como referencia.
 """
 from __future__ import annotations
 
@@ -15,6 +15,8 @@ from datetime import date, datetime
 from decimal import Decimal
 from enum import Enum
 from uuid import UUID, uuid4
+
+from reservas.estados import EstadoPrestamoBase, crear_estado
 
 
 class EstadoPrestamo(Enum):
@@ -70,35 +72,32 @@ class Prestamo:
     requiere_reverificacion: bool = False
     monto_multa: Decimal = Decimal("0")
     id: UUID = field(default_factory=uuid4)
+    _estado_objeto: EstadoPrestamoBase = field(init=False, repr=False, compare=False)
 
-    def _exigir_estado(self, *permitidos: EstadoPrestamo) -> None:
-        if self.estado not in permitidos:
-            raise ValueError(f"Transición inválida desde {self.estado.value}")
+    def __post_init__(self) -> None:
+        self._estado_objeto = crear_estado(self.estado.value)
+
+    def _cambiar_a(self, nombre: str) -> None:
+        """Mantiene sincronizados el enum persistible y el objeto State."""
+        nuevo_estado = EstadoPrestamo(nombre)
+        nuevo_objeto = crear_estado(nuevo_estado.value)
+        self.estado = nuevo_estado
+        self._estado_objeto = nuevo_objeto
 
     def entregar(self) -> None:
-        self._exigir_estado(EstadoPrestamo.RESERVADO)
-        self.estado = EstadoPrestamo.PRESTADO
+        self._estado_objeto.entregar(self)
 
-    def marcar_vencido(self) -> None:
-        self._exigir_estado(EstadoPrestamo.PRESTADO)
-        self.estado = EstadoPrestamo.VENCIDO
+    def marcar_vencido(self, hoy: date | None = None) -> None:
+        self._estado_objeto.marcar_vencido(self, hoy or date.today())
 
     def registrar_devolucion(self, fecha: date) -> None:
-        self._exigir_estado(EstadoPrestamo.PRESTADO, EstadoPrestamo.VENCIDO)
-        self.fecha_devolucion = fecha
-        if self.estado == EstadoPrestamo.PRESTADO:
-            self.estado = EstadoPrestamo.DEVUELTO
+        self._estado_objeto.registrar_devolucion(self, fecha)
 
     def aplicar_multa(self, monto: Decimal) -> None:
-        self._exigir_estado(EstadoPrestamo.VENCIDO)
-        if self.fecha_devolucion is None or monto <= 0:
-            raise ValueError("La multa requiere devolución registrada y monto > 0")
-        self.monto_multa = monto
-        self.estado = EstadoPrestamo.CON_MULTA
+        self._estado_objeto.aplicar_multa(self, monto)
 
     def marcar_para_reverificacion(self) -> None:
-        self._exigir_estado(EstadoPrestamo.RESERVADO)
-        self.requiere_reverificacion = True
+        self._estado_objeto.marcar_para_reverificacion(self)
 
 
 @dataclass
