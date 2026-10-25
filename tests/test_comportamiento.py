@@ -1,6 +1,7 @@
 """Caracterización de HU-03: estos casos se conservarán en E2-E4.
 
-En E2 se añade `"reservas.servicio"` a params, cuando exista esa versión.
+El fixture ejecuta cada prueba contra E1 y E2 para comprobar que el
+comportamiento observable no cambió al introducir los patrones.
 """
 
 import importlib
@@ -22,9 +23,12 @@ from reservas.externos import (
 HOY = datetime(2026, 10, 25, 12, 0, 0)
 
 
-@pytest.fixture(params=["reservas.antes.servicio"], ids=["antes"])
+@pytest.fixture(
+    params=["reservas.antes.servicio", "reservas.servicio"],
+    ids=["antes", "despues"],
+)
 def m(request):
-    """El mismo contrato se probará contra las dos versiones en E2."""
+    """La misma red de seguridad protege ambas implementaciones."""
     return importlib.import_module(request.param)
 
 
