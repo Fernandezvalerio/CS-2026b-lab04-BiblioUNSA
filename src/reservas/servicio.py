@@ -1,7 +1,7 @@
-"""E2: flujo HU-03 con proveedores externos intercambiables.
+"""E2-E4: reservas con Strategy/Adapter/Factory, Decorator y Observer.
 
-Solo se refactoriza la selección y adaptación del proveedor académico.
-Los reintentos, la caché y los eventos siguen aquí hasta E4.
+Los reintentos y los avisos se delegan a colaboradores. La política de caché
+permanece en el servicio para conservar el comportamiento de E1-E3.
 """
 
 from __future__ import annotations
@@ -9,7 +9,14 @@ from __future__ import annotations
 from datetime import datetime, timedelta
 from uuid import UUID
 
+from reservas.decoradores import ConReintentos
 from reservas.dominio import Estudiante, Prestamo, ResultadoMatricula
+from reservas.eventos import (
+    EventoReserva,
+    ObservadorAvisos,
+    ObservadorHistorial,
+    PublicadorEventos,
+)
 from reservas.externos import (
     RepositorioEjemplaresMemoria,
     RepositorioPrestamosMemoria,
@@ -44,6 +51,7 @@ class ServicioReservas:
         cache: dict[UUID, ResultadoMatricula] | None = None,
         ahora: datetime | None = None,
         fabrica: FabricaValidadores | None = None,
+        publicador: PublicadorEventos | None = None,
     ) -> None:
         self.estudiantes = estudiantes
         self.repo_ejemplares = repo_ejemplares
@@ -51,8 +59,16 @@ class ServicioReservas:
         self.proveedor = proveedor
         self.cache = dict(cache or {})
         self.ahora = ahora or datetime.now()
-        self.eventos: list[str] = []
         self.programaciones: list[tuple[UUID, datetime]] = []
+
+        # Observer: un mismo evento llega al historial y a los avisos.
+        self.publicador = publicador if publicador is not None else PublicadorEventos()
+        historial = ObservadorHistorial()
+        avisos = ObservadorAvisos()
+        self.publicador.suscribir(historial)
+        self.publicador.suscribir(avisos)
+        self.eventos = historial.eventos  # Compatibilidad con la red de E1-E3.
+        self.notificaciones = avisos.avisos
 
         # La Factory por defecto se ensambla una vez. Para agregar otra
         # estrategia, el cliente puede inyectar una Factory ya registrada.
@@ -66,18 +82,16 @@ class ServicioReservas:
             )
 
     def reservar_libro(self, estudiante_id: UUID, ejemplar_id: UUID) -> Prestamo:
-        validador = self.fabrica.crear(self.proveedor)
+        # Decorator: el flujo no administra los reintentos del SDK.
+        validador = ConReintentos(self.fabrica.crear(self.proveedor), intentos=3)
 
         resultado = None
-        # Se mantienen los tres intentos de 1 s del E1 (ADR-003).
-        for intento in range(3):
-            try:
-                resultado = validador.validar(estudiante_id)
-                self.cache[estudiante_id] = resultado
-                break
-            except TimeoutError:
-                if intento == 2:
-                    resultado = None
+        try:
+            resultado = validador.validar(estudiante_id)
+            self.cache[estudiante_id] = resultado
+        except TimeoutError:
+            # El último timeout habilita la recuperación por caché (ADR-003).
+            pass
 
         if resultado is None:
             guardado = self.cache.get(estudiante_id)
@@ -110,8 +124,8 @@ class ServicioReservas:
             prestamo.marcar_para_reverificacion()
             fecha_programada = self.ahora + timedelta(minutes=30)
             self.programaciones.append((prestamo.id, fecha_programada))
-            self.eventos.append(f"reverificacion_programada:{prestamo.id}")
+            self.publicador.publicar(EventoReserva("reverificacion_programada", prestamo.id))
 
         self.repo_prestamos.guardar(prestamo)
-        self.eventos.append(f"reserva_creada:{prestamo.id}")
+        self.publicador.publicar(EventoReserva("reserva_creada", prestamo.id))
         return prestamo
