@@ -17,7 +17,9 @@ SOLID que mejoraría y costo de aplicarlo. No escribas código ni propongas
 patrones sin una necesidad real. No uses Singleton".
 
 **Resultado:** Se propusieron los siguientes cambios. Se contrastaron con las
-reglas de HU-03, el diagrama del Lab 05 y el ADR-003.
+reglas de HU-03, el diagrama del Lab 05 y el ADR-003. Las decisiones de esta
+tabla son la **propuesta de revisión técnica para el E1** y deben validarse
+con el resto del equipo antes de refactorizar.
 
 | Ubicación aproximada | Olor detectado | Patrón GoF propuesto | Principio SOLID | Decisión y costo |
 |---|---|---|---|---|
@@ -29,3 +31,20 @@ reglas de HU-03, el diagrama del Lab 05 y el ADR-003.
 | `dominio.py:74-101` | Los cambios de `Prestamo` dependen de comprobaciones de su enumeración de estado. | **State** | **O** y **L** (sustitución) | **Aceptar para E3**, usando la máquina de estados `estados-prestamo.mmd`. Aumenta el número de clases, pero concentra transiciones válidas. |
 | `antes/servicio.py:44-56` | El servicio recibe dos colaboradores, pero no hay necesidad de una familia de objetos relacionados. | **Abstract Factory** (sugerencia examinada) | **D** (teórico) | **Rechazar**: no hay familias de productos ni un olor que la exija. Un registro Factory sencillo bastará; Abstract Factory añadiría clases sin beneficio. |
 
+## Decisión sobre propuestas innecesarias
+
+**No usar Singleton** para la API ni para los repositorios. Aunque pueda parecer
+útil para compartir instancias, produciría estado global y complicaría la
+inyección de simuladores en las pruebas. Tampoco aplicar Abstract Factory a dos
+variantes de una sola interfaz. El plazo del MVP es de un mes y conviene
+introducir cada patrón únicamente cuando elimine un problema real.
+
+## Evidencia que debe conservarse
+
+- **15 pruebas verdes** de caracterización (éxito, errores, límites de caché y reintentos).
+- `ServicioReservas.reservar_libro`: **C (15)** de complejidad ciclomática.
+- Promedio de `src/reservas/antes/servicio.py`: **B (5.17)**, considerando las clases y métodos contabilizados por radon.
+- Archivo `radon-e1.txt`: salida completa de `radon cc -s -a src/` y la medición enfocada en la versión inicial.
+
+Se conserva intacta la versión `antes` como referencia. La refactorización
+empezará en E2, después de comprobar que las pruebas siguen pasando.

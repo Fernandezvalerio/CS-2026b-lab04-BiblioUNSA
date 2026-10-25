@@ -149,4 +149,6 @@ python -m pytest -q tests/
 
 **Nota sobre el promedio de grupos:** el valor de E1 (1,95) se verificó con
 `antes/servicio.py` y `antes/dominio_e1.py`; el valor E5 (1,83) corresponde a
-los seis archivos del código refactorizado.
+los seis archivos del código refactorizado. No hay que calcular el promedio
+del módulo completo incluyendo también `antes/`, porque mezclaría las dos
+versiones. Los resultados resumidos se dejan en `radon-e6.txt`.

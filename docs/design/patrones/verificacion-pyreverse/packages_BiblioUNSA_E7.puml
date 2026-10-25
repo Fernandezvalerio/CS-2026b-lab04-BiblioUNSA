@@ -1,0 +1,34 @@
+@startuml packages_BiblioUNSA_E7
+set namespaceSeparator none
+package "reservas" as reservas {
+}
+package "reservas.decoradores" as reservas.decoradores {
+}
+package "reservas.dominio" as reservas.dominio {
+}
+package "reservas.estados" as reservas.estados {
+}
+package "reservas.eventos" as reservas.eventos {
+}
+package "reservas.externos" as reservas.externos {
+}
+package "reservas.ia" as reservas.ia {
+}
+package "reservas.servicio" as reservas.servicio {
+}
+package "reservas.validadores" as reservas.validadores {
+}
+reservas.decoradores --> reservas.dominio
+reservas.dominio --> reservas.estados
+reservas.externos --> reservas.dominio
+reservas.ia --> reservas.dominio
+reservas.ia --> reservas.externos
+reservas.servicio --> reservas.decoradores
+reservas.servicio --> reservas.dominio
+reservas.servicio --> reservas.eventos
+reservas.servicio --> reservas.externos
+reservas.servicio --> reservas.validadores
+reservas.validadores --> reservas.dominio
+reservas.validadores --> reservas.externos
+reservas.estados ..> reservas.dominio
+@enduml

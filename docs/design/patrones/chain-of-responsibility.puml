@@ -1,0 +1,47 @@
+@startuml chain_of_responsibility
+!pragma layout smetana
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+title BiblioUNSA - Chain of Responsibility: guardrails (E5)
+
+abstract class Guardrail <<Handler>> {
+  -siguiente: Guardrail
+  +procesar(contexto: ContextoGuardrails): ContextoGuardrails
+  {abstract} +validar(contexto: ContextoGuardrails): void
+}
+class GuardrailFormato <<ConcreteHandler>> {
+  +validar(contexto): void
+}
+class GuardrailCatalogo <<ConcreteHandler>> {
+  +validar(contexto): void
+}
+class ContextoGuardrails <<Context>> {
+  +respuesta: str
+  +isbn_origen: str
+  +catalogo: Mapping[str, Libro]
+  +isbns_sugeridos: tuple[str, ...]
+}
+class RecomendadorLibros <<Client>> {
+  -cadena: Guardrail
+  +recomendar(isbn_origen): list[Libro]
+}
+class RespuestaLLMInvalida <<Exception>>
+
+Guardrail <|-- GuardrailFormato
+Guardrail <|-- GuardrailCatalogo
+Guardrail o--> "0..1" Guardrail : siguiente
+RecomendadorLibros --> Guardrail : procesar(contexto)
+RecomendadorLibros ..> ContextoGuardrails : construye
+Guardrail ..> ContextoGuardrails : lee y actualiza
+GuardrailFormato ..> RespuestaLLMInvalida : formato invalido
+GuardrailCatalogo ..> RespuestaLLMInvalida : ISBN no valido
+
+note bottom of GuardrailFormato
+  1. JSON con solo clave 'isbns'.
+  2. Lista de 1 a 3 ISBN no vacios.
+end note
+note bottom of GuardrailCatalogo
+  ISBN presentes en catalogo, distintos
+  y diferentes al libro origen.
+end note
+@enduml

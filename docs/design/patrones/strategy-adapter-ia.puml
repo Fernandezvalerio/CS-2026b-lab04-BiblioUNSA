@@ -1,0 +1,37 @@
+@startuml strategy_adapter_ia
+!pragma layout smetana
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+title BiblioUNSA - Strategy + Adapter: proveedor IA (E5)
+
+abstract class ProveedorLLM <<Strategy>> {
+  {abstract} +generar(prompt: str): str
+}
+class AdaptadorMotorSimulado <<ConcreteStrategy, Adapter>> {
+  -motor: MotorTextoSimulado
+  +generar(prompt: str): str
+}
+class MotorTextoSimulado <<Adaptee>> {
+  +completar(instrucciones: str): str
+  +llamadas: int
+}
+class ConCacheLLM <<Decorator>> {
+  -interno: ProveedorLLM
+  +generar(prompt: str): str
+}
+class RecomendadorLibros <<Context>> {
+  -proveedor: ProveedorLLM
+  +recomendar(isbn_origen: str): list[Libro]
+}
+
+ProveedorLLM <|-- AdaptadorMotorSimulado
+ProveedorLLM <|-- ConCacheLLM
+AdaptadorMotorSimulado --> MotorTextoSimulado : completar()
+ConCacheLLM o--> ProveedorLLM : interno
+RecomendadorLibros --> ProveedorLLM : generar()
+
+note right of MotorTextoSimulado
+  Simulador local.
+  Sin red ni credenciales.
+end note
+@enduml

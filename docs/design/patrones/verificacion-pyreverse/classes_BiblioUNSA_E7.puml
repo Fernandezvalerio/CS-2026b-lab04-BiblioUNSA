@@ -1,0 +1,258 @@
+@startuml classes_BiblioUNSA_E7
+set namespaceSeparator none
+class "AdaptadorMatriculaCodigos" as reservas.validadores.AdaptadorMatriculaCodigos {
+  cliente
+  validar(estudiante_id: UUID) -> ResultadoMatricula
+}
+class "AdaptadorMatriculaJSON" as reservas.validadores.AdaptadorMatriculaJSON {
+  cliente
+  validar(estudiante_id: UUID) -> ResultadoMatricula
+}
+class "AdaptadorMotorSimulado" as reservas.ia.AdaptadorMotorSimulado {
+  motor
+  generar(prompt: str) -> str
+}
+class "AdaptadorSistemaAcademico" as reservas.dominio.AdaptadorSistemaAcademico {
+  horas_cache : int
+  timeout_segundos : int
+  {abstract}validar(estudiante_id: UUID) -> ResultadoMatricula
+}
+class "ConCacheLLM" as reservas.ia.ConCacheLLM {
+  aciertos : int
+  cache : dict[str, str]
+  interno
+  generar(prompt: str) -> str
+}
+class "ConMulta" as reservas.estados.ConMulta {
+  nombre : str
+}
+class "ConReintentos" as reservas.decoradores.ConReintentos {
+  intentos : int
+  interno
+  validar(estudiante_id: UUID) -> ResultadoMatricula
+}
+class "ContextoGuardrails" as reservas.ia.ContextoGuardrails {
+  catalogo : Mapping[str, Libro]
+  isbn_origen : str
+  isbns_sugeridos : tuple[str, ...]
+  respuesta : str
+}
+class "Devuelto" as reservas.estados.Devuelto {
+  nombre : str
+}
+class "Ejemplar" as reservas.dominio.Ejemplar {
+  biblioteca : str
+  codigo_inventario : str
+  disponible : bool
+  id : UUID
+  esta_disponible() -> bool
+  marcar_disponible() -> None
+  marcar_reservado() -> None
+}
+class "<color:red>EjemplarNoDisponible</color>" as reservas.servicio.EjemplarNoDisponible {
+}
+class "EstadoPrestamo" as reservas.dominio.EstadoPrestamo {
+  name
+}
+class "EstadoPrestamoBase" as reservas.estados.EstadoPrestamoBase {
+  nombre : str
+  aplicar_multa(prestamo: Prestamo, monto: Decimal) -> None
+  entregar(prestamo: Prestamo) -> None
+  marcar_para_reverificacion(prestamo: Prestamo) -> None
+  marcar_vencido(prestamo: Prestamo, hoy: date) -> None
+  registrar_devolucion(prestamo: Prestamo, fecha: date) -> None
+}
+class "Estudiante" as reservas.dominio.Estudiante {
+  correo_institucional : str
+  id : UUID
+}
+class "EventoReserva" as reservas.eventos.EventoReserva {
+  prestamo_id : UUID
+  tipo : str
+}
+class "FabricaValidadores" as reservas.validadores.FabricaValidadores {
+  crear(nombre: str) -> ValidadorMatricula
+  registrar(nombre: str, creador: Callable[[], ValidadorMatricula]) -> None
+}
+class "Guardrail" as reservas.ia.Guardrail {
+  siguiente : Guardrail | None
+  procesar(contexto: ContextoGuardrails) -> ContextoGuardrails
+  {abstract}validar(contexto: ContextoGuardrails) -> None
+}
+class "GuardrailCatalogo" as reservas.ia.GuardrailCatalogo {
+  validar(contexto: ContextoGuardrails) -> None
+}
+class "GuardrailFormato" as reservas.ia.GuardrailFormato {
+  validar(contexto: ContextoGuardrails) -> None
+}
+class "<color:red>IntegracionException</color>" as reservas.validadores.IntegracionException {
+}
+class "Libro" as reservas.dominio.Libro {
+  autor : str
+  ejemplares : list[Ejemplar]
+  id : UUID
+  isbn : str
+  titulo : str
+}
+class "<color:red>MatriculaNoVigente</color>" as reservas.servicio.MatriculaNoVigente {
+}
+class "MotorTextoSimulado" as reservas.externos.MotorTextoSimulado {
+  llamadas : int
+  respuestas : list
+  completar(instrucciones: str) -> str
+}
+class "ObservadorAvisos" as reservas.eventos.ObservadorAvisos {
+  avisos : list[str]
+  actualizar(evento: EventoReserva) -> None
+}
+class "ObservadorEventos" as reservas.eventos.ObservadorEventos {
+  actualizar(evento: EventoReserva) -> None
+}
+class "ObservadorHistorial" as reservas.eventos.ObservadorHistorial {
+  eventos : list[str]
+  actualizar(evento: EventoReserva) -> None
+}
+class "Prestado" as reservas.estados.Prestado {
+  nombre : str
+  marcar_vencido(prestamo: Prestamo, hoy: date) -> None
+  registrar_devolucion(prestamo: Prestamo, fecha: date) -> None
+}
+class "Prestamo" as reservas.dominio.Prestamo {
+  ejemplar
+  estado
+  estudiante
+  fecha_devolucion : date | None
+  fecha_reserva : datetime
+  fecha_vencimiento : date | None
+  id : UUID
+  monto_multa : Decimal
+  requiere_reverificacion : bool
+  aplicar_multa(monto: Decimal) -> None
+  entregar() -> None
+  marcar_para_reverificacion() -> None
+  marcar_vencido(hoy: date | None) -> None
+  registrar_devolucion(fecha: date) -> None
+}
+class "ProveedorLLM" as reservas.ia.ProveedorLLM {
+  {abstract}generar(prompt: str) -> str
+}
+class "PublicadorEventos" as reservas.eventos.PublicadorEventos {
+  desuscribir(observador: ObservadorEventos) -> None
+  publicar(evento: EventoReserva) -> None
+  suscribir(observador: ObservadorEventos) -> None
+}
+class "RecomendadorLibros" as reservas.ia.RecomendadorLibros {
+  cadena
+  catalogo
+  proveedor
+  recomendar(isbn_origen: str) -> list[Libro]
+}
+class "RepositorioEjemplares" as reservas.dominio.RepositorioEjemplares {
+  {abstract}buscar(id: UUID) -> Ejemplar
+  {abstract}guardar(e: Ejemplar) -> None
+}
+class "RepositorioEjemplaresMemoria" as reservas.externos.RepositorioEjemplaresMemoria {
+  ejemplares
+  buscar(ejemplar_id: UUID) -> Ejemplar
+  guardar(ejemplar: Ejemplar) -> None
+}
+class "RepositorioPrestamos" as reservas.dominio.RepositorioPrestamos {
+  {abstract}buscar_pendientes_reverificacion() -> list[Prestamo]
+  {abstract}guardar(p: Prestamo) -> None
+}
+class "RepositorioPrestamosMemoria" as reservas.externos.RepositorioPrestamosMemoria {
+  prestamos : list[Prestamo]
+  buscar_pendientes_reverificacion() -> list[Prestamo]
+  guardar(prestamo: Prestamo) -> None
+}
+class "Reservado" as reservas.estados.Reservado {
+  nombre : str
+  entregar(prestamo: Prestamo) -> None
+  marcar_para_reverificacion(prestamo: Prestamo) -> None
+}
+class "<color:red>RespuestaLLMInvalida</color>" as reservas.ia.RespuestaLLMInvalida {
+}
+class "ResultadoMatricula" as reservas.dominio.ResultadoMatricula {
+  desde_cache : bool
+  fecha_consulta : datetime
+  vigente : bool
+  {abstract}cache_vigente(ahora: datetime) -> bool
+  es_vigente() -> bool
+}
+class "ServicioReservas" as reservas.servicio.ServicioReservas {
+  ahora : datetime
+  cache : dict
+  estudiantes : dict[UUID, Estudiante]
+  eventos : list
+  fabrica
+  notificaciones : list
+  programaciones : list[tuple[UUID, datetime]]
+  proveedor : str
+  publicador
+  repo_ejemplares
+  repo_prestamos
+  reservar_libro(estudiante_id: UUID, ejemplar_id: UUID) -> Prestamo
+}
+class "ServicioReservas" as reservas.dominio.ServicioReservas {
+  repo_ejemplares
+  repo_prestamos
+  validador
+  {abstract}reservar_libro(estudiante_id: UUID, ejemplar_id: UUID) -> Prestamo
+  {abstract}reverificar_pendientes() -> None
+}
+class "SistemaAcademicoCodigos" as reservas.externos.SistemaAcademicoCodigos {
+  codigo_http : int
+  fallas : int
+  fecha_consulta : datetime | None
+  llamadas : int
+  matriculas : dict
+  obtener_estado_alumno(codigo_alumno: str, tiempo_maximo_ms: int) -> tuple[int, int, datetime]
+}
+class "SistemaAcademicoJSON" as reservas.externos.SistemaAcademicoJSON {
+  fallas : int
+  fecha_consulta : datetime | None
+  llamadas : int
+  matriculas : dict
+  consultar_matricula(estudiante_id: UUID, timeout_segundos: int) -> dict[str, object]
+}
+class "ValidadorMatricula" as reservas.dominio.ValidadorMatricula {
+  {abstract}validar(estudiante_id: UUID) -> ResultadoMatricula
+}
+class "Vencido" as reservas.estados.Vencido {
+  nombre : str
+  aplicar_multa(prestamo: Prestamo, monto: Decimal) -> None
+  registrar_devolucion(prestamo: Prestamo, fecha: date) -> None
+}
+reservas.decoradores.ConReintentos --|> reservas.dominio.ValidadorMatricula
+reservas.dominio.AdaptadorSistemaAcademico --|> reservas.dominio.ValidadorMatricula
+reservas.estados.ConMulta --|> reservas.estados.EstadoPrestamoBase
+reservas.estados.Devuelto --|> reservas.estados.EstadoPrestamoBase
+reservas.estados.Prestado --|> reservas.estados.EstadoPrestamoBase
+reservas.estados.Reservado --|> reservas.estados.EstadoPrestamoBase
+reservas.estados.Vencido --|> reservas.estados.EstadoPrestamoBase
+reservas.ia.AdaptadorMotorSimulado --|> reservas.ia.ProveedorLLM
+reservas.ia.ConCacheLLM --|> reservas.ia.ProveedorLLM
+reservas.ia.GuardrailCatalogo --|> reservas.ia.Guardrail
+reservas.ia.GuardrailFormato --|> reservas.ia.Guardrail
+reservas.validadores.AdaptadorMatriculaCodigos --|> reservas.dominio.ValidadorMatricula
+reservas.validadores.AdaptadorMatriculaJSON --|> reservas.dominio.ValidadorMatricula
+reservas.dominio.Prestamo --> reservas.dominio.Ejemplar : ejemplar
+reservas.dominio.Prestamo --> reservas.dominio.EstadoPrestamo : estado
+reservas.dominio.Prestamo --> reservas.dominio.Estudiante : estudiante
+reservas.externos.RepositorioPrestamosMemoria --> reservas.dominio.Prestamo : prestamos
+reservas.servicio.ServicioReservas --> reservas.eventos.PublicadorEventos : publicador
+reservas.ia.RecomendadorLibros --> reservas.ia.GuardrailFormato : cadena
+reservas.servicio.ServicioReservas --> reservas.validadores.FabricaValidadores : fabrica
+reservas.dominio.Estudiante --o reservas.servicio.ServicioReservas : estudiantes
+reservas.dominio.RepositorioEjemplares --o reservas.dominio.ServicioReservas : repo_ejemplares
+reservas.dominio.RepositorioPrestamos --o reservas.dominio.ServicioReservas : repo_prestamos
+reservas.dominio.ValidadorMatricula --o reservas.decoradores.ConReintentos : interno
+reservas.dominio.ValidadorMatricula --o reservas.dominio.ServicioReservas : validador
+reservas.externos.MotorTextoSimulado --o reservas.ia.AdaptadorMotorSimulado : motor
+reservas.externos.RepositorioEjemplaresMemoria --o reservas.servicio.ServicioReservas : repo_ejemplares
+reservas.externos.RepositorioPrestamosMemoria --o reservas.servicio.ServicioReservas : repo_prestamos
+reservas.externos.SistemaAcademicoCodigos --o reservas.validadores.AdaptadorMatriculaCodigos : cliente
+reservas.externos.SistemaAcademicoJSON --o reservas.validadores.AdaptadorMatriculaJSON : cliente
+reservas.ia.ProveedorLLM --o reservas.ia.ConCacheLLM : interno
+reservas.ia.ProveedorLLM --o reservas.ia.RecomendadorLibros : proveedor
+@enduml

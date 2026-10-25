@@ -1,0 +1,52 @@
+@startuml strategy
+!pragma layout smetana
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam packageStyle rectangle
+title BiblioUNSA - Strategy: validacion de matricula (E2)
+
+package "reservas.dominio" {
+  abstract class ValidadorMatricula <<Strategy>> {
+    {abstract} +validar(estudiante_id: UUID): ResultadoMatricula
+  }
+  class ResultadoMatricula {
+    +vigente: bool
+    +fecha_consulta: datetime
+    +desde_cache: bool
+  }
+}
+
+package "reservas.validadores" {
+  class AdaptadorMatriculaJSON <<ConcreteStrategy, Adapter>> {
+    +validar(estudiante_id: UUID): ResultadoMatricula
+  }
+  class AdaptadorMatriculaCodigos <<ConcreteStrategy, Adapter>> {
+    +validar(estudiante_id: UUID): ResultadoMatricula
+  }
+  class FabricaValidadores <<Factory>> {
+    +registrar(nombre, creador): void
+    +crear(nombre): ValidadorMatricula
+  }
+}
+
+package "reservas.servicio" {
+  class ServicioReservas <<Context>> {
+    +proveedor: str
+    +reservar_libro(estudiante_id, ejemplar_id): Prestamo
+  }
+}
+
+ValidadorMatricula <|-- AdaptadorMatriculaJSON
+ValidadorMatricula <|-- AdaptadorMatriculaCodigos
+ServicioReservas --> FabricaValidadores : crea la estrategia
+FabricaValidadores ..> ValidadorMatricula : devuelve
+ServicioReservas ..> ValidadorMatricula : validar() mediante Decorator
+ValidadorMatricula ..> ResultadoMatricula
+
+note right of ServicioReservas
+  No contiene if/elif por tipo
+  de respuesta academica.
+  El nombre del proveedor se
+  resuelve a traves de Factory.
+end note
+@enduml

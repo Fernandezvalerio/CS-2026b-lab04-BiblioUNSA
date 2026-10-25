@@ -1,0 +1,45 @@
+@startuml observer
+!pragma layout smetana
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+title BiblioUNSA - Observer: historial y avisos (E4)
+
+interface ObservadorEventos <<Observer, Protocol>> {
+  +actualizar(evento: EventoReserva): void
+}
+class PublicadorEventos <<Subject>> {
+  -_suscriptores: list[ObservadorEventos]
+  +suscribir(observador): void
+  +desuscribir(observador): void
+  +publicar(evento): void
+}
+class ObservadorHistorial <<ConcreteObserver>> {
+  +eventos: list[str]
+  +actualizar(evento): void
+}
+class ObservadorAvisos <<ConcreteObserver>> {
+  +avisos: list[str]
+  +actualizar(evento): void
+}
+class EventoReserva <<Event>> {
+  +tipo: str
+  +prestamo_id: UUID
+}
+class ServicioReservas <<Client>> {
+  +reservar_libro(id_estudiante, id_ejemplar): Prestamo
+}
+
+PublicadorEventos o-- "0..*" ObservadorEventos : _suscriptores
+ObservadorHistorial ..> ObservadorEventos : cumple Protocol
+ObservadorAvisos ..> ObservadorEventos : cumple Protocol
+ServicioReservas --> PublicadorEventos : publica
+PublicadorEventos ..> EventoReserva : publica
+ObservadorHistorial ..> EventoReserva : recibe
+ObservadorAvisos ..> EventoReserva : recibe
+
+note right of ObservadorEventos
+  Python usa Protocol estructural:
+  los observadores NO heredan
+  directamente de esta clase.
+end note
+@enduml

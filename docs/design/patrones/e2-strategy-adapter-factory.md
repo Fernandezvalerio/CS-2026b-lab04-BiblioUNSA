@@ -33,3 +33,10 @@ en la fábrica, sin modificar el flujo principal de reservas.
 - Medición exploratoria con `radon cc -s -a`: el método `reservar_libro` pasó de
   complejidad **15 (C)** en E1 a **11 (C)** en E2. La mejora restante se medirá
   en E6 después de extraer otras responsabilidades.
+
+## Alcance intencional
+
+Los reintentos, el caché y los eventos continúan en `ServicioReservas`. En E2
+**no** se implementan todavía Decorator, Observer, State ni un componente de IA,
+porque corresponden a ejercicios posteriores. Se conserva `antes/servicio.py`
+para comparar con la versión refactorizada.

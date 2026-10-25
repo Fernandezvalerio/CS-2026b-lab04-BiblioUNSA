@@ -1,0 +1,38 @@
+@startuml decorator_cache_ia
+!pragma layout smetana
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+title BiblioUNSA - Decorator: cache del LLM (E5)
+
+abstract class ProveedorLLM <<Component>> {
+  {abstract} +generar(prompt: str): str
+}
+class ConCacheLLM <<Decorator>> {
+  +cache: dict[str, str]
+  +aciertos: int
+  -interno: ProveedorLLM
+  +generar(prompt: str): str
+}
+class AdaptadorMotorSimulado <<ConcreteComponent, Adapter>> {
+  +generar(prompt: str): str
+}
+class RecomendadorLibros <<Client>> {
+  -proveedor: ProveedorLLM
+  -cadena: Guardrail
+  +recomendar(isbn_origen: str): list[Libro]
+}
+abstract class Guardrail <<Handler>> {
+  +procesar(contexto): ContextoGuardrails
+}
+
+ProveedorLLM <|-- ConCacheLLM
+ProveedorLLM <|-- AdaptadorMotorSimulado
+ConCacheLLM o--> "1" ProveedorLLM : interno
+RecomendadorLibros --> ProveedorLLM : generar(prompt)
+RecomendadorLibros --> Guardrail : procesar(respuesta)
+
+note bottom of RecomendadorLibros
+  La salida pasa SIEMPRE por los guardrails:
+  provenga del proveedor o de la cache.
+end note
+@enduml

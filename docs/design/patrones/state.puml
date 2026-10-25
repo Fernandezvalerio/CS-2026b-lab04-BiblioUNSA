@@ -1,0 +1,62 @@
+@startuml state
+!pragma layout smetana
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+title BiblioUNSA - State: ciclo de vida del prestamo (E3)
+
+class Prestamo <<Context>> {
+  +estado: EstadoPrestamo
+  -_estado_objeto: EstadoPrestamoBase
+  +entregar(): void
+  +marcar_vencido(hoy): void
+  +registrar_devolucion(fecha): void
+  +aplicar_multa(monto): void
+  +marcar_para_reverificacion(): void
+  -_cambiar_a(nombre): void
+}
+
+abstract class EstadoPrestamoBase <<State>> {
+  +nombre: str
+  +entregar(prestamo): void
+  +marcar_vencido(prestamo, hoy): void
+  +registrar_devolucion(prestamo, fecha): void
+  +aplicar_multa(prestamo, monto): void
+  +marcar_para_reverificacion(prestamo): void
+}
+
+class Reservado <<ConcreteState>> {
+  +entregar(prestamo): void
+  +marcar_para_reverificacion(prestamo): void
+}
+class Prestado <<ConcreteState>> {
+  +marcar_vencido(prestamo, hoy): void
+  +registrar_devolucion(prestamo, fecha): void
+}
+class Vencido <<ConcreteState>> {
+  +registrar_devolucion(prestamo, fecha): void
+  +aplicar_multa(prestamo, monto): void
+}
+class Devuelto <<ConcreteState>>
+class ConMulta <<ConcreteState>>
+enum EstadoPrestamo {
+  RESERVADO
+  PRESTADO
+  VENCIDO
+  DEVUELTO
+  CON_MULTA
+}
+
+Prestamo *-- "1" EstadoPrestamoBase : _estado_objeto
+Prestamo --> EstadoPrestamo : estado persistible
+EstadoPrestamoBase <|-- Reservado
+EstadoPrestamoBase <|-- Prestado
+EstadoPrestamoBase <|-- Vencido
+EstadoPrestamoBase <|-- Devuelto
+EstadoPrestamoBase <|-- ConMulta
+
+note bottom of Prestamo
+  crear_estado(nombre) reconstruye el State.
+  _cambiar_a() sincroniza el Enum y el objeto.
+  La clase base rechaza transiciones no validas.
+end note
+@enduml

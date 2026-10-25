@@ -1,0 +1,41 @@
+@startuml factory
+!pragma layout smetana
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+title BiblioUNSA - Factory por registro (E2)
+
+class ServicioReservas <<Client>> {
+  -proveedor: str
+  +reservar_libro(estudiante_id, ejemplar_id): Prestamo
+}
+class FabricaValidadores <<SimpleFactory>> {
+  -_creadores: dict[str, Callable]
+  +registrar(nombre, creador): void
+  +crear(nombre): ValidadorMatricula
+}
+interface ValidadorMatricula <<Product>> {
+  +validar(id): ResultadoMatricula
+}
+class AdaptadorMatriculaJSON <<ConcreteProduct>>
+class AdaptadorMatriculaCodigos <<ConcreteProduct>>
+
+ServicioReservas --> FabricaValidadores : fabrica.crear(proveedor)
+FabricaValidadores ..> ValidadorMatricula : devuelve
+ValidadorMatricula <|.. AdaptadorMatriculaJSON
+ValidadorMatricula <|.. AdaptadorMatriculaCodigos
+
+note right of FabricaValidadores
+  Registro real en el constructor
+  de ServicioReservas:
+  "JSON" -> AdaptadorMatriculaJSON
+  "CODIGOS" -> AdaptadorMatriculaCodigos
+  Se puede inyectar otra fabrica
+  sin editar el caso de uso.
+end note
+
+note bottom of FabricaValidadores
+  Simple Factory por registro.
+  No se presenta como una
+  Abstract Factory de GoF.
+end note
+@enduml

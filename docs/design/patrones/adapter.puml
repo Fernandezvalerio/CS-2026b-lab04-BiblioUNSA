@@ -1,0 +1,43 @@
+@startuml adapter
+!pragma layout smetana
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+title BiblioUNSA - Adapter: contratos academicos heterogeneos (E2)
+
+interface ValidadorMatricula <<Target>> {
+  +validar(estudiante_id: UUID): ResultadoMatricula
+}
+
+class AdaptadorMatriculaJSON <<Adapter>> {
+  -cliente: SistemaAcademicoJSON
+  +validar(estudiante_id: UUID): ResultadoMatricula
+}
+class AdaptadorMatriculaCodigos <<Adapter>> {
+  -cliente: SistemaAcademicoCodigos
+  +validar(estudiante_id: UUID): ResultadoMatricula
+}
+class SistemaAcademicoJSON <<Adaptee>> {
+  +consultar_matricula(id, timeout_segundos): dict
+}
+class SistemaAcademicoCodigos <<Adaptee>> {
+  +obtener_estado_alumno(codigo, tiempo_maximo_ms): tuple
+}
+class ResultadoMatricula <<DTO>> {
+  +vigente: bool
+  +fecha_consulta: datetime
+  +desde_cache: bool
+}
+
+ValidadorMatricula <|.. AdaptadorMatriculaJSON
+ValidadorMatricula <|.. AdaptadorMatriculaCodigos
+AdaptadorMatriculaJSON --> SistemaAcademicoJSON : cliente
+AdaptadorMatriculaCodigos --> SistemaAcademicoCodigos : cliente
+AdaptadorMatriculaJSON ..> ResultadoMatricula : transforma dict
+AdaptadorMatriculaCodigos ..> ResultadoMatricula : transforma tuple
+
+note bottom of ResultadoMatricula
+  Ambos adaptadores devuelven
+  el mismo objeto del dominio.
+  Las APIs son dobles locales.
+end note
+@enduml

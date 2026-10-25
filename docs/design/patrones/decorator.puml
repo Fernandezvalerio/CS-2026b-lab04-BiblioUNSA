@@ -1,0 +1,33 @@
+@startuml decorator
+!pragma layout smetana
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+title BiblioUNSA - Decorator: reintentos de validacion (E4)
+
+abstract class ValidadorMatricula <<Component>> {
+  {abstract} +validar(estudiante_id: UUID): ResultadoMatricula
+}
+class ConReintentos <<Decorator>> {
+  -interno: ValidadorMatricula
+  +intentos: int = 3
+  +validar(estudiante_id: UUID): ResultadoMatricula
+}
+class AdaptadorMatriculaJSON <<ConcreteComponent>>
+class AdaptadorMatriculaCodigos <<ConcreteComponent>>
+class ServicioReservas <<Client>> {
+  +reservar_libro(estudiante_id, ejemplar_id): Prestamo
+}
+
+ValidadorMatricula <|-- ConReintentos
+ValidadorMatricula <|-- AdaptadorMatriculaJSON
+ValidadorMatricula <|-- AdaptadorMatriculaCodigos
+ConReintentos o--> "1" ValidadorMatricula : interno
+ServicioReservas ..> ConReintentos : crea y ejecuta
+
+note right of ConReintentos
+  Solo reintenta TimeoutError.
+  Cada intento usa timeout 1 s.
+  Si se agotan 3 intentos,
+  el servicio evalua cache <= 24 h.
+end note
+@enduml
