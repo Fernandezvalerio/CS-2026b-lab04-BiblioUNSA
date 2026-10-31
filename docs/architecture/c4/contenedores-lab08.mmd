@@ -1,0 +1,17 @@
+flowchart LR
+  Estudiante["Estudiante / bibliotecario"]
+  Web["Interfaz web"]
+  API["Django monolito modular\n[QA-08-02, QA-08-03]"]
+  DB[("PostgreSQL\níndice catálogo + outbox [QA-08-01]")]
+  Redis["Redis, caché no durable"]
+  Worker["Celery\nreverificación [QA-08-06]"]
+  Academico["API académica externa"]
+  OIDC["IdP OIDC"]
+  Estudiante --> Web --> API
+  API --> DB
+  API --> Redis
+  API --> Academico
+  API --> OIDC
+  Worker --> DB
+  Worker --> Redis
+  Worker --> API
