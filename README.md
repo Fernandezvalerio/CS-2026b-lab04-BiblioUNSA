@@ -215,37 +215,25 @@ python -m radon cc -s -a src/reservas/antes/servicio.py
 python -m radon cc -s -a src/reservas/servicio.py
 ```
 
-**Último resultado comprobado: 69 pruebas aprobadas.**
-Los sistemas académicos y el LLM de las pruebas son simulados; no se
-requieren claves de API ni servicios externos.
+## Diseño de la arquitectura (Lab 08)
 
-### Archivos de evidencia
+**Caso de crecimiento:** todas las facultades y biblioteca virtual, con indisponibilidad de la API académica durante matrícula. Se mantiene el monolito modular (ADR-001), el VPS y la integración solo mediante API.
 
-| Entregable del Lab 07 | Archivo |
-|---|---|
-| E1 · Olores y decisiones iniciales | [olores.md](docs/design/patrones/olores.md) |
-| E2 · Strategy, Adapter y Factory | [e2-strategy-adapter-factory.md](docs/design/patrones/e2-strategy-adapter-factory.md) |
-| E3 · State y transiciones | [e3-state.md](docs/design/patrones/e3-state.md) |
-| E4 · Observer y Decorator | [e4-observer-decorator.md](docs/design/patrones/e4-observer-decorator.md) |
-| E5 · IA aislada con guardrails | [e5-ia.md](docs/design/patrones/e5-ia.md) |
-| E6 · Radon, SLOC y trade-off | [metricas.md](docs/design/patrones/metricas.md) · [radon-e6.txt](docs/design/patrones/radon-e6.txt) |
-| E7 · 9 diagramas PlantUML e imágenes | [diagramas.md](docs/design/patrones/diagramas.md) |
-| E7 · Diagrama de clases actualizado | [clases.puml](docs/design/clases.puml) · [SVG](docs/design/img/clases-reservas-lab07.svg) |
-| E7 · Bitácora de 8 interacciones IA | [bitacora-ia.md](docs/design/patrones/bitacora-ia.md) |
-| E7 · Revisión de ingeniería inversa | [revision-pyreverse.md](docs/design/patrones/revision-pyreverse.md) |
-| E8 · Decisión final de diseño | [ADR-005](docs/architecture/adr/005-patrones-de-diseno.md) |
-| E8 · Revisión cruzada y entrega | [revision-cruzada-pr.md](docs/design/patrones/revision-cruzada-pr.md) |
+![Árbol de utilidad](docs/architecture/utilidad/arbol.png)
 
-### Revisión y entrega final
+El [árbol de utilidad](docs/architecture/utilidad/escenarios.md) cubre disponibilidad, rendimiento, seguridad y modificabilidad con ocho escenarios medibles.
 
-La guía solicita **un Pull Request por integrante**, revisado por otro
-integrante, y la etiqueta **`v0.7-patrones`** sobre la versión final
-integrada. En [revisión cruzada](docs/design/patrones/revision-cruzada-pr.md)
-se explica cómo registrar esas tres preguntas: qué olor elimina el patrón,
-qué prueba lo demuestra y si es la solución más simple.
+| Iteración | Escenario | Táctica escogida | Evidencia (simulación) | ¿Cumple? |
+|---|---|---|---|---|
+| [ADD 1](docs/architecture/add/iteracion-1.md) | QA-08-01 | Caché académica reciente y outbox durable | 274 bloqueos con caché a 0; 53 sin caché siguen bloqueados | Sí, para validaciones recientes |
+| [ADD 2](docs/architecture/add/iteracion-2.md) | QA-08-02 | Optimizar consultas e índices PostgreSQL | p95 76155,4 a 253,5 ms a 24 req/s (modelo) | Sí, en simulación |
+| [ADD 3](docs/architecture/add/iteracion-3.md) | QA-08-03/07 | OIDC verificado + adaptador académico aislado | 30/30 intentos externos rechazados (casos sintéticos) | Sí, en prototipo |
 
-El paquete descargable es una **copia del proyecto sin historial `.git`**.
-Por eso las revisiones, los merges, la etiqueta y el enlace del repositorio
-deben completarse y verificarse en el repositorio real del equipo antes
-de declararlos realizados.
+Decisiones y vistas:
+
+- [ADR-006: continuidad de matrícula](docs/architecture/adr/006-resiliencia-matricula.md).
+- [ADR-007: índices del catálogo](docs/architecture/adr/007-indices-catalogo.md).
+- [ADR-008: seguridad e aislamiento](docs/architecture/adr/008-identidad-y-aislamiento.md).
+- [C4 actualizado](docs/architecture/c4/workspace.dsl) y [vista resumida de contenedores](docs/architecture/c4/contenedores-lab08.mmd).
+- [ATAM-lite y matriz de riesgos](docs/architecture/atam-lite.md), [bitácora de IA](docs/architecture/bitacora-ia-lab08.md) y [fitness functions](docs/architecture/fitness-verificacion.md).
 
