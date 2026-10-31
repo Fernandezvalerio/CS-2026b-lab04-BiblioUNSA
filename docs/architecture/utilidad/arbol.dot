@@ -1,0 +1,27 @@
+digraph UtilidadBiblioUNSA {
+    graph [rankdir=LR, bgcolor="white", fontname="DejaVu Sans", pad=0.2, nodesep=0.28, ranksep=0.65];
+    node [fontname="DejaVu Sans", shape=box, style="rounded,filled", color="#365b7a", fillcolor="#edf5fb", fontsize=10];
+    edge [color="#6f8494", arrowsize=0.6];
+    utilidad [label="Utilidad de BiblioUNSA\nTodas las facultades y biblioteca virtual", shape=oval, fillcolor="#153d5b", fontcolor="white"];
+    rendimiento [label="Rendimiento", fillcolor="#dceefc"];
+    disponibilidad [label="Disponibilidad e interoperabilidad", fillcolor="#dbf6e6"];
+    seguridad [label="Seguridad", fillcolor="#ffecd5"];
+    modificabilidad [label="Modificabilidad", fillcolor="#eee6ff"];
+    utilidad -> {rendimiento disponibilidad seguridad modificabilidad};
+    rendimiento -> catalogo;
+    rendimiento -> acceso_virtual;
+    catalogo [label="QA-08-02 (H,M)\n24 consultas/s (8x); p95 <= 1500 ms"];
+    acceso_virtual [label="QA-08-05 (M,M)\n12 consultas/s virtuales; p95 <= 1200 ms"];
+    disponibilidad -> caida_api;
+    disponibilidad -> reverificacion;
+    caida_api [label="QA-08-01 (H,H)\nAPI académica falla 35 %;\n0 reservas bloqueadas si caché <= 24 h"];
+    reverificacion [label="QA-08-06 (H,M)\n100 % pendientes programados\npara <= 30 min"];
+    seguridad -> identidad;
+    seguridad -> aislamiento;
+    identidad [label="QA-08-03 (H,M)\n30/30 identidades externas rechazadas;\n0 sesiones no autorizadas"];
+    aislamiento [label="QA-08-07 (H,M)\n0 accesos directos a BD académica;\núnico adaptador autorizado"];
+    modificabilidad -> contrato;
+    modificabilidad -> facultades;
+    contrato [label="QA-08-04 (H,M)\nCambio API en <= 2 días-persona;\n0 módulos de negocio modificados"];
+    facultades [label="QA-08-08 (M,L)\nNueva facultad en <= 1 día-persona;\n0 cambios en reservas"];
+}
