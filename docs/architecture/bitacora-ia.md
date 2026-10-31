@@ -1,5 +1,7 @@
 # Bitácora de uso de IA — BiblioUNSA (Laboratorio 04)
 
+**Continuación del Laboratorio 08 (E7):** [seis consultas, contrastes y falsos positivos](bitacora-ia-lab08.md). Se conserva íntegra la bitácora de los laboratorios anteriores.
+
 | # | Fecha | Herramienta | Prompt (resumen) | Qué propuso la IA | Qué verificamos o corregimos | Decisión |
 |---|-------|-------------|------------------|-------------------|------------------------------|----------|
 | 1 | 02/10 | Claude | Prompt 1 adaptado: 3 alternativas de estilo para BiblioUNSA (plazo de 1 mes, 3 developers, un VPS) | Monolito en capas, monolito modular y microservicios; recomendó microservicios "por separación de la integración" | Excede R-01 (1 mes), R-02 (3 developers) y R-03 (presupuesto). La separación de la integración académica se logra con un adaptador dentro del monolito | Rechazada (la recomendación) |

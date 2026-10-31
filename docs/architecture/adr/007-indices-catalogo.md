@@ -1,9 +1,9 @@
 # ADR-007: Optimizar consultas del catálogo sin abandonar el monolito modular
 
-- Estado: Propuesto para ratificación por el equipo
-- Fecha: 2026-10-31
-- Iteración ADD: 2 (E4)
-- Escenario: QA-08-02
+* Estado: Propuesto para ratificación por el equipo
+* Fecha: 2026-10-31
+* Iteración ADD: 2 (E4)
+* Escenario: QA-08-02
 
 ## Contexto
 
@@ -31,3 +31,4 @@ Escrituras ligeramente más lentas y ocupación adicional de disco; seguridad de
 ## Relación
 
 ADR-001, docs/architecture/add/iteracion-2.md.
+

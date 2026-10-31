@@ -2,8 +2,6 @@
 
 ## Alcance
 
-Se revisan E1 y E2. Las observaciones de esta tabla son **autoevaluación técnica preliminar**, no se hacen pasar por la evaluación real de un grupo externo. Para completar el cruce, crear el issue en el repositorio asignado por el docente, responder el issue recibido y registrar ambos enlaces.
-
 |Tipo|Hallazgo preliminar|Evidencia o hipótesis|Evaluación|
 |-|-|-|-|
 |Sensibilidad|El número de estudiantes con caché reciente gobierna la tasa de bloqueos|Simulación: 53/1000 bloqueos con 80 % de caché y 35 % de fallas|Confirmado por simulación|
@@ -23,5 +21,26 @@ Escala de probabilidad (P) e impacto (I): 1=bajo, 2=medio, 3=alto. Crítico si P
 |R3|Estado de matrícula obsoleto|2|3|6|Caducidad <=24 h y reverificación <=30 min|
 |R4|Acceso indebido con dominio de correo falsificado|2|3|6|Validación OIDC en servidor; E4 seguridad|
 
+## 
 
+## E7 - Evaluación consolidada de riesgos internos
+
+|ID|Hallazgo|Evidencia disponible|Mitigación / aceptación|Estado|
+|-|-|-|-|-|
+|R1|Sin caché reciente, la matrícula se bloquea|E2: 53/1000 rechazos aun con respaldo|Aceptado por seguridad; mensaje claro y reintento al restaurar API|Riesgo residual crítico|
+|R2|Persistencia en un VPS puede saturar PostgreSQL|E4: catálogo sin índice satura el modelo; falta medir outbox|Optimizar consultas e índice; medir BD y outbox antes de despliegue|Mitigación propuesta|
+|R3|La caché conserva un estado académico obsoleto|ADR-003 y E2: 274 respuestas de respaldo|Caducidad <=24 h y 274 reverificaciones a 15 min|Diseño pendiente de prueba en BD real|
+|R4|Claims OIDC forjados autorizan acceso|E4: 30/30 intentos sintéticos rechazados|Verificar firma, issuer, audience y email en servidor, FF-05|Pendiente integrar IdP|
+
+### 
+
+### Matriz de probabilidad e impacto
+
+|Probabilidad / Impacto|1 Bajo|2 Medio|3 Alto|
+|-|-|-|-|
+|3 Alta|—|—|R1 (9)|
+|2 Media|—|—|R2, R3, R4 (6)|
+|1 Baja|—|—|—|
+
+Punto de sensibilidad principal: porcentaje de alumnos con validación reciente. Trade-off principal: continuidad con caché versus posible obsolescencia de matrícula. No riesgo justificado: Strategy/Adapter permite sustituir el contrato académico sin editar Reservas, según las pruebas del Lab 07.
 

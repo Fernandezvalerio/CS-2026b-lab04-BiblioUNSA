@@ -10,18 +10,18 @@ workspace "BiblioUNSA" "Modelo C4 de la plataforma de préstamo y reserva de lib
 
             web = container "Interfaz web responsive" "Interfaz para estudiantes (celular) y bibliotecarios (PC con lector QR)." "HTML + JavaScript" "Web Browser"
 
-            api = container "Monolito modular BiblioUNSA" "Un solo despliegue con seis módulos de dominio; expone la API REST que consume la interfaz web." "Python / Django" {
-                autenticacion = component "Módulo Autenticación y acceso" "Inicia sesión con el correo institucional y rechaza y registra los intentos con correos ajenos a la UNSA." "Django app"
-                catalogo = component "Módulo Catálogo" "Busca libros y gestiona la disponibilidad de los ejemplares." "Django app"
+            api = container "Monolito modular BiblioUNSA" "Un solo despliegue; continuidad académica [QA-08-01], catálogo [QA-08-02] e identidad institucional [QA-08-03]." "Python / Django" {
+                autenticacion = component "Módulo Autenticación y acceso" "Verifica tokens OIDC y dominio institucional con denegación segura [QA-08-03]." "Django app"
+                catalogo = component "Módulo Catálogo" "Búsquedas optimizadas con índices SQL y presupuesto de p95 [QA-08-02]." "Django app"
                 reservas = component "Módulo Reservas" "Reserva libros validando la matrícula vigente y reverifica las validaciones hechas con caché." "Django app"
                 prestamos = component "Módulo Préstamos y devoluciones" "Registra la entrega y la devolución con carné QR y controla el ciclo de vida del préstamo." "Django app"
                 multas = component "Módulo Multas" "Calcula y controla las multas por devolución tardía." "Django app"
-                integracion = component "Módulo Integración académica" "Único punto de contacto con el sistema académico: adaptador con timeout de 3 s y caché de ≤ 24 h." "Django app"
+                integracion = component "Módulo Integración académica" "Único contacto con API académica; respaldo <= 24 h, timeout 3 s y outbox [QA-08-01, QA-08-06, QA-08-07]." "Django app"
             }
 
-            db = container "Base de datos" "Usuarios, catálogo, préstamos y multas (un esquema por módulo)." "PostgreSQL" "Database"
-            cola = container "Caché y cola de tareas" "Guarda la última validación de matrícula y las tareas de reverificación." "Redis" "Queue"
-            worker = container "Worker de reverificación" "Reverifica en ≤ 30 min las matrículas validadas con caché." "Celery"
+            db = container "Base de datos" "PostgreSQL con módulos, índice de catálogo [QA-08-02], validaciones recientes y outbox durable [QA-08-01]." "PostgreSQL" "Database"
+            cola = container "Caché y señalización rápida" "Redis acelera consultas y despierta al worker, pero PostgreSQL mantiene el estado durable [QA-08-01]." "Redis" "Queue"
+            worker = container "Worker de reverificación" "Procesa pendientes persistidos y reverifica en <= 30 min [QA-08-06]." "Celery"
         }
 
         sa = softwareSystem "Sistema académico UNSA" "Informa si la matrícula del estudiante está vigente." "Externo"
@@ -43,6 +43,7 @@ workspace "BiblioUNSA" "Modelo C4 de la plataforma de préstamo y reserva de lib
         biblio.api -> idp "Verifica la identidad institucional" "OpenID Connect"
         biblio.worker -> biblio.cola "Consume tareas" "Redis protocol"
         biblio.worker -> biblio.api "Ejecuta la reverificación" "Tarea Celery"
+        biblio.worker -> biblio.db "Consulta y marca el outbox duradero [QA-08-01]" "SQL/TCP"
 
         # --- Nivel 3: componentes de la API ---
         biblio.web -> biblio.api.autenticacion "Inicia sesión" "HTTPS/JSON"
@@ -62,6 +63,7 @@ workspace "BiblioUNSA" "Modelo C4 de la plataforma de préstamo y reserva de lib
         biblio.api.autenticacion -> idp "Verifica identidad y dominio" "OpenID Connect"
         biblio.api.integracion -> sa "Consulta la matrícula (timeout 3 s)" "HTTPS/JSON"
         biblio.api.integracion -> biblio.cola "Lee y guarda la caché de matrícula (≤ 24 h)" "Redis protocol"
+        biblio.api.integracion -> biblio.db "Consulta instantáneas y pendientes duraderos [QA-08-01]" "SQL/TCP"
         biblio.api.reservas -> biblio.cola "Encola la reverificación" "Redis protocol"
         biblio.api.autenticacion -> biblio.db "Lee y escribe" "SQL/TCP"
         biblio.api.catalogo -> biblio.db "Lee y escribe" "SQL/TCP"
