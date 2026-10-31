@@ -1,0 +1,20 @@
+name: fitness-functions
+on:
+  push:
+  pull_request:
+jobs:
+  arquitectura:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Instalar dependencias
+        run: python -m pip install -r requirements-lab08.txt
+      - name: FF-01 y FF-02 contratos de importación
+        env:
+          PYTHONPATH: src
+        run: lint-imports
+      - name: FF-03 a FF-05 y regresión del Lab 07
+        run: python -m pytest -q tests/

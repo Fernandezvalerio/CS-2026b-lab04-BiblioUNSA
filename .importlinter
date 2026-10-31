@@ -1,0 +1,23 @@
+[importlinter]
+root_package = reservas
+exclude_type_checking_imports = True
+
+[importlinter:contract:ff01]
+name = FF-01 El dominio no depende de adaptadores ni casos de uso (ADR-001)
+type = forbidden
+source_modules =
+    reservas.dominio
+    reservas.estados
+forbidden_modules =
+    reservas.externos
+    reservas.validadores
+    reservas.servicio
+
+[importlinter:contract:ff02]
+name = FF-02 Adaptadores y decoradores no dependen del servicio (ADR-005)
+type = forbidden
+source_modules =
+    reservas.validadores
+    reservas.decoradores
+forbidden_modules =
+    reservas.servicio
