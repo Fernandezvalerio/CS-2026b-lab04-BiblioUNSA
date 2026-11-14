@@ -1,0 +1,11 @@
+Criterios de aceptación
+1. Identificación del ejemplar: El sistema debe permitir al bibliotecario buscar o escanear el ejemplar que será devuelto.
+2. Verificación del préstamo: El sistema debe comprobar que el ejemplar tenga un préstamo activo antes de registrar su devolución.
+3. Registro de devolución: El bibliotecario debe poder confirmar la devolución del ejemplar, registrando la fecha y hora correspondiente.
+4. Actualización del préstamo: Una vez registrada la devolución, el sistema debe cambiar el estado del préstamo a "Devuelto".
+5. Actualización de disponibilidad: El sistema debe cambiar el estado del ejemplar a "Disponible", siempre que no tenga otra reserva o restricción pendiente.
+6. Confirmación de devolución: El sistema debe mostrar un mensaje indicando que la devolución se registró correctamente.
+7. Devolución fuera de plazo: Si el ejemplar se devuelve después de la fecha límite, el sistema debe identificar el retraso y mostrar una advertencia al bibliotecario.
+8. Historial de préstamos: El sistema debe conservar el registro de la devolución en el historial de préstamos del estudiante.
+9. Prevención de duplicados: El sistema debe impedir que se registre más de una devolución para un mismo préstamo.
+10. Validación de errores: Si el ejemplar no existe o no tiene un préstamo activo, el sistema debe mostrar un mensaje de error y evitar el registro de la devolución.

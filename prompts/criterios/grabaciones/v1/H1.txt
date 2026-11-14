@@ -1,0 +1,10 @@
+Criterios de aceptación
+1. Disponibilidad: El sistema debe permitir reservar únicamente ejemplares que se encuentren disponibles.
+2. Autenticación: El estudiante debe haber iniciado sesión para realizar una reserva.
+3. Confirmación: Al realizar una reserva correctamente, el sistema debe mostrar un mensaje de confirmación.
+4. Actualización de estado: Una vez reservado el ejemplar, su estado debe cambiar a "Reservado" para evitar que otro estudiante lo reserve.
+5. Plazo de recogida: El sistema debe informar al estudiante la fecha límite para recoger el ejemplar.
+6. Consulta de reservas: El estudiante debe poder visualizar sus reservas activas y el estado de cada una.
+7. Cancelación: El estudiante debe poder cancelar una reserva mientras no haya recogido el ejemplar.
+8. Vencimiento: Si el estudiante no recoge el ejemplar dentro del plazo establecido, la reserva debe cancelarse automáticamente y el ejemplar debe volver a estar disponible.
+9. Validación: El sistema debe impedir que un estudiante reserve dos veces el mismo ejemplar de manera simultánea.

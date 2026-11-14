@@ -1,0 +1,10 @@
+Criterios de aceptación
+1. Búsqueda por título: El sistema debe permitir buscar libros ingresando su título completo o una parte de él.
+2. Búsqueda por autor: El estudiante debe poder encontrar libros ingresando el nombre completo o parcial del autor.
+3. Búsqueda por biblioteca: El sistema debe permitir buscar libros según la biblioteca en la que se encuentran.
+4. Resultados de búsqueda: El sistema debe mostrar los libros que coincidan con los criterios ingresados, indicando su título, autor, biblioteca y disponibilidad.
+5. Búsqueda sin resultados: Si no se encuentran coincidencias, el sistema debe mostrar un mensaje indicando que no se encontraron libros.
+6. Combinación de filtros: El estudiante debe poder combinar los criterios de búsqueda para obtener resultados más específicos.
+7. Búsqueda sin coincidencia exacta: El sistema debe mostrar resultados relacionados aunque el estudiante ingrese solo una parte del título o nombre del autor.
+8. Consulta de detalles: El estudiante debe poder seleccionar un libro de los resultados para consultar su información completa.
+9. Validación de búsqueda: Si el estudiante intenta realizar una búsqueda sin ingresar ningún criterio, el sistema debe solicitar que ingrese al menos uno.

@@ -1,0 +1,13 @@
+Criterios de aceptación
+1. Interfaz moderna: El sistema debe contar con un diseño visual atractivo, ordenado y consistente en todas sus secciones.
+2. Navegación sencilla: El usuario debe poder acceder fácilmente a las principales funciones del sistema mediante menús claros e intuitivos.
+3. Tiempo de respuesta: El sistema debe cargar las páginas principales en un máximo de 3 segundos bajo condiciones normales de conexión.
+4. Diseño adaptable: La interfaz debe visualizarse correctamente en computadoras, tabletas y dispositivos móviles.
+5. Facilidad de uso: El usuario debe poder realizar acciones frecuentes, como buscar libros o consultar préstamos, sin necesidad de conocimientos técnicos.
+6. Consistencia visual: El sistema debe mantener los mismos estilos, colores, botones y elementos de navegación en todas sus páginas.
+7. Mensajes claros: El sistema debe mostrar mensajes fáciles de entender cuando una operación se complete correctamente o se produzca algún error.
+8. Accesibilidad: La interfaz debe contar con textos legibles, buen contraste de colores y permitir la navegación mediante teclado.
+9. Retroalimentación visual: El sistema debe mostrar indicadores de carga cuando una operación tarde en completarse.
+10. Usabilidad: Al menos el 80 % de los usuarios participantes en las pruebas debe poder completar las tareas principales sin ayuda.
+
+Nota: Esta historia es bastante general y se relaciona principalmente con requisitos no funcionales de usabilidad, rendimiento y diseño. Para un Product Backlog, sería recomendable dividirla en historias más específicas que puedan desarrollarse y evaluarse por separado.

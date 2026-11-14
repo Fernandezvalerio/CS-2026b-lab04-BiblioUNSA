@@ -1,0 +1,30 @@
+description: BiblioUNSA - criterios de aceptación
+prompts:
+- file://v1.txt
+providers:
+- id: file://../proveedor_grabado.py
+  label: grabaciones-locales
+defaultTest:
+  assert:
+  - type: is-json
+    value: file://esquema.json
+    metric: A1_contrato_json
+  - type: javascript
+    metric: A2_cubre_alternativas
+    value: 'let d; try { d=JSON.parse(output); } catch (_) { return false; }
+
+      if (d.invest_ok === false) return true;
+
+      const tipos=(d.escenarios||[]).map(x=>x.tipo);
+
+      return tipos.includes(''exito'') && (tipos.includes(''error'') || tipos.includes(''borde''));'
+  - type: javascript
+    metric: A3_sin_implementacion
+    value: 'const prohibidas=[''postgresql'',''django'',''endpoint'',''api rest'',''base de datos'',''tabla de'',''framework''];
+
+      let d; try { d=JSON.parse(output); } catch (_) { return false; }
+
+      const texto=JSON.stringify(d.escenarios||[]).toLowerCase();
+
+      return !prohibidas.some(p=>texto.includes(p));'
+tests: file://casos.yaml

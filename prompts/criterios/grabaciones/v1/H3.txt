@@ -1,0 +1,11 @@
+Criterios de aceptación
+1. Inicio de sesión: El sistema debe permitir que el estudiante inicie sesión utilizando su correo institucional UNSA y sus credenciales correspondientes.
+2. Validación del correo: El sistema debe aceptar únicamente correos institucionales autorizados de la UNSA.
+3. Verificación de credenciales: El sistema debe comprobar que las credenciales ingresadas sean correctas antes de permitir el acceso.
+4. Credenciales incorrectas: Si el correo o la contraseña son incorrectos, el sistema debe mostrar un mensaje de error sin revelar cuál de los datos es incorrecto.
+5. Campos obligatorios: El sistema debe solicitar que se completen los campos de correo y contraseña antes de intentar iniciar sesión.
+6. Acceso a servicios: Una vez autenticado, el estudiante debe poder acceder a los servicios de biblioteca disponibles para su cuenta.
+7. Sesión activa: El sistema debe mantener la sesión del estudiante activa hasta que cierre sesión o expire el tiempo establecido.
+8. Cierre de sesión: El estudiante debe poder cerrar sesión de manera segura cuando lo desee.
+9. Acceso restringido: El sistema debe impedir que los usuarios no autenticados accedan a funciones que requieran iniciar sesión.
+10. Seguridad: El sistema debe proteger las credenciales del estudiante durante el proceso de autenticación.

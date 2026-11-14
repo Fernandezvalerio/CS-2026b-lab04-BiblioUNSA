@@ -1,0 +1,11 @@
+Criterios de aceptación
+1. Escaneo del código QR: El sistema debe permitir al bibliotecario escanear el código QR del carné del estudiante para identificarlo.
+2. Validación del estudiante: El sistema debe verificar que el estudiante esté registrado y tenga una cuenta activa.
+3. Identificación del libro: El bibliotecario debe poder seleccionar o escanear el ejemplar que será entregado al estudiante.
+4. Verificación de disponibilidad: El sistema debe comprobar que el ejemplar esté disponible o reservado para el estudiante antes de registrar el préstamo.
+5. Validación del préstamo: El sistema debe verificar que el estudiante cumpla con las condiciones necesarias para solicitar un préstamo.
+6. Registro de entrega: Al confirmar la operación, el sistema debe registrar el estudiante, el ejemplar prestado, la fecha de entrega y la fecha límite de devolución.
+7. Actualización de estado: Una vez registrado el préstamo, el ejemplar debe cambiar su estado a "Prestado".
+8. Confirmación del préstamo: El sistema debe mostrar un mensaje indicando que la entrega del libro se registró correctamente.
+9. Código QR inválido: Si el código QR no es válido o no corresponde a un estudiante registrado, el sistema debe mostrar un mensaje de error.
+10. Prevención de duplicados: El sistema debe impedir que un mismo ejemplar tenga más de un préstamo activo al mismo tiempo.

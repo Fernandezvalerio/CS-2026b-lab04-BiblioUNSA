@@ -1,0 +1,11 @@
+Criterios de aceptación
+1. Inicio de sesión: El sistema debe permitir acceder a esta información únicamente a estudiantes autenticados.
+2. Consulta de reservas: El estudiante debe poder visualizar sus reservas activas, indicando el título del libro, la biblioteca, el estado de la reserva y la fecha límite de recogida.
+3. Consulta de préstamos: El sistema debe mostrar los préstamos activos del estudiante, incluyendo el título del libro, la fecha de préstamo y la fecha límite de devolución.
+4. Consulta de multas: El estudiante debe poder visualizar sus multas pendientes, indicando el motivo, el monto y el estado de cada una.
+5. Estado de reservas: El sistema debe indicar si una reserva se encuentra pendiente de recogida, vencida o cancelada.
+6. Estado de préstamos: El sistema debe identificar los préstamos vigentes y aquellos cuya fecha de devolución haya vencido.
+7. Resumen de pendientes: El sistema debe mostrar un resumen con la cantidad de reservas activas, préstamos pendientes y multas sin pagar.
+8. Información actualizada: El sistema debe reflejar los cambios realizados en las reservas, préstamos y multas después de cada operación registrada.
+9. Sin registros pendientes: Si el estudiante no tiene reservas, préstamos o multas pendientes, el sistema debe mostrar un mensaje indicando que no existen registros en la categoría correspondiente.
+10. Privacidad de información: El sistema debe garantizar que cada estudiante pueda consultar únicamente la información asociada a su propia cuenta.

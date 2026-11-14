@@ -1,16 +1,16 @@
 # BiblioUNSA — Laboratorio 04: Fundamentos de arquitectura de software
 Construcción de Software · EPIS-UNSA · 2026-B · Grupo 04
- 
+
 ## Integrantes
 | Nombre | Rol en el laboratorio |
 |--------|-----------------------|
 | Valerio | Analista de drivers y responsable de la matriz de decisión |
 | Mijael | Diagramador y redactor de ADR |
 | Mauricio | Verificador de IA y responsable de documentación adicional |
- 
+
 ## Caso
 BiblioUNSA es una plataforma para el préstamo y la reserva de libros de las bibliotecas de la UNSA. Los estudiantes consultan el catálogo y reservan libros, y los bibliotecarios registran préstamos y devoluciones con el carné QR y controlan las multas. El sistema valida la matrícula vigente consultando al sistema académico solo mediante su API, sin acceder a su base de datos. El atributo de calidad crítico es la **seguridad e interoperabilidad**: únicamente debe entrar personal y estudiantes de la UNSA con su correo institucional.
- 
+
 ## Arquitectura elegida
 Monolito modular: un solo despliegue, con módulos separados y la integración académica aislada en un adaptador.
 
@@ -236,4 +236,10 @@ Decisiones y vistas:
 - [ADR-008: seguridad e aislamiento](docs/architecture/adr/008-identidad-y-aislamiento.md).
 - [C4 actualizado](docs/architecture/c4/workspace.dsl) y [vista resumida de contenedores](docs/architecture/c4/contenedores-lab08.mmd).
 - [ATAM-lite y matriz de riesgos](docs/architecture/atam-lite.md), [bitácora de IA](docs/architecture/bitacora-ia-lab08.md) y [fitness functions](docs/architecture/fitness-verificacion.md).
+
+## Prompt engineering (Lab 09)
+
+Trabajamos con historias del caso BiblioUNSA. La tarea A transforma historias en criterios de aceptación; la tarea B preparará consultas SQL de lectura a partir de preguntas del bibliotecario.
+
+**E2 — línea base:** la primera versión solo pide criterios en texto libre. Las ocho grabaciones de demostración no cumplen el contrato JSON (0 de 8 casos). Es un punto de partida deliberadamente sencillo.
 
