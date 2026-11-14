@@ -1,0 +1,10 @@
+{
+  "historia_id": "H6",
+  "invest_ok": false,
+  "preguntas": [
+    "¿Qué se considera una reserva pendiente: una reserva en espera de disponibilidad o una reserva cuyo material ya está listo para recoger?",
+    "¿Qué información debe mostrarse de cada reserva para que el estudiante identifique el material que debe recoger?",
+    "¿Qué debe visualizar el estudiante cuando no tiene reservas pendientes?"
+  ],
+  "escenarios": []
+}

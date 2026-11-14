@@ -1,0 +1,31 @@
+{
+  "historia_id": "H2",
+  "invest_ok": true,
+  "preguntas": [],
+  "escenarios": [
+    {
+      "titulo": "Búsqueda exitosa de libros por autor",
+      "tipo": "exito",
+      "dado": [
+        "Existen libros registrados en BiblioUNSA asociados al autor que deseo buscar"
+      ],
+      "cuando": "Ingreso el nombre del autor y realizo la búsqueda",
+      "entonces": [
+        "Veo una lista de libros asociados al autor buscado",
+        "Puedo identificar los libros encontrados para seleccionar bibliografía de mi curso"
+      ]
+    },
+    {
+      "titulo": "Búsqueda de autor sin resultados",
+      "tipo": "borde",
+      "dado": [
+        "No existen libros registrados en BiblioUNSA asociados al autor buscado"
+      ],
+      "cuando": "Ingreso el nombre del autor y realizo la búsqueda",
+      "entonces": [
+        "Veo un mensaje que indica que no se encontraron libros asociados al autor",
+        "No se muestran libros que no correspondan a la búsqueda"
+      ]
+    }
+  ]
+}

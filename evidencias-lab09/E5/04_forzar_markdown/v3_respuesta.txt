@@ -1,0 +1,49 @@
+{
+  "historia_id": "H5",
+  "invest_ok": true,
+  "preguntas": [],
+  "escenarios": [
+    {
+      "titulo": "Devolución exitosa de un ejemplar",
+      "tipo": "exito",
+      "dado": [
+        "El ejemplar figura como prestado.",
+        "El bibliotecario dispone de la información necesaria para identificar el préstamo."
+      ],
+      "cuando": "El bibliotecario registra la devolución del ejemplar.",
+      "entonces": [
+        "La devolución queda registrada.",
+        "El ejemplar deja de figurar como prestado.",
+        "La disponibilidad del ejemplar se actualiza.",
+        "El bibliotecario recibe una confirmación de la devolución."
+      ]
+    },
+    {
+      "titulo": "Intento de devolución de un ejemplar no prestado",
+      "tipo": "error",
+      "dado": [
+        "El ejemplar no figura como prestado."
+      ],
+      "cuando": "El bibliotecario intenta registrar su devolución.",
+      "entonces": [
+        "Se informa que el ejemplar no figura como prestado.",
+        "No se registra una nueva devolución.",
+        "La disponibilidad del ejemplar permanece sin cambios."
+      ]
+    },
+    {
+      "titulo": "Intento de registrar una devolución duplicada",
+      "tipo": "borde",
+      "dado": [
+        "La devolución del ejemplar ya fue registrada correctamente.",
+        "La disponibilidad del ejemplar ya fue actualizada."
+      ],
+      "cuando": "El bibliotecario intenta registrar nuevamente la devolución del mismo ejemplar.",
+      "entonces": [
+        "Se informa que el ejemplar ya no figura como prestado.",
+        "No se registra una segunda devolución.",
+        "La disponibilidad del ejemplar permanece sin cambios."
+      ]
+    }
+  ]
+}

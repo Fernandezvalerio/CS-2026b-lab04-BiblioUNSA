@@ -1,0 +1,10 @@
+{
+  "historia_id": "H1",
+  "invest_ok": false,
+  "preguntas": [
+    "¿Qué condiciones debe cumplir el estudiante para poder reservar un ejemplar, además de que esté disponible?",
+    "¿Qué información debe recibir el estudiante al confirmar la reserva para saber dónde y cuándo recoger el ejemplar?",
+    "¿Qué debe ocurrir si el ejemplar deja de estar disponible antes de que el estudiante confirme la reserva?"
+  ],
+  "escenarios": []
+}

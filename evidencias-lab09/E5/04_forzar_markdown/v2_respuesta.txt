@@ -1,0 +1,104 @@
+{
+  "historia_id": "H5",
+  "invest_ok": false,
+  "preguntas": [
+    "¿Qué datos debe proporcionar el bibliotecario para identificar el ejemplar y el préstamo correspondiente?",
+    "¿Qué debe suceder si el ejemplar tiene una reserva pendiente?",
+    "¿Se permite registrar la devolución de un préstamo vencido y cómo se gestionan las posibles sanciones?",
+    "¿Qué debe ocurrir si el ejemplar se devuelve dañado o incompleto?",
+    "¿Debe registrarse la fecha de devolución y mostrarse una confirmación al bibliotecario?"
+  ],
+  "escenarios": [
+    {
+      "titulo": "Registrar correctamente la devolución de un ejemplar",
+      "tipo": "exito",
+      "dado": [
+        "El bibliotecario está autorizado para registrar devoluciones.",
+        "El ejemplar pertenece al catálogo de BiblioUNSA.",
+        "El ejemplar tiene un préstamo activo.",
+        "El ejemplar no presenta restricciones para volver a estar disponible."
+      ],
+      "cuando": "El bibliotecario registra la devolución del ejemplar.",
+      "entonces": [
+        "La devolución queda registrada correctamente.",
+        "El préstamo correspondiente queda marcado como devuelto.",
+        "El ejemplar cambia su estado a disponible.",
+        "El sistema muestra una confirmación de la devolución."
+      ]
+    },
+    {
+      "titulo": "Rechazar la devolución de un ejemplar inexistente",
+      "tipo": "error",
+      "dado": [
+        "El bibliotecario está autorizado para registrar devoluciones.",
+        "El ejemplar indicado no existe en el catálogo de BiblioUNSA."
+      ],
+      "cuando": "El bibliotecario intenta registrar la devolución del ejemplar.",
+      "entonces": [
+        "El sistema informa que el ejemplar no existe.",
+        "La devolución no se registra.",
+        "No se modifica la disponibilidad de ningún ejemplar."
+      ]
+    },
+    {
+      "titulo": "Rechazar la devolución de un ejemplar sin préstamo activo",
+      "tipo": "error",
+      "dado": [
+        "El ejemplar existe en BiblioUNSA.",
+        "El ejemplar no tiene un préstamo activo."
+      ],
+      "cuando": "El bibliotecario intenta registrar su devolución.",
+      "entonces": [
+        "El sistema informa que el ejemplar no tiene un préstamo activo.",
+        "La devolución no se registra.",
+        "El estado del ejemplar permanece sin cambios."
+      ]
+    },
+    {
+      "titulo": "Evitar el registro duplicado de una devolución",
+      "tipo": "borde",
+      "dado": [
+        "El ejemplar existe en BiblioUNSA.",
+        "La devolución del préstamo correspondiente ya fue registrada."
+      ],
+      "cuando": "El bibliotecario intenta registrar nuevamente la misma devolución.",
+      "entonces": [
+        "El sistema informa que la devolución ya fue registrada.",
+        "No se genera una devolución duplicada.",
+        "El estado del ejemplar permanece sin cambios."
+      ]
+    },
+    {
+      "titulo": "Actualizar únicamente la disponibilidad del ejemplar devuelto",
+      "tipo": "borde",
+      "dado": [
+        "Existen varios ejemplares asociados al mismo libro.",
+        "Uno de los ejemplares tiene un préstamo activo.",
+        "Los demás ejemplares tienen sus propios estados de disponibilidad.",
+        "El ejemplar prestado no presenta restricciones para volver a estar disponible."
+      ],
+      "cuando": "El bibliotecario registra la devolución del ejemplar prestado.",
+      "entonces": [
+        "La devolución queda registrada correctamente.",
+        "El ejemplar devuelto cambia su estado a disponible.",
+        "Los estados de los demás ejemplares permanecen sin cambios."
+      ]
+    },
+    {
+      "titulo": "Mantener la consistencia del préstamo y la disponibilidad",
+      "tipo": "exito",
+      "dado": [
+        "El ejemplar tiene un préstamo activo.",
+        "El ejemplar no presenta restricciones para volver a estar disponible.",
+        "El bibliotecario ha identificado correctamente el ejemplar."
+      ],
+      "cuando": "El bibliotecario registra satisfactoriamente la devolución.",
+      "entonces": [
+        "El préstamo deja de figurar como activo.",
+        "El ejemplar deja de figurar como prestado.",
+        "El ejemplar figura como disponible para un nuevo préstamo.",
+        "La información del préstamo y la disponibilidad del ejemplar son coherentes."
+      ]
+    }
+  ]
+}

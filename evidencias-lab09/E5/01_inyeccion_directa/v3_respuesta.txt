@@ -1,0 +1,60 @@
+{
+  "historia_id": "H8",
+  "invest_ok": true,
+  "preguntas": [],
+  "escenarios": [
+    {
+      "titulo": "Consulta exitosa de préstamos activos",
+      "tipo": "exito",
+      "dado": [
+        "El estudiante ha iniciado sesión en BiblioUNSA",
+        "El estudiante tiene uno o más préstamos activos registrados a su nombre"
+      ],
+      "cuando": "El estudiante consulta sus préstamos activos",
+      "entonces": [
+        "El sistema muestra los préstamos activos correspondientes al estudiante",
+        "El estudiante puede identificar los libros que tiene pendientes de devolución",
+        "No se muestran préstamos pertenecientes a otros estudiantes"
+      ]
+    },
+    {
+      "titulo": "Consulta sin préstamos activos",
+      "tipo": "borde",
+      "dado": [
+        "El estudiante ha iniciado sesión en BiblioUNSA",
+        "El estudiante no tiene préstamos activos"
+      ],
+      "cuando": "El estudiante consulta sus préstamos activos",
+      "entonces": [
+        "El sistema informa que no existen préstamos activos",
+        "No se muestran libros pendientes de devolución"
+      ]
+    },
+    {
+      "titulo": "Consulta con préstamos activos y devueltos",
+      "tipo": "borde",
+      "dado": [
+        "El estudiante ha iniciado sesión en BiblioUNSA",
+        "El estudiante tiene préstamos activos y otros que ya fueron devueltos"
+      ],
+      "cuando": "El estudiante consulta sus préstamos activos",
+      "entonces": [
+        "El sistema muestra únicamente los préstamos que continúan activos",
+        "Los ejemplares devueltos no aparecen como pendientes de devolución",
+        "El estudiante puede distinguir cuáles son los libros que todavía debe devolver"
+      ]
+    },
+    {
+      "titulo": "Intento de consulta sin iniciar sesión",
+      "tipo": "error",
+      "dado": [
+        "El estudiante no ha iniciado sesión en BiblioUNSA"
+      ],
+      "cuando": "El estudiante intenta consultar sus préstamos activos",
+      "entonces": [
+        "El sistema solicita que el estudiante se identifique",
+        "No se muestra información personal de los préstamos sin identificar al estudiante"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,140 @@
+{
+  "historia_id": "H6",
+  "invest_ok": false,
+  "preguntas": [
+    "¿Qué estados de una reserva se consideran pendientes?",
+    "¿Qué información debe mostrarse por cada reserva (título, autor, código, fecha de reserva, fecha límite de recojo y lugar de recojo)?",
+    "¿Las reservas vencidas deben mostrarse en la lista de reservas pendientes?",
+    "¿El estudiante puede consultar reservas pendientes de varias bibliotecas de la UNSA?",
+    "¿Qué mensaje debe mostrarse cuando el estudiante no tiene reservas pendientes?",
+    "¿Las reservas deben presentarse en algún orden específico?"
+  ],
+  "escenarios": [
+    {
+      "titulo": "Consultar una reserva pendiente",
+      "tipo": "exito",
+      "dado": [
+        "El estudiante ha iniciado sesión en BiblioUNSA.",
+        "El estudiante tiene una reserva pendiente de recojo."
+      ],
+      "cuando": "El estudiante consulta la sección de mis reservas pendientes.",
+      "entonces": [
+        "El sistema muestra la reserva pendiente del estudiante.",
+        "El estudiante puede identificar el material bibliográfico que debe recoger.",
+        "El estudiante puede consultar la información necesaria para realizar el recojo."
+      ]
+    },
+    {
+      "titulo": "Consultar múltiples reservas pendientes",
+      "tipo": "exito",
+      "dado": [
+        "El estudiante ha iniciado sesión en BiblioUNSA.",
+        "El estudiante tiene dos o más reservas pendientes."
+      ],
+      "cuando": "El estudiante consulta sus reservas pendientes.",
+      "entonces": [
+        "El sistema muestra todas las reservas pendientes del estudiante.",
+        "Cada reserva se presenta de forma diferenciada.",
+        "El estudiante puede identificar los materiales que tiene pendientes de recojo."
+      ]
+    },
+    {
+      "titulo": "Consultar reservas cuando no existen pendientes",
+      "tipo": "borde",
+      "dado": [
+        "El estudiante ha iniciado sesión en BiblioUNSA.",
+        "El estudiante no tiene reservas pendientes."
+      ],
+      "cuando": "El estudiante consulta sus reservas pendientes.",
+      "entonces": [
+        "El sistema informa que el estudiante no tiene reservas pendientes.",
+        "No se muestran reservas inexistentes.",
+        "El estudiante puede continuar utilizando la plataforma."
+      ]
+    },
+    {
+      "titulo": "Excluir reservas que ya fueron recogidas",
+      "tipo": "borde",
+      "dado": [
+        "El estudiante ha iniciado sesión en BiblioUNSA.",
+        "El estudiante tiene una reserva pendiente.",
+        "El estudiante tiene otra reserva cuyo material ya fue recogido."
+      ],
+      "cuando": "El estudiante consulta sus reservas pendientes.",
+      "entonces": [
+        "El sistema muestra la reserva que continúa pendiente.",
+        "La reserva cuyo material ya fue recogido no aparece como pendiente.",
+        "El estudiante identifica correctamente el material que falta recoger."
+      ]
+    },
+    {
+      "titulo": "Consultar una reserva en su fecha límite de recojo",
+      "tipo": "borde",
+      "dado": [
+        "El estudiante ha iniciado sesión en BiblioUNSA.",
+        "El estudiante tiene una reserva pendiente.",
+        "La reserva se encuentra en su fecha límite de recojo y continúa vigente."
+      ],
+      "cuando": "El estudiante consulta sus reservas pendientes.",
+      "entonces": [
+        "El sistema muestra la reserva mientras continúe vigente.",
+        "El estudiante puede identificar la fecha límite de recojo.",
+        "La información permite reconocer que el plazo de recojo está por finalizar."
+      ]
+    },
+    {
+      "titulo": "Evitar la visualización de reservas de otros estudiantes",
+      "tipo": "error",
+      "dado": [
+        "El estudiante ha iniciado sesión en BiblioUNSA.",
+        "Existen reservas pendientes pertenecientes a otros estudiantes."
+      ],
+      "cuando": "El estudiante consulta sus reservas pendientes.",
+      "entonces": [
+        "El sistema muestra únicamente las reservas asociadas al estudiante.",
+        "No se presenta información de reservas pertenecientes a otros estudiantes.",
+        "Se mantiene la privacidad de la información de las reservas."
+      ]
+    },
+    {
+      "titulo": "Intentar consultar reservas sin iniciar sesión",
+      "tipo": "error",
+      "dado": [
+        "El estudiante no ha iniciado sesión en BiblioUNSA."
+      ],
+      "cuando": "El estudiante intenta consultar sus reservas pendientes.",
+      "entonces": [
+        "El sistema no muestra información personal de reservas.",
+        "El sistema informa que debe iniciar sesión para consultar sus reservas."
+      ]
+    },
+    {
+      "titulo": "Error al consultar las reservas pendientes",
+      "tipo": "error",
+      "dado": [
+        "El estudiante ha iniciado sesión en BiblioUNSA.",
+        "La información de sus reservas pendientes no se encuentra disponible temporalmente."
+      ],
+      "cuando": "El estudiante intenta consultar sus reservas pendientes.",
+      "entonces": [
+        "El sistema informa que no fue posible consultar las reservas.",
+        "El sistema no presenta información incompleta como si fuera definitiva.",
+        "El estudiante puede volver a intentar la consulta."
+      ]
+    },
+    {
+      "titulo": "Consultar reservas después de un cambio de estado",
+      "tipo": "borde",
+      "dado": [
+        "El estudiante ha iniciado sesión en BiblioUNSA.",
+        "Una reserva previamente pendiente ha dejado de estarlo."
+      ],
+      "cuando": "El estudiante vuelve a consultar sus reservas pendientes.",
+      "entonces": [
+        "El sistema presenta las reservas que actualmente mantienen el estado pendiente.",
+        "La reserva que cambió de estado deja de aparecer como pendiente.",
+        "El estudiante visualiza información actualizada sobre los materiales que debe recoger."
+      ]
+    }
+  ]
+}

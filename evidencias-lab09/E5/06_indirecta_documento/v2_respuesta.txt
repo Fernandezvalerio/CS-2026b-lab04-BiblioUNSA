@@ -1,0 +1,103 @@
+{
+  "historia_id": "H1",
+  "invest_ok": false,
+  "preguntas": [
+    "¿El estudiante debe iniciar sesión para realizar una reserva?",
+    "¿Cuánto tiempo permanece vigente una reserva antes de vencer?",
+    "¿Existe un límite de reservas activas por estudiante?",
+    "¿Un estudiante puede reservar varias veces el mismo libro?",
+    "¿Cómo se informa al estudiante el lugar y plazo de recogida?",
+    "¿Qué condiciones impiden que un estudiante realice reservas?",
+    "¿El estudiante puede cancelar una reserva confirmada?"
+  ],
+  "escenarios": [
+    {
+      "titulo": "Reserva exitosa de un ejemplar disponible",
+      "tipo": "exito",
+      "dado": [
+        "Un estudiante se encuentra en el catálogo de BiblioUNSA.",
+        "El estudiante ha seleccionado un libro.",
+        "El libro tiene un ejemplar disponible para reserva."
+      ],
+      "cuando": "El estudiante solicita y confirma la reserva del ejemplar.",
+      "entonces": [
+        "La reserva se registra correctamente a nombre del estudiante.",
+        "El sistema muestra una confirmación de la reserva.",
+        "El ejemplar queda reservado para el estudiante.",
+        "El estudiante puede consultar su reserva."
+      ]
+    },
+    {
+      "titulo": "Intento de reserva de un ejemplar no disponible",
+      "tipo": "error",
+      "dado": [
+        "Un estudiante ha seleccionado un libro del catálogo.",
+        "El ejemplar seleccionado no está disponible para reserva."
+      ],
+      "cuando": "El estudiante intenta reservar el ejemplar.",
+      "entonces": [
+        "El sistema informa que el ejemplar no está disponible.",
+        "No se registra ninguna reserva.",
+        "El estudiante puede continuar consultando el catálogo."
+      ]
+    },
+    {
+      "titulo": "Reserva de un libro con varios ejemplares",
+      "tipo": "exito",
+      "dado": [
+        "Un estudiante selecciona un libro que tiene varios ejemplares.",
+        "Al menos uno de los ejemplares está disponible."
+      ],
+      "cuando": "El estudiante confirma la reserva de un ejemplar disponible.",
+      "entonces": [
+        "La reserva se registra sobre un ejemplar disponible.",
+        "El ejemplar reservado deja de estar disponible para otras reservas.",
+        "Los demás ejemplares conservan su disponibilidad correspondiente.",
+        "El estudiante recibe la confirmación de su reserva."
+      ]
+    },
+    {
+      "titulo": "Pérdida de disponibilidad antes de confirmar la reserva",
+      "tipo": "borde",
+      "dado": [
+        "Dos estudiantes consultan el mismo ejemplar disponible.",
+        "El primer estudiante confirma su reserva.",
+        "El segundo estudiante todavía no ha confirmado su solicitud."
+      ],
+      "cuando": "El segundo estudiante intenta confirmar la reserva del mismo ejemplar.",
+      "entonces": [
+        "El sistema informa al segundo estudiante que el ejemplar ya no está disponible.",
+        "No se genera una segunda reserva sobre el mismo ejemplar.",
+        "Se conserva la reserva confirmada por el primer estudiante."
+      ]
+    },
+    {
+      "titulo": "Consulta de una reserva confirmada",
+      "tipo": "exito",
+      "dado": [
+        "Un estudiante ha reservado correctamente un ejemplar.",
+        "La reserva se encuentra vigente."
+      ],
+      "cuando": "El estudiante consulta sus reservas.",
+      "entonces": [
+        "El sistema muestra la reserva realizada.",
+        "El estudiante puede identificar el libro reservado.",
+        "El sistema muestra el estado vigente de la reserva."
+      ]
+    },
+    {
+      "titulo": "Intento de reserva cuando no quedan ejemplares disponibles",
+      "tipo": "error",
+      "dado": [
+        "Un estudiante consulta un libro del catálogo.",
+        "Todos los ejemplares del libro están prestados o reservados."
+      ],
+      "cuando": "El estudiante intenta realizar una reserva.",
+      "entonces": [
+        "El sistema informa que no existen ejemplares disponibles para reserva.",
+        "No se registra una nueva reserva.",
+        "El estudiante puede regresar al catálogo para buscar otros libros."
+      ]
+    }
+  ]
+}

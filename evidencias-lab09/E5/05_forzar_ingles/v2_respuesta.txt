@@ -1,0 +1,113 @@
+{
+  "historia_id": "H2",
+  "invest_ok": false,
+  "preguntas": [
+    "Should author searches support full names, partial names, or both?",
+    "Should searches ignore differences in capitalization and accents?",
+    "What information should be displayed for each matching book?",
+    "Should unavailable books appear in search results?",
+    "What should happen when the author search field is empty?"
+  ],
+  "escenarios": [
+    {
+      "titulo": "Search books by an existing author",
+      "tipo": "exito",
+      "dado": [
+        "Given the student has access to the book search feature",
+        "And the catalog contains books by Mario Vargas Llosa"
+      ],
+      "cuando": "When the student searches for books by Mario Vargas Llosa",
+      "entonces": [
+        "Then the system displays books written by Mario Vargas Llosa",
+        "And the student can identify relevant books for their course"
+      ]
+    },
+    {
+      "titulo": "Search books by an author with multiple publications",
+      "tipo": "exito",
+      "dado": [
+        "Given the catalog contains multiple books by the same author"
+      ],
+      "cuando": "When the student searches using that author's name",
+      "entonces": [
+        "Then the system displays all matching books in the catalog",
+        "And the student can distinguish between the matching publications"
+      ]
+    },
+    {
+      "titulo": "Search for an author with no matching books",
+      "tipo": "error",
+      "dado": [
+        "Given the student has access to the book search feature",
+        "And the catalog contains no books matching the requested author"
+      ],
+      "cuando": "When the student searches for that author",
+      "entonces": [
+        "Then the system displays a message indicating that no matching books were found",
+        "And the student can perform another search"
+      ]
+    },
+    {
+      "titulo": "Search without entering an author",
+      "tipo": "error",
+      "dado": [
+        "Given the student is on the book search page",
+        "And the author search field is empty"
+      ],
+      "cuando": "When the student submits the empty search",
+      "entonces": [
+        "Then the system asks the student to enter an author's name",
+        "And the student can enter a valid search term"
+      ]
+    },
+    {
+      "titulo": "Search using a partial author name",
+      "tipo": "borde",
+      "dado": [
+        "Given the catalog contains books by Gabriel García Márquez",
+        "And the student knows only part of the author's name"
+      ],
+      "cuando": "When the student searches for García",
+      "entonces": [
+        "Then the system displays books by authors whose names match the search term",
+        "And the student can identify the intended author"
+      ]
+    },
+    {
+      "titulo": "Search using different capitalization",
+      "tipo": "borde",
+      "dado": [
+        "Given the catalog contains books by Mario Vargas Llosa"
+      ],
+      "cuando": "When the student searches for MARIO VARGAS LLOSA",
+      "entonces": [
+        "Then the system displays the same matching books as a search using the author's standard capitalization"
+      ]
+    },
+    {
+      "titulo": "Search using an author name with accents",
+      "tipo": "borde",
+      "dado": [
+        "Given the catalog contains books by Gabriel García Márquez"
+      ],
+      "cuando": "When the student searches for Gabriel Garcia Marquez without accents",
+      "entonces": [
+        "Then the system displays books by Gabriel García Márquez",
+        "And the student can find relevant bibliography regardless of accent usage"
+      ]
+    },
+    {
+      "titulo": "Search for an author whose books are unavailable",
+      "tipo": "borde",
+      "dado": [
+        "Given the catalog contains books by the requested author",
+        "And all matching copies are currently unavailable for borrowing"
+      ],
+      "cuando": "When the student searches for that author",
+      "entonces": [
+        "Then the system displays the matching books",
+        "And the student can identify their current availability"
+      ]
+    }
+  ]
+}
