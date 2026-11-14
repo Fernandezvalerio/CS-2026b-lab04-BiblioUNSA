@@ -1,0 +1,60 @@
+{
+  "historia_id": "H2",
+  "invest_ok": true,
+  "preguntas": [],
+  "escenarios": [
+    {
+      "titulo": "Búsqueda exitosa de libros por título",
+      "tipo": "exito",
+      "dado": [
+        "El estudiante se encuentra en la sección de búsqueda de libros",
+        "Existen libros registrados cuyo título coincide con el texto buscado"
+      ],
+      "cuando": "El estudiante ingresa el título de un libro y realiza la búsqueda",
+      "entonces": [
+        "El sistema muestra los libros cuyos títulos coinciden con la búsqueda",
+        "El estudiante puede identificar los libros encontrados mediante la información presentada"
+      ]
+    },
+    {
+      "titulo": "Búsqueda exitosa de libros por autor",
+      "tipo": "exito",
+      "dado": [
+        "El estudiante se encuentra en la sección de búsqueda de libros",
+        "Existen libros registrados de un autor determinado"
+      ],
+      "cuando": "El estudiante ingresa el nombre del autor y realiza la búsqueda",
+      "entonces": [
+        "El sistema muestra los libros asociados al autor buscado",
+        "El estudiante puede consultar los resultados para encontrar el material que necesita"
+      ]
+    },
+    {
+      "titulo": "Búsqueda de libros por biblioteca",
+      "tipo": "exito",
+      "dado": [
+        "El estudiante se encuentra en la sección de búsqueda de libros",
+        "Existen libros registrados en la biblioteca seleccionada"
+      ],
+      "cuando": "El estudiante realiza una búsqueda utilizando el nombre de una biblioteca",
+      "entonces": [
+        "El sistema muestra los libros asociados a la biblioteca indicada",
+        "Los resultados permiten identificar los libros que pertenecen a dicha biblioteca"
+      ]
+    },
+    {
+      "titulo": "Búsqueda sin resultados",
+      "tipo": "borde",
+      "dado": [
+        "El estudiante se encuentra en la sección de búsqueda de libros",
+        "No existen libros que coincidan con el título, autor o biblioteca indicados"
+      ],
+      "cuando": "El estudiante realiza una búsqueda con un criterio que no tiene coincidencias",
+      "entonces": [
+        "El sistema informa que no se encontraron libros con el criterio ingresado",
+        "No se muestran resultados que no correspondan a la búsqueda",
+        "El estudiante puede realizar una nueva búsqueda utilizando otro criterio"
+      ]
+    }
+  ]
+}

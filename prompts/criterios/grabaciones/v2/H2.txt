@@ -1,0 +1,180 @@
+{
+  "historia_id": "H2",
+  "invest_ok": true,
+  "preguntas": [
+    "¿La búsqueda debe permitir coincidencias parciales en títulos y nombres de autores?",
+    "¿La búsqueda debe ignorar diferencias entre mayúsculas, minúsculas y tildes?",
+    "¿Se pueden combinar filtros de título, autor y biblioteca en una misma búsqueda?",
+    "¿Los resultados deben mostrar la disponibilidad de los ejemplares en cada biblioteca?",
+    "¿Se permite buscar libros sin iniciar sesión?",
+    "¿Cómo deben ordenarse los resultados cuando existen múltiples coincidencias?",
+    "¿Existe un número máximo de resultados que se muestran por búsqueda?",
+    "¿Qué información debe mostrarse de cada libro encontrado?"
+  ],
+  "escenarios": [
+    {
+      "titulo": "Búsqueda exitosa de libros por título",
+      "tipo": "exito",
+      "dado": [
+        "El estudiante se encuentra en la sección de búsqueda de BiblioUNSA.",
+        "Existen libros registrados con el título solicitado."
+      ],
+      "cuando": "El estudiante ingresa el título de un libro y realiza la búsqueda.",
+      "entonces": [
+        "Se muestran los libros que coinciden con el título ingresado.",
+        "Cada resultado presenta información suficiente para identificar el libro.",
+        "El estudiante puede seleccionar un resultado para consultar sus detalles."
+      ]
+    },
+    {
+      "titulo": "Búsqueda exitosa de libros por autor",
+      "tipo": "exito",
+      "dado": [
+        "El estudiante se encuentra en la sección de búsqueda.",
+        "Existen libros registrados de un autor determinado."
+      ],
+      "cuando": "El estudiante ingresa el nombre del autor y realiza la búsqueda.",
+      "entonces": [
+        "Se muestran los libros asociados al autor indicado.",
+        "Los resultados permiten identificar el título y el autor de cada libro.",
+        "El estudiante puede consultar los detalles de los libros encontrados."
+      ]
+    },
+    {
+      "titulo": "Búsqueda exitosa de libros por biblioteca",
+      "tipo": "exito",
+      "dado": [
+        "Existen varias bibliotecas registradas en BiblioUNSA.",
+        "La biblioteca seleccionada tiene libros registrados."
+      ],
+      "cuando": "El estudiante selecciona una biblioteca y realiza la búsqueda.",
+      "entonces": [
+        "Se muestran los libros pertenecientes a la biblioteca seleccionada.",
+        "No se incluyen ejemplares de otras bibliotecas en los resultados.",
+        "El estudiante puede consultar la información de los libros encontrados."
+      ]
+    },
+    {
+      "titulo": "Búsqueda mediante coincidencia parcial",
+      "tipo": "exito",
+      "dado": [
+        "Existen libros registrados cuyos títulos contienen varias palabras.",
+        "El estudiante conoce solamente una parte del título."
+      ],
+      "cuando": "El estudiante ingresa una palabra o fragmento del título y realiza la búsqueda.",
+      "entonces": [
+        "Se muestran los libros cuyos títulos coinciden parcialmente con el texto ingresado.",
+        "El estudiante puede identificar el libro que necesita sin escribir su título completo."
+      ]
+    },
+    {
+      "titulo": "Búsqueda sin resultados",
+      "tipo": "error",
+      "dado": [
+        "El estudiante se encuentra en la sección de búsqueda.",
+        "No existen libros que coincidan con el criterio solicitado."
+      ],
+      "cuando": "El estudiante realiza una búsqueda con un título o autor inexistente.",
+      "entonces": [
+        "Se informa que no se encontraron resultados.",
+        "No se muestran libros que no coincidan con la búsqueda.",
+        "El estudiante puede modificar el criterio e intentar nuevamente."
+      ]
+    },
+    {
+      "titulo": "Búsqueda con campo vacío",
+      "tipo": "borde",
+      "dado": [
+        "El estudiante se encuentra en la sección de búsqueda.",
+        "No ha ingresado un título, autor ni seleccionado una biblioteca."
+      ],
+      "cuando": "El estudiante intenta realizar la búsqueda sin proporcionar ningún criterio.",
+      "entonces": [
+        "Se informa que debe ingresar o seleccionar al menos un criterio de búsqueda.",
+        "No se presentan resultados como si correspondieran a una búsqueda específica.",
+        "El estudiante puede completar un criterio para continuar."
+      ]
+    },
+    {
+      "titulo": "Búsqueda sin distinguir mayúsculas y minúsculas",
+      "tipo": "borde",
+      "dado": [
+        "Existe un libro registrado con el título 'Ingeniería de Software'.",
+        "El estudiante se encuentra en la sección de búsqueda."
+      ],
+      "cuando": "El estudiante busca el título utilizando el texto 'ingeniería de software'.",
+      "entonces": [
+        "El libro aparece entre los resultados.",
+        "Las diferencias entre letras mayúsculas y minúsculas no impiden encontrarlo."
+      ]
+    },
+    {
+      "titulo": "Búsqueda sin distinguir tildes",
+      "tipo": "borde",
+      "dado": [
+        "Existe un libro registrado con el título 'Introducción a la Programación'.",
+        "El estudiante se encuentra en la sección de búsqueda."
+      ],
+      "cuando": "El estudiante ingresa 'Introduccion a la Programacion' y realiza la búsqueda.",
+      "entonces": [
+        "El libro aparece entre los resultados.",
+        "La ausencia de tildes no impide encontrar coincidencias."
+      ]
+    },
+    {
+      "titulo": "Búsqueda combinada por título y biblioteca",
+      "tipo": "exito",
+      "dado": [
+        "Existen ejemplares de un mismo título en diferentes bibliotecas.",
+        "El estudiante desea encontrar el libro en una biblioteca específica."
+      ],
+      "cuando": "El estudiante ingresa el título, selecciona una biblioteca y realiza la búsqueda.",
+      "entonces": [
+        "Se muestran únicamente los libros que cumplen ambos criterios.",
+        "Los ejemplares ubicados en otras bibliotecas no aparecen en los resultados.",
+        "El estudiante puede identificar los ejemplares disponibles en la biblioteca seleccionada."
+      ]
+    },
+    {
+      "titulo": "Búsqueda de un libro con ejemplares no disponibles",
+      "tipo": "borde",
+      "dado": [
+        "Existe un libro registrado en el catálogo.",
+        "Todos sus ejemplares se encuentran prestados o reservados."
+      ],
+      "cuando": "El estudiante busca el libro por su título.",
+      "entonces": [
+        "El libro aparece entre los resultados de búsqueda.",
+        "Se informa que no tiene ejemplares disponibles.",
+        "El estudiante puede consultar la información del libro aunque no pueda reservarlo inmediatamente."
+      ]
+    },
+    {
+      "titulo": "Búsqueda con múltiples coincidencias",
+      "tipo": "borde",
+      "dado": [
+        "Existen varios libros cuyos títulos o autores coinciden con el criterio ingresado.",
+        "El estudiante se encuentra en la sección de búsqueda."
+      ],
+      "cuando": "El estudiante realiza una búsqueda que coincide con varios libros.",
+      "entonces": [
+        "Se muestran todos los resultados correspondientes según las reglas de presentación establecidas.",
+        "Cada libro se presenta de manera identificable.",
+        "El estudiante puede distinguir y seleccionar el libro que necesita."
+      ]
+    },
+    {
+      "titulo": "Búsqueda con espacios adicionales",
+      "tipo": "borde",
+      "dado": [
+        "Existe un libro registrado con el título 'Bases de Datos'.",
+        "El estudiante se encuentra en la sección de búsqueda."
+      ],
+      "cuando": "El estudiante ingresa el título con espacios adicionales al inicio o al final y realiza la búsqueda.",
+      "entonces": [
+        "El libro aparece entre los resultados.",
+        "Los espacios adicionales no impiden encontrar coincidencias válidas."
+      ]
+    }
+  ]
+}

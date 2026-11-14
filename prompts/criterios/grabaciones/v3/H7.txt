@@ -1,0 +1,10 @@
+{
+  "historia_id": "H7",
+  "invest_ok": false,
+  "preguntas": [
+    "¿Qué funcionalidades específicas de BiblioUNSA se desean mejorar: búsqueda de libros, reservas, préstamos, devoluciones o consulta de multas?",
+    "¿Qué criterios medibles permitirán determinar que el sistema es rápido, por ejemplo, el tiempo máximo de respuesta para realizar una búsqueda o consultar una reserva?",
+    "¿Qué características observables permitirán comprobar que la experiencia es moderna y sencilla, por ejemplo, la cantidad máxima de pasos necesarios para completar una tarea?"
+  ],
+  "escenarios": []
+}

@@ -1,0 +1,62 @@
+{
+  "historia_id": "H3",
+  "invest_ok": true,
+  "preguntas": [],
+  "escenarios": [
+    {
+      "titulo": "Inicio de sesión exitoso con correo institucional",
+      "tipo": "exito",
+      "dado": [
+        "El estudiante cuenta con un correo institucional UNSA válido",
+        "El estudiante dispone de credenciales de acceso correctas",
+        "El estudiante se encuentra en la pantalla de inicio de sesión"
+      ],
+      "cuando": "El estudiante ingresa su correo institucional y sus credenciales correctas e intenta iniciar sesión",
+      "entonces": [
+        "El sistema permite el acceso del estudiante",
+        "El estudiante puede acceder a los servicios de biblioteca disponibles para su usuario"
+      ]
+    },
+    {
+      "titulo": "Intento de inicio de sesión con credenciales incorrectas",
+      "tipo": "error",
+      "dado": [
+        "El estudiante se encuentra en la pantalla de inicio de sesión",
+        "El estudiante dispone de un correo institucional UNSA válido"
+      ],
+      "cuando": "El estudiante ingresa su correo institucional con credenciales incorrectas e intenta iniciar sesión",
+      "entonces": [
+        "El sistema informa que las credenciales ingresadas no son válidas",
+        "El estudiante no obtiene acceso a los servicios de biblioteca",
+        "El estudiante puede intentar iniciar sesión nuevamente"
+      ]
+    },
+    {
+      "titulo": "Intento de inicio de sesión con correo no institucional",
+      "tipo": "error",
+      "dado": [
+        "El estudiante se encuentra en la pantalla de inicio de sesión",
+        "El correo ingresado no pertenece al dominio institucional UNSA"
+      ],
+      "cuando": "El estudiante intenta iniciar sesión utilizando un correo electrónico no institucional",
+      "entonces": [
+        "El sistema informa que debe utilizar un correo institucional UNSA",
+        "El sistema no permite el acceso con el correo ingresado"
+      ]
+    },
+    {
+      "titulo": "Intento de inicio de sesión con campos vacíos",
+      "tipo": "borde",
+      "dado": [
+        "El estudiante se encuentra en la pantalla de inicio de sesión",
+        "El estudiante no ha completado uno o más campos requeridos"
+      ],
+      "cuando": "El estudiante intenta iniciar sesión sin completar todos los campos necesarios",
+      "entonces": [
+        "El sistema informa que existen campos obligatorios sin completar",
+        "El estudiante no obtiene acceso a los servicios de biblioteca",
+        "El estudiante puede completar los campos faltantes y volver a intentarlo"
+      ]
+    }
+  ]
+}

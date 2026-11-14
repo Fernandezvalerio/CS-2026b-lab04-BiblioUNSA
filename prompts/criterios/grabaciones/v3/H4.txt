@@ -1,0 +1,66 @@
+{
+  "historia_id": "H4",
+  "invest_ok": true,
+  "preguntas": [],
+  "escenarios": [
+    {
+      "titulo": "Registro exitoso de entrega de un libro",
+      "tipo": "exito",
+      "dado": [
+        "El bibliotecario se encuentra realizando una entrega de libros",
+        "El estudiante presenta su carné QR válido",
+        "El ejemplar se encuentra disponible para préstamo"
+      ],
+      "cuando": "El bibliotecario utiliza el carné QR del estudiante y registra la entrega del ejemplar",
+      "entonces": [
+        "El sistema identifica al estudiante mediante su carné QR",
+        "El sistema confirma que el préstamo fue registrado correctamente",
+        "El ejemplar queda asociado al préstamo del estudiante",
+        "El ejemplar deja de aparecer como disponible para nuevos préstamos"
+      ]
+    },
+    {
+      "titulo": "Intento de entrega con carné QR inválido",
+      "tipo": "error",
+      "dado": [
+        "El bibliotecario se encuentra realizando una entrega de libros",
+        "El estudiante presenta un carné QR que no puede ser validado"
+      ],
+      "cuando": "El bibliotecario intenta registrar la entrega utilizando el carné QR presentado",
+      "entonces": [
+        "El sistema informa que el carné QR no es válido",
+        "El sistema no permite completar el registro del préstamo",
+        "El ejemplar mantiene su estado anterior"
+      ]
+    },
+    {
+      "titulo": "Intento de entrega de un ejemplar no disponible",
+      "tipo": "error",
+      "dado": [
+        "El estudiante presenta un carné QR válido",
+        "El ejemplar seleccionado ya se encuentra prestado a otro estudiante"
+      ],
+      "cuando": "El bibliotecario intenta registrar la entrega del ejemplar",
+      "entonces": [
+        "El sistema informa que el ejemplar no está disponible para préstamo",
+        "No se registra un nuevo préstamo del ejemplar",
+        "El estado del ejemplar permanece sin cambios"
+      ]
+    },
+    {
+      "titulo": "Intento de registrar dos veces la entrega del mismo ejemplar",
+      "tipo": "borde",
+      "dado": [
+        "El estudiante ha sido identificado mediante un carné QR válido",
+        "La entrega del ejemplar ya fue registrada correctamente",
+        "El ejemplar continúa asociado a un préstamo activo"
+      ],
+      "cuando": "El bibliotecario intenta registrar nuevamente la entrega del mismo ejemplar",
+      "entonces": [
+        "El sistema informa que el ejemplar ya se encuentra prestado",
+        "No se genera un segundo préstamo para el mismo ejemplar",
+        "El préstamo registrado originalmente permanece sin cambios"
+      ]
+    }
+  ]
+}

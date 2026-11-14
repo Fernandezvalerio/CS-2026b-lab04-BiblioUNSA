@@ -1,0 +1,234 @@
+{
+  "historia_id": "H3",
+  "invest_ok": true,
+  "preguntas": [
+    "¿Qué dominios de correo institucional UNSA se consideran válidos para iniciar sesión?",
+    "¿El inicio de sesión utiliza la contraseña institucional o algún mecanismo de autenticación propio de la universidad?",
+    "¿Los estudiantes deben estar matriculados o tener una cuenta institucional activa para acceder a BiblioUNSA?",
+    "¿Qué sucede si el estudiante tiene una cuenta institucional válida, pero todavía no está registrado en BiblioUNSA?",
+    "¿Se permite mantener la sesión iniciada después de cerrar el navegador?",
+    "¿Cuánto tiempo puede permanecer inactiva una sesión antes de que se cierre automáticamente?",
+    "¿Existe un límite de intentos fallidos de inicio de sesión?",
+    "¿Qué mensaje debe mostrarse cuando la cuenta institucional está suspendida o deshabilitada?",
+    "¿Se requiere algún método adicional de verificación de identidad?",
+    "¿A qué sección de BiblioUNSA debe dirigirse al estudiante después de iniciar sesión correctamente?"
+  ],
+  "escenarios": [
+    {
+      "titulo": "Inicio de sesión exitoso con correo institucional UNSA",
+      "tipo": "exito",
+      "dado": [
+        "El estudiante tiene una cuenta institucional UNSA activa.",
+        "El estudiante se encuentra en la página de inicio de sesión de BiblioUNSA.",
+        "El estudiante cuenta con credenciales válidas."
+      ],
+      "cuando": "El estudiante ingresa su correo institucional y contraseña correctos y solicita iniciar sesión.",
+      "entonces": [
+        "El estudiante accede correctamente a BiblioUNSA.",
+        "Se reconoce su identidad como estudiante autorizado.",
+        "Se muestra la sección principal o la página correspondiente después del inicio de sesión.",
+        "El estudiante puede acceder a los servicios de biblioteca permitidos para su cuenta."
+      ]
+    },
+    {
+      "titulo": "Acceso a servicios de biblioteca después de iniciar sesión",
+      "tipo": "exito",
+      "dado": [
+        "El estudiante ha iniciado sesión correctamente.",
+        "El estudiante tiene permiso para utilizar los servicios de biblioteca."
+      ],
+      "cuando": "El estudiante intenta acceder a sus reservas, préstamos u otros servicios personales.",
+      "entonces": [
+        "El estudiante puede consultar los servicios habilitados para su cuenta.",
+        "Se muestra la información correspondiente a su identidad.",
+        "No se presenta información personal perteneciente a otros estudiantes."
+      ]
+    },
+    {
+      "titulo": "Inicio de sesión con contraseña incorrecta",
+      "tipo": "error",
+      "dado": [
+        "El estudiante tiene una cuenta institucional UNSA activa.",
+        "El estudiante se encuentra en la página de inicio de sesión."
+      ],
+      "cuando": "El estudiante ingresa su correo institucional correcto, pero proporciona una contraseña incorrecta.",
+      "entonces": [
+        "El acceso a BiblioUNSA es rechazado.",
+        "Se muestra un mensaje indicando que las credenciales no son válidas.",
+        "El estudiante permanece en la página de inicio de sesión.",
+        "No se permite acceder a sus servicios personales de biblioteca."
+      ]
+    },
+    {
+      "titulo": "Intento de inicio de sesión con correo no institucional",
+      "tipo": "error",
+      "dado": [
+        "El estudiante se encuentra en la página de inicio de sesión.",
+        "El correo ingresado pertenece a un dominio externo a la UNSA."
+      ],
+      "cuando": "El estudiante intenta iniciar sesión utilizando un correo personal.",
+      "entonces": [
+        "El inicio de sesión no se completa.",
+        "Se informa que debe utilizar una cuenta institucional UNSA autorizada.",
+        "El estudiante no obtiene acceso a los servicios restringidos."
+      ]
+    },
+    {
+      "titulo": "Inicio de sesión con cuenta institucional inexistente",
+      "tipo": "error",
+      "dado": [
+        "El estudiante se encuentra en la página de inicio de sesión.",
+        "El correo ingresado tiene un formato institucional válido, pero no corresponde a una cuenta reconocida."
+      ],
+      "cuando": "El estudiante intenta iniciar sesión con dicho correo y una contraseña.",
+      "entonces": [
+        "El acceso es rechazado.",
+        "Se muestra un mensaje general indicando que las credenciales no son válidas.",
+        "No se revela si el correo corresponde o no a una cuenta existente.",
+        "El estudiante puede corregir los datos e intentar nuevamente."
+      ]
+    },
+    {
+      "titulo": "Inicio de sesión con campos vacíos",
+      "tipo": "error",
+      "dado": [
+        "El estudiante se encuentra en la página de inicio de sesión.",
+        "Los campos de correo institucional y contraseña están vacíos."
+      ],
+      "cuando": "El estudiante intenta iniciar sesión sin completar los campos.",
+      "entonces": [
+        "No se permite continuar con el inicio de sesión.",
+        "Se informa que los campos obligatorios deben completarse.",
+        "El estudiante permanece en la página de inicio de sesión."
+      ]
+    },
+    {
+      "titulo": "Inicio de sesión sin ingresar contraseña",
+      "tipo": "error",
+      "dado": [
+        "El estudiante se encuentra en la página de inicio de sesión.",
+        "El estudiante ha ingresado un correo institucional válido.",
+        "El campo de contraseña está vacío."
+      ],
+      "cuando": "El estudiante solicita iniciar sesión.",
+      "entonces": [
+        "El inicio de sesión no se completa.",
+        "Se informa que debe ingresar su contraseña.",
+        "No se concede acceso a los servicios personales."
+      ]
+    },
+    {
+      "titulo": "Inicio de sesión con formato de correo inválido",
+      "tipo": "error",
+      "dado": [
+        "El estudiante se encuentra en la página de inicio de sesión.",
+        "El texto ingresado como correo no cumple con un formato de dirección de correo válido."
+      ],
+      "cuando": "El estudiante intenta iniciar sesión utilizando el texto 'estudianteunsa'.",
+      "entonces": [
+        "El inicio de sesión no se completa.",
+        "Se muestra un mensaje indicando que el formato del correo es incorrecto.",
+        "El estudiante puede corregir el correo e intentar nuevamente."
+      ]
+    },
+    {
+      "titulo": "Inicio de sesión con cuenta institucional deshabilitada",
+      "tipo": "error",
+      "dado": [
+        "El estudiante tiene una cuenta institucional UNSA deshabilitada o suspendida.",
+        "El estudiante conoce las credenciales asociadas a dicha cuenta."
+      ],
+      "cuando": "El estudiante intenta iniciar sesión con sus credenciales.",
+      "entonces": [
+        "El acceso a BiblioUNSA es rechazado.",
+        "Se informa que no es posible iniciar sesión con la cuenta en su estado actual, sin revelar información sensible.",
+        "El estudiante no puede acceder a los servicios restringidos de biblioteca."
+      ]
+    },
+    {
+      "titulo": "Inicio de sesión con correo institucional en mayúsculas",
+      "tipo": "borde",
+      "dado": [
+        "El estudiante tiene una cuenta institucional UNSA activa.",
+        "El correo institucional está registrado en letras minúsculas."
+      ],
+      "cuando": "El estudiante ingresa su correo institucional utilizando letras mayúsculas y proporciona su contraseña correcta.",
+      "entonces": [
+        "El correo se reconoce como correspondiente a la misma cuenta institucional.",
+        "El inicio de sesión se completa correctamente.",
+        "El estudiante accede a sus servicios de biblioteca."
+      ]
+    },
+    {
+      "titulo": "Inicio de sesión con espacios adicionales en el correo",
+      "tipo": "borde",
+      "dado": [
+        "El estudiante tiene una cuenta institucional activa.",
+        "El estudiante se encuentra en la página de inicio de sesión."
+      ],
+      "cuando": "El estudiante ingresa su correo institucional con espacios al inicio o al final y proporciona su contraseña correcta.",
+      "entonces": [
+        "Los espacios adicionales alrededor del correo no impiden reconocer la cuenta.",
+        "El estudiante puede iniciar sesión correctamente si sus credenciales son válidas.",
+        "No se modifica la contraseña ingresada."
+      ]
+    },
+    {
+      "titulo": "Intento de acceso a servicios personales sin iniciar sesión",
+      "tipo": "error",
+      "dado": [
+        "El estudiante no ha iniciado sesión en BiblioUNSA.",
+        "El estudiante desea acceder a un servicio que requiere autenticación."
+      ],
+      "cuando": "El estudiante intenta consultar sus préstamos o reservas personales.",
+      "entonces": [
+        "No se permite el acceso a la información personal.",
+        "Se informa que debe iniciar sesión para utilizar el servicio.",
+        "No se muestra información privada de ningún estudiante."
+      ]
+    },
+    {
+      "titulo": "Intentos consecutivos de inicio de sesión con credenciales incorrectas",
+      "tipo": "borde",
+      "dado": [
+        "El estudiante se encuentra en la página de inicio de sesión.",
+        "Existe una política de seguridad que establece un límite de intentos fallidos."
+      ],
+      "cuando": "El estudiante supera el número permitido de intentos de inicio de sesión con credenciales incorrectas.",
+      "entonces": [
+        "Se aplica la restricción de acceso definida por la política de seguridad.",
+        "Se informa al estudiante que no puede continuar intentando iniciar sesión temporalmente o que debe seguir el procedimiento establecido.",
+        "No se concede acceso a los servicios personales.",
+        "Se evita revelar información sensible de la cuenta."
+      ]
+    },
+    {
+      "titulo": "Inicio de sesión cuando ya existe una sesión activa",
+      "tipo": "borde",
+      "dado": [
+        "El estudiante ha iniciado sesión correctamente en BiblioUNSA.",
+        "Su sesión continúa vigente."
+      ],
+      "cuando": "El estudiante intenta acceder nuevamente a una sección que requiere autenticación.",
+      "entonces": [
+        "El estudiante puede continuar utilizando los servicios autorizados.",
+        "No se le solicita iniciar sesión nuevamente mientras su sesión siga vigente.",
+        "Se mantiene la identidad del estudiante durante su navegación."
+      ]
+    },
+    {
+      "titulo": "Acceso después del vencimiento de la sesión",
+      "tipo": "borde",
+      "dado": [
+        "El estudiante inició sesión anteriormente.",
+        "La sesión ha vencido según las condiciones establecidas por BiblioUNSA."
+      ],
+      "cuando": "El estudiante intenta acceder a un servicio personal de biblioteca.",
+      "entonces": [
+        "No se permite acceder al servicio utilizando la sesión vencida.",
+        "Se informa que debe iniciar sesión nuevamente.",
+        "No se muestra información personal hasta que el estudiante vuelva a autenticarse correctamente."
+      ]
+    }
+  ]
+}

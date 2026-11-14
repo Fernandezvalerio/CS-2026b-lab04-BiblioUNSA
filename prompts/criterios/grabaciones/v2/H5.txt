@@ -1,0 +1,304 @@
+{
+  "historia_id": "H5",
+  "invest_ok": true,
+  "preguntas": [
+    "¿Cómo identifica el bibliotecario el ejemplar que se está devolviendo?",
+    "¿Es necesario identificar al estudiante para registrar una devolución?",
+    "¿Se requiere confirmar la devolución antes de completar el registro?",
+    "¿Qué sucede si el ejemplar se devuelve después de la fecha límite?",
+    "¿Se generan multas automáticamente por devoluciones fuera de plazo?",
+    "¿Qué ocurre si el ejemplar presenta daños al momento de la devolución?",
+    "¿El ejemplar vuelve a estar disponible inmediatamente después de registrar su devolución?",
+    "¿Qué sucede si existen reservas pendientes para el ejemplar devuelto?",
+    "¿Se debe enviar una notificación al estudiante cuando se registra la devolución?",
+    "¿Puede un bibliotecario registrar devoluciones de ejemplares pertenecientes a otras bibliotecas de la UNSA?",
+    "¿Se permite registrar la devolución sin que el estudiante esté presente?",
+    "¿Qué ocurre si dos bibliotecarios intentan registrar simultáneamente la devolución del mismo ejemplar?"
+  ],
+  "escenarios": [
+    {
+      "titulo": "Registro exitoso de devolución de un ejemplar",
+      "tipo": "exito",
+      "dado": [
+        "El bibliotecario ha iniciado sesión en BiblioUNSA.",
+        "El ejemplar tiene un préstamo activo.",
+        "El estudiante devuelve físicamente el ejemplar."
+      ],
+      "cuando": "El bibliotecario identifica el ejemplar y confirma su devolución.",
+      "entonces": [
+        "La devolución se registra correctamente.",
+        "El préstamo deja de figurar como activo.",
+        "Se registra la fecha de devolución.",
+        "El ejemplar cambia su estado a disponible, siempre que no exista alguna restricción.",
+        "Se muestra una confirmación de la devolución realizada."
+      ]
+    },
+    {
+      "titulo": "Devolución de un ejemplar dentro del plazo establecido",
+      "tipo": "exito",
+      "dado": [
+        "El ejemplar tiene un préstamo activo.",
+        "La fecha de devolución prevista todavía no ha vencido.",
+        "El ejemplar se encuentra en condiciones adecuadas."
+      ],
+      "cuando": "El bibliotecario registra la devolución antes de la fecha límite.",
+      "entonces": [
+        "La devolución se registra correctamente.",
+        "El préstamo se marca como finalizado.",
+        "El ejemplar vuelve a estar disponible si no existen reservas pendientes.",
+        "No se genera una multa por retraso."
+      ]
+    },
+    {
+      "titulo": "Consulta del historial después de registrar una devolución",
+      "tipo": "exito",
+      "dado": [
+        "El bibliotecario ha registrado correctamente la devolución de un ejemplar.",
+        "El préstamo correspondiente ha finalizado."
+      ],
+      "cuando": "El estudiante consulta su historial de préstamos.",
+      "entonces": [
+        "El préstamo aparece como finalizado.",
+        "Se muestra la información del libro devuelto.",
+        "Se indica la fecha en que se realizó la devolución.",
+        "El préstamo ya no aparece entre los préstamos activos."
+      ]
+    },
+    {
+      "titulo": "Devolución de un ejemplar con reserva pendiente",
+      "tipo": "exito",
+      "dado": [
+        "El ejemplar tiene un préstamo activo.",
+        "Existe una reserva pendiente válida para el ejemplar.",
+        "El estudiante devuelve el ejemplar en condiciones adecuadas."
+      ],
+      "cuando": "El bibliotecario registra la devolución.",
+      "entonces": [
+        "El préstamo anterior se marca como finalizado.",
+        "Se registra la fecha de devolución.",
+        "El ejemplar no queda disponible para estudiantes ajenos a la reserva.",
+        "Se respeta la reserva pendiente según las normas de la biblioteca.",
+        "Se muestra una confirmación de la devolución."
+      ]
+    },
+    {
+      "titulo": "Intento de devolución de un ejemplar sin préstamo activo",
+      "tipo": "error",
+      "dado": [
+        "El bibliotecario ha iniciado sesión.",
+        "El ejemplar seleccionado no tiene ningún préstamo activo."
+      ],
+      "cuando": "El bibliotecario intenta registrar la devolución del ejemplar.",
+      "entonces": [
+        "No se registra una nueva devolución.",
+        "Se informa que el ejemplar no tiene un préstamo activo.",
+        "El estado actual del ejemplar permanece sin modificaciones.",
+        "No se genera un registro de devolución incorrecto."
+      ]
+    },
+    {
+      "titulo": "Intento de devolución de un ejemplar inexistente",
+      "tipo": "error",
+      "dado": [
+        "El bibliotecario se encuentra en la sección de devoluciones.",
+        "El identificador proporcionado no corresponde a ningún ejemplar registrado en BiblioUNSA."
+      ],
+      "cuando": "El bibliotecario intenta registrar la devolución utilizando dicho identificador.",
+      "entonces": [
+        "No se permite registrar la devolución.",
+        "Se informa que el ejemplar no fue encontrado.",
+        "No se modifica ningún préstamo existente.",
+        "El bibliotecario puede corregir la identificación e intentar nuevamente."
+      ]
+    },
+    {
+      "titulo": "Intento de registrar dos veces la misma devolución",
+      "tipo": "error",
+      "dado": [
+        "El bibliotecario ya registró correctamente la devolución de un ejemplar.",
+        "El préstamo correspondiente se encuentra finalizado."
+      ],
+      "cuando": "El bibliotecario intenta registrar nuevamente la devolución del mismo préstamo.",
+      "entonces": [
+        "No se genera una devolución duplicada.",
+        "Se informa que el préstamo ya fue finalizado.",
+        "Se conserva la fecha de devolución original.",
+        "La disponibilidad del ejemplar no se modifica incorrectamente."
+      ]
+    },
+    {
+      "titulo": "Intento de registrar una devolución sin permisos",
+      "tipo": "error",
+      "dado": [
+        "Una persona ha iniciado sesión en BiblioUNSA.",
+        "La persona no tiene autorización para registrar devoluciones."
+      ],
+      "cuando": "La persona intenta registrar la devolución de un ejemplar.",
+      "entonces": [
+        "No se permite realizar la operación.",
+        "Se informa que no cuenta con los permisos necesarios.",
+        "El préstamo conserva su estado anterior.",
+        "La disponibilidad del ejemplar permanece sin cambios."
+      ]
+    },
+    {
+      "titulo": "Intento de devolución sin identificar el ejemplar",
+      "tipo": "error",
+      "dado": [
+        "El bibliotecario se encuentra en la sección de registro de devoluciones.",
+        "No se ha identificado ningún ejemplar."
+      ],
+      "cuando": "El bibliotecario intenta confirmar una devolución.",
+      "entonces": [
+        "La devolución no se registra.",
+        "Se informa que debe identificar el ejemplar.",
+        "No se modifica ningún préstamo.",
+        "El bibliotecario puede completar la información requerida."
+      ]
+    },
+    {
+      "titulo": "Devolución de un ejemplar fuera del plazo establecido",
+      "tipo": "borde",
+      "dado": [
+        "El ejemplar tiene un préstamo activo.",
+        "La fecha límite de devolución ya ha vencido.",
+        "El estudiante entrega físicamente el ejemplar."
+      ],
+      "cuando": "El bibliotecario registra la devolución fuera de plazo.",
+      "entonces": [
+        "La devolución se registra correctamente.",
+        "El préstamo se marca como finalizado.",
+        "Se identifica que la devolución fue realizada con retraso.",
+        "Se aplica la multa o consecuencia correspondiente si así lo establecen las normas de la biblioteca.",
+        "El estado del ejemplar se actualiza según su disponibilidad y condiciones."
+      ]
+    },
+    {
+      "titulo": "Devolución exactamente en la fecha límite",
+      "tipo": "borde",
+      "dado": [
+        "El ejemplar tiene un préstamo activo.",
+        "La devolución se realiza dentro del límite permitido en la fecha de vencimiento."
+      ],
+      "cuando": "El bibliotecario registra la devolución en el momento límite permitido.",
+      "entonces": [
+        "La devolución se registra correctamente.",
+        "El préstamo se marca como finalizado.",
+        "No se considera una devolución tardía.",
+        "No se genera una multa por retraso."
+      ]
+    },
+    {
+      "titulo": "Devolución de un ejemplar deteriorado",
+      "tipo": "borde",
+      "dado": [
+        "El ejemplar tiene un préstamo activo.",
+        "El estudiante devuelve el ejemplar con daños visibles.",
+        "El bibliotecario detecta los daños durante la recepción."
+      ],
+      "cuando": "El bibliotecario registra la devolución e informa la condición del ejemplar.",
+      "entonces": [
+        "Se registra la devolución del préstamo.",
+        "Se deja constancia del estado del ejemplar según las normas de la biblioteca.",
+        "El ejemplar no se marca como disponible si requiere revisión o reparación.",
+        "Se informa al bibliotecario sobre la condición registrada.",
+        "Se aplican las medidas correspondientes si las normas de la biblioteca lo establecen."
+      ]
+    },
+    {
+      "titulo": "Devolución del último ejemplar prestado de un título",
+      "tipo": "borde",
+      "dado": [
+        "Todos los ejemplares de un libro se encuentran prestados.",
+        "Uno de los ejemplares es devuelto en condiciones adecuadas.",
+        "No existen reservas pendientes sobre el ejemplar."
+      ],
+      "cuando": "El bibliotecario registra la devolución.",
+      "entonces": [
+        "El préstamo se marca como finalizado.",
+        "El ejemplar devuelto cambia su estado a disponible.",
+        "El libro vuelve a contar con un ejemplar disponible para préstamo o reserva.",
+        "Los estados de los demás ejemplares permanecen sin modificaciones."
+      ]
+    },
+    {
+      "titulo": "Dos bibliotecarios registran simultáneamente la misma devolución",
+      "tipo": "borde",
+      "dado": [
+        "Un ejemplar tiene un préstamo activo.",
+        "Dos bibliotecarios autorizados intentan registrar la devolución del mismo ejemplar."
+      ],
+      "cuando": "Ambos bibliotecarios confirman la devolución prácticamente al mismo tiempo.",
+      "entonces": [
+        "La devolución se registra una sola vez.",
+        "El préstamo queda finalizado correctamente.",
+        "Uno de los bibliotecarios recibe la confirmación del registro.",
+        "El otro recibe un aviso indicando que el préstamo ya fue finalizado.",
+        "No se producen duplicaciones ni cambios incorrectos en la disponibilidad."
+      ]
+    },
+    {
+      "titulo": "Devolución de un ejemplar prestado en otra biblioteca",
+      "tipo": "borde",
+      "dado": [
+        "El ejemplar pertenece a una biblioteca de la UNSA diferente de aquella donde se intenta devolver.",
+        "El ejemplar tiene un préstamo activo.",
+        "El bibliotecario está autorizado para registrar devoluciones."
+      ],
+      "cuando": "El bibliotecario intenta registrar la devolución del ejemplar en una biblioteca distinta de la biblioteca de origen.",
+      "entonces": [
+        "Se verifica si las normas de la biblioteca permiten devoluciones entre sedes.",
+        "Si la devolución está permitida, el préstamo se finaliza y el ejemplar queda sujeto al procedimiento de traslado correspondiente.",
+        "Si la devolución no está permitida, se informa al bibliotecario dónde debe realizarse.",
+        "No se modifica incorrectamente la disponibilidad del ejemplar."
+      ]
+    },
+    {
+      "titulo": "Consulta de los datos del préstamo antes de confirmar la devolución",
+      "tipo": "exito",
+      "dado": [
+        "El bibliotecario ha identificado un ejemplar.",
+        "El ejemplar tiene un préstamo activo."
+      ],
+      "cuando": "El bibliotecario consulta la información del préstamo antes de confirmar la devolución.",
+      "entonces": [
+        "Se muestra la información del ejemplar.",
+        "Se identifica al estudiante responsable del préstamo.",
+        "Se muestra la fecha prevista de devolución.",
+        "Se informa si el préstamo se encuentra dentro o fuera del plazo.",
+        "El bibliotecario puede verificar los datos antes de confirmar la devolución."
+      ]
+    },
+    {
+      "titulo": "Cancelación del registro antes de confirmar la devolución",
+      "tipo": "borde",
+      "dado": [
+        "El bibliotecario ha identificado un ejemplar con préstamo activo.",
+        "La devolución todavía no ha sido confirmada."
+      ],
+      "cuando": "El bibliotecario decide cancelar la operación.",
+      "entonces": [
+        "No se registra la devolución.",
+        "El préstamo permanece activo.",
+        "El ejemplar conserva su estado de prestado.",
+        "No se modifica la fecha de devolución ni se genera una nueva operación."
+      ]
+    },
+    {
+      "titulo": "Devolución de un ejemplar cuyo préstamo tiene una multa pendiente",
+      "tipo": "borde",
+      "dado": [
+        "El ejemplar tiene un préstamo activo.",
+        "El préstamo tiene una multa pendiente asociada.",
+        "El estudiante devuelve físicamente el ejemplar."
+      ],
+      "cuando": "El bibliotecario registra la devolución.",
+      "entonces": [
+        "La devolución se registra correctamente.",
+        "El préstamo se marca como finalizado.",
+        "La multa pendiente permanece registrada hasta que sea resuelta según las normas de la biblioteca.",
+        "La disponibilidad del ejemplar se actualiza independientemente de la multa, siempre que no existan otras restricciones."
+      ]
+    }
+  ]
+}

@@ -1,0 +1,259 @@
+{
+  "historia_id": "H8",
+  "invest_ok": true,
+  "preguntas": [
+    "¿Qué información debe mostrarse para cada préstamo activo?",
+    "¿Se debe mostrar la fecha de préstamo y la fecha límite de devolución?",
+    "¿Los préstamos vencidos deben aparecer junto con los préstamos activos?",
+    "¿Se debe indicar cuántos días faltan para devolver cada libro?",
+    "¿Cómo deben ordenarse los préstamos activos: por fecha de devolución, título o biblioteca?",
+    "¿Se debe mostrar la biblioteca donde se realizó el préstamo?",
+    "¿El estudiante puede consultar préstamos activos de diferentes bibliotecas de la UNSA?",
+    "¿Qué mensaje debe mostrarse cuando el estudiante no tiene préstamos activos?",
+    "¿Se debe advertir al estudiante cuando un préstamo está próximo a vencer?",
+    "¿Con qué frecuencia debe actualizarse la información después de registrar una devolución?"
+  ],
+  "escenarios": [
+    {
+      "titulo": "Consulta exitosa de préstamos activos",
+      "tipo": "exito",
+      "dado": [
+        "El estudiante ha iniciado sesión en BiblioUNSA.",
+        "El estudiante tiene uno o más préstamos activos."
+      ],
+      "cuando": "El estudiante accede a la sección de préstamos activos.",
+      "entonces": [
+        "Se muestran los préstamos activos asociados a su cuenta.",
+        "Cada préstamo presenta información suficiente para identificar el libro.",
+        "Se muestra la fecha límite de devolución de cada ejemplar.",
+        "El estudiante puede identificar qué libros tiene pendientes de devolver."
+      ]
+    },
+    {
+      "titulo": "Consulta de detalles de un préstamo activo",
+      "tipo": "exito",
+      "dado": [
+        "El estudiante ha iniciado sesión.",
+        "El estudiante tiene al menos un préstamo activo."
+      ],
+      "cuando": "El estudiante selecciona un préstamo para consultar sus detalles.",
+      "entonces": [
+        "Se muestra el título del libro correspondiente.",
+        "Se identifica el ejemplar prestado.",
+        "Se presenta la fecha en que se realizó el préstamo.",
+        "Se informa la fecha límite de devolución.",
+        "Se muestra el estado actual del préstamo."
+      ]
+    },
+    {
+      "titulo": "Consulta de préstamos activos de diferentes bibliotecas",
+      "tipo": "exito",
+      "dado": [
+        "El estudiante ha iniciado sesión.",
+        "El estudiante tiene préstamos activos registrados en diferentes bibliotecas de la UNSA."
+      ],
+      "cuando": "El estudiante consulta sus préstamos activos.",
+      "entonces": [
+        "Se muestran los préstamos activos de las diferentes bibliotecas.",
+        "Cada préstamo permite identificar la biblioteca correspondiente.",
+        "No se omiten préstamos activos por pertenecer a otra biblioteca.",
+        "El estudiante puede reconocer todos los ejemplares que debe devolver."
+      ]
+    },
+    {
+      "titulo": "Consulta de préstamos próximos a vencer",
+      "tipo": "borde",
+      "dado": [
+        "El estudiante ha iniciado sesión.",
+        "El estudiante tiene un préstamo activo.",
+        "La fecha límite de devolución está próxima según las normas de la biblioteca."
+      ],
+      "cuando": "El estudiante consulta sus préstamos activos.",
+      "entonces": [
+        "El préstamo aparece en la consulta.",
+        "Se muestra claramente su fecha límite de devolución.",
+        "Se advierte al estudiante que el préstamo está próximo a vencer.",
+        "El estudiante puede identificar que debe devolver el ejemplar oportunamente."
+      ]
+    },
+    {
+      "titulo": "Consulta de un préstamo vencido",
+      "tipo": "borde",
+      "dado": [
+        "El estudiante ha iniciado sesión.",
+        "El estudiante tiene un préstamo activo cuya fecha límite de devolución ya venció.",
+        "El ejemplar todavía no ha sido devuelto."
+      ],
+      "cuando": "El estudiante consulta sus préstamos activos.",
+      "entonces": [
+        "El préstamo continúa apareciendo entre los pendientes de devolución.",
+        "Se identifica claramente que está vencido.",
+        "Se muestra la fecha límite de devolución.",
+        "El estudiante puede reconocer que tiene una devolución atrasada."
+      ]
+    },
+    {
+      "titulo": "Consulta de un préstamo que vence el día actual",
+      "tipo": "borde",
+      "dado": [
+        "El estudiante ha iniciado sesión.",
+        "El estudiante tiene un préstamo activo.",
+        "La fecha límite de devolución corresponde al día actual.",
+        "El plazo permitido todavía no ha terminado."
+      ],
+      "cuando": "El estudiante consulta sus préstamos activos.",
+      "entonces": [
+        "El préstamo aparece como activo.",
+        "Se informa que debe devolver el ejemplar durante el día actual.",
+        "No se identifica incorrectamente como vencido mientras el plazo siga vigente."
+      ]
+    },
+    {
+      "titulo": "Consulta sin préstamos activos",
+      "tipo": "borde",
+      "dado": [
+        "El estudiante ha iniciado sesión.",
+        "El estudiante no tiene préstamos activos."
+      ],
+      "cuando": "El estudiante accede a la sección de préstamos activos.",
+      "entonces": [
+        "Se informa que no tiene libros pendientes de devolución.",
+        "No se muestran préstamos inexistentes.",
+        "El estudiante puede continuar utilizando los demás servicios de BiblioUNSA."
+      ]
+    },
+    {
+      "titulo": "Consulta de múltiples préstamos activos",
+      "tipo": "borde",
+      "dado": [
+        "El estudiante ha iniciado sesión.",
+        "El estudiante tiene varios préstamos activos con diferentes fechas de devolución."
+      ],
+      "cuando": "El estudiante consulta sus préstamos activos.",
+      "entonces": [
+        "Se muestran todos los préstamos activos correspondientes a su cuenta.",
+        "Cada préstamo presenta su fecha límite de devolución.",
+        "Los registros pueden distinguirse individualmente.",
+        "El estudiante puede reconocer qué libros debe devolver primero."
+      ]
+    },
+    {
+      "titulo": "Actualización de préstamos después de una devolución",
+      "tipo": "exito",
+      "dado": [
+        "El estudiante tiene varios préstamos activos.",
+        "El bibliotecario ha registrado correctamente la devolución de uno de los ejemplares."
+      ],
+      "cuando": "El estudiante consulta nuevamente sus préstamos activos.",
+      "entonces": [
+        "El ejemplar devuelto deja de aparecer entre los préstamos activos.",
+        "Los demás préstamos pendientes permanecen visibles.",
+        "La información refleja correctamente las devoluciones registradas.",
+        "No se muestra el ejemplar devuelto como una obligación pendiente."
+      ]
+    },
+    {
+      "titulo": "Actualización después de recibir un nuevo préstamo",
+      "tipo": "exito",
+      "dado": [
+        "El estudiante ha iniciado sesión.",
+        "El bibliotecario ha registrado correctamente la entrega de un nuevo ejemplar al estudiante."
+      ],
+      "cuando": "El estudiante consulta sus préstamos activos.",
+      "entonces": [
+        "El nuevo préstamo aparece en la consulta.",
+        "Se muestra la información del libro recibido.",
+        "Se presenta la fecha límite de devolución correspondiente.",
+        "Los préstamos anteriores permanecen visibles si continúan activos."
+      ]
+    },
+    {
+      "titulo": "Intento de consultar préstamos sin iniciar sesión",
+      "tipo": "error",
+      "dado": [
+        "El estudiante no ha iniciado sesión en BiblioUNSA.",
+        "El estudiante intenta acceder a la sección de préstamos activos."
+      ],
+      "cuando": "El estudiante solicita consultar sus préstamos.",
+      "entonces": [
+        "No se permite acceder a la información personal.",
+        "Se informa que debe iniciar sesión.",
+        "No se muestran los préstamos de ningún estudiante."
+      ]
+    },
+    {
+      "titulo": "Intento de consultar préstamos de otro estudiante",
+      "tipo": "error",
+      "dado": [
+        "El estudiante ha iniciado sesión en BiblioUNSA.",
+        "Existen préstamos activos asociados a otro estudiante."
+      ],
+      "cuando": "El estudiante intenta consultar los préstamos personales de otro usuario.",
+      "entonces": [
+        "Se rechaza el acceso a la información ajena.",
+        "No se muestran los préstamos del otro estudiante.",
+        "Se mantiene la confidencialidad de los registros personales.",
+        "El estudiante conserva acceso únicamente a sus préstamos autorizados."
+      ]
+    },
+    {
+      "titulo": "Consulta después del vencimiento de la sesión",
+      "tipo": "error",
+      "dado": [
+        "El estudiante inició sesión anteriormente.",
+        "Su sesión ha vencido."
+      ],
+      "cuando": "El estudiante intenta consultar sus préstamos activos.",
+      "entonces": [
+        "No se permite consultar la información personal mediante la sesión vencida.",
+        "Se informa que debe iniciar sesión nuevamente.",
+        "No se muestran los datos personales hasta que se autentique correctamente."
+      ]
+    },
+    {
+      "titulo": "Consulta cuando la información no está disponible",
+      "tipo": "error",
+      "dado": [
+        "El estudiante ha iniciado sesión.",
+        "La información de los préstamos no puede consultarse temporalmente."
+      ],
+      "cuando": "El estudiante accede a la sección de préstamos activos.",
+      "entonces": [
+        "Se informa que no fue posible recuperar la información.",
+        "No se presenta una lista vacía como si el estudiante no tuviera préstamos.",
+        "El estudiante puede intentar realizar la consulta nuevamente.",
+        "No se modifica ningún préstamo existente."
+      ]
+    },
+    {
+      "titulo": "Consulta de ejemplares diferentes con el mismo título",
+      "tipo": "borde",
+      "dado": [
+        "El estudiante ha iniciado sesión.",
+        "El estudiante tiene préstamos activos de dos ejemplares diferentes de un mismo título."
+      ],
+      "cuando": "El estudiante consulta sus préstamos activos.",
+      "entonces": [
+        "Ambos préstamos aparecen como registros independientes.",
+        "Se muestra información suficiente para distinguir los ejemplares.",
+        "Cada préstamo conserva su fecha límite de devolución.",
+        "No se combinan ni se omiten los registros."
+      ]
+    },
+    {
+      "titulo": "Consulta cuando todos los préstamos fueron devueltos",
+      "tipo": "borde",
+      "dado": [
+        "El estudiante tenía uno o más préstamos activos.",
+        "El bibliotecario registró correctamente la devolución de todos los ejemplares."
+      ],
+      "cuando": "El estudiante consulta nuevamente sus préstamos activos.",
+      "entonces": [
+        "No aparecen préstamos pendientes de devolución.",
+        "Se informa que el estudiante no tiene préstamos activos.",
+        "Los préstamos finalizados dejan de considerarse obligaciones pendientes.",
+        "La información refleja correctamente la situación actual del estudiante."
+      ]
+    }
+  ]
+}

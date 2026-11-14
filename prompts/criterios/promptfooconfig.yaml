@@ -1,6 +1,8 @@
 description: BiblioUNSA - criterios de aceptación
 prompts:
 - file://v1.txt
+- file://v2.txt
+- file://v3.txt
 providers:
 - id: file://../proveedor_grabado.py
   label: grabaciones-locales

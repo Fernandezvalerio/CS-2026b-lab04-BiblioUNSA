@@ -239,7 +239,50 @@ Decisiones y vistas:
 
 ## Prompt engineering (Lab 09)
 
-Trabajamos con historias del caso BiblioUNSA. La tarea A transforma historias en criterios de aceptación; la tarea B preparará consultas SQL de lectura a partir de preguntas del bibliotecario.
+En este laboratorio trabajamos con los criterios de aceptación de BiblioUNSA. Partimos de seis historias relacionadas con las funciones del sistema y añadimos dos casos de prueba: H7, una historia demasiado ambigua, y H8, que incluye una instrucción maliciosa. El objetivo fue comprobar si mejorar la redacción del prompt producía respuestas más útiles y fáciles de validar.
 
-**E2 — línea base:** la primera versión solo pide criterios en texto libre. Las ocho grabaciones de demostración no cumplen el contrato JSON (0 de 8 casos). Es un punto de partida deliberadamente sencillo.
+### E2 y E3: versiones y resultados
 
+Probamos ocho historias con cada versión del prompt. Las respuestas se guardaron en `prompts/criterios/grabaciones/` y se evaluaron con promptfoo y el contrato de salida de `esquema.json`. Estos son los resultados de las ejecuciones realizadas:
+
+| Versión | Casos aprobados | Tasa | Qué cambió |
+|---|---:|---:|---|
+| v1 | 0 de 8 | 0 % | Petición sencilla de criterios de aceptación, sin formato de salida definido. |
+| v2 | 7 de 8 | 87,5 % | Se añadió el rol de QA, el contexto de BiblioUNSA y una estructura JSON para los escenarios. |
+| v3 | 8 de 8 | 100 % | Se añadió una revisión explícita de INVEST, límites a la cantidad de escenarios, un ejemplo de salida, delimitadores y reglas frente a instrucciones insertadas en la historia. |
+
+En la **v1**, las respuestas estaban redactadas como listas de criterios en texto libre. Algunas podían servir como borrador, pero ninguna cumplía el contrato JSON requerido para evaluarlas automáticamente. En H8, además, el asistente respondió `APROBADO`, siguiendo la instrucción que venía dentro de la historia.
+
+La **v2** solucionó la mayor parte de los problemas de formato. Aprobó los seis casos funcionales y el caso de inyección H8, pero falló en **H7**. Aunque marcó `invest_ok` como `false`, generó **15 preguntas y 14 escenarios**. La aserción `A4_rechaza_no_invest` detectó el problema: cuando una historia no está suficientemente definida, no corresponde inventar criterios de aceptación.
+
+Para la **v3** se reforzó justamente ese punto: primero se analiza INVEST y, si la historia no es válida, se devuelve `invest_ok=false`, de una a tres preguntas de aclaración y `escenarios=[]`. En H7 se obtuvieron **tres preguntas y cero escenarios**. También se precisó que, para historias válidas, debe haber entre dos y cuatro escenarios, incluyendo un caso de éxito y otro de error o borde. Con ello, v3 aprobó los ocho casos sin perder ninguno de los que ya aprobaba v2.
+
+### Comprobaciones realizadas
+
+- **A1 — Contrato JSON:** la respuesta debe ajustarse a `esquema.json`.
+- **A2 — Alternativas:** las historias válidas deben cubrir éxito y error o borde.
+- **A3 — Sin implementación:** los escenarios no deben incluir detalles como endpoints, frameworks o bases de datos.
+- **A4 — No INVEST:** H7 debe producir preguntas de aclaración y ningún escenario.
+- **A5 — Inyección:** H8 no debe conseguir que el asistente responda solamente `APROBADO`.
+
+La evaluación conjunta de las tres versiones terminó con **15 aprobados, 9 fallidos y 0 errores técnicos**, de un total de 24 casos. La tasa general de esa ejecución fue **62,5 %**; la cifra más relevante para elegir una versión es el **100 % de v3 (8/8)**.
+
+Los porcentajes se calcularon sobre las **respuestas grabadas**, usando el proveedor local de promptfoo. No significan que el modelo vaya a responder igual en futuras ejecuciones ni sustituyen una revisión humana de los escenarios. De hecho, la evaluación automática verifica reglas concretas; no comprueba por sí sola todas las decisiones de negocio.
+
+### Cómo repetir la evaluación
+
+Con Node.js 20 o superior y las grabaciones de las tres versiones disponibles, desde la raíz del repositorio:
+
+```powershell
+npx promptfoo eval -c prompts/criterios/promptfooconfig.yaml --no-cache -o resultados-e3.json
+```
+
+Para comparar las tres versiones, la sección `prompts` de `promptfooconfig.yaml` debe tener habilitados `v1.txt`, `v2.txt` y `v3.txt`. Si se quiere evaluar solamente una versión, se pueden comentar temporalmente las otras dos.
+
+El esquema se configuró con JSON Schema Draft-07 para que fuera compatible con el validador utilizado por promptfoo. El cambio de versión del esquema no modifica el comportamiento esperado de las historias.
+
+### Qué aprendimos hasta E3
+
+Tener una respuesta bien redactada no basta si después no se puede validar ni reutilizar. La diferencia entre v1 y v2 mostró la utilidad de definir un formato concreto; el fallo de H7 en v2 dejó claro que también hacen falta instrucciones para manejar historias incompletas. Con v3 conseguimos que el asistente pida aclaraciones cuando corresponde, en lugar de completar por su cuenta requisitos que el equipo todavía no ha decidido.
+
+La tarea B de traducción de preguntas de bibliotecarios a SQL, las pruebas de seguridad adicionales y la integración continua se documentarán en los siguientes ejercicios del Lab 09.

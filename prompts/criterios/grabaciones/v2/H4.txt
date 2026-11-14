@@ -1,0 +1,302 @@
+{
+  "historia_id": "H4",
+  "invest_ok": true,
+  "preguntas": [
+    "¿El código QR del carné identifica únicamente al estudiante o también contiene información sobre sus préstamos?",
+    "¿El bibliotecario debe iniciar sesión para registrar la entrega de un libro?",
+    "¿Es obligatorio que el estudiante tenga una reserva previa para recibir un ejemplar?",
+    "¿Cuántos libros puede tener prestados simultáneamente un estudiante?",
+    "¿Cuánto tiempo dura un préstamo y cómo se determina su fecha de devolución?",
+    "¿Un estudiante con multas pendientes o préstamos vencidos puede recibir nuevos libros?",
+    "¿Qué sucede si el código QR del carné está dañado, vencido o no puede leerse?",
+    "¿Qué procedimiento se sigue cuando el estudiante no tiene su carné QR?",
+    "¿El sistema debe mostrar una confirmación antes de registrar definitivamente la entrega?",
+    "¿El estudiante debe recibir una constancia o notificación del préstamo realizado?",
+    "¿Se permite registrar préstamos de ejemplares pertenecientes a otras bibliotecas de la UNSA?",
+    "¿Qué ocurre si dos bibliotecarios intentan entregar el mismo ejemplar simultáneamente?"
+  ],
+  "escenarios": [
+    {
+      "titulo": "Registro exitoso de entrega mediante carné QR",
+      "tipo": "exito",
+      "dado": [
+        "El bibliotecario ha iniciado sesión en BiblioUNSA.",
+        "El estudiante tiene un carné QR válido.",
+        "El estudiante está autorizado para solicitar préstamos.",
+        "El ejemplar se encuentra disponible para préstamo."
+      ],
+      "cuando": "El bibliotecario escanea el carné QR del estudiante, selecciona el ejemplar y confirma su entrega.",
+      "entonces": [
+        "Se identifica correctamente al estudiante.",
+        "Se registra el préstamo a nombre del estudiante.",
+        "El ejemplar cambia su estado a prestado.",
+        "Se establece la fecha de devolución correspondiente.",
+        "Se muestra una confirmación de la entrega realizada."
+      ]
+    },
+    {
+      "titulo": "Identificación exitosa del estudiante mediante carné QR",
+      "tipo": "exito",
+      "dado": [
+        "El bibliotecario se encuentra en la sección de registro de préstamos.",
+        "El estudiante presenta un carné QR válido y vigente.",
+        "El estudiante está registrado en BiblioUNSA."
+      ],
+      "cuando": "El bibliotecario escanea el código QR del carné.",
+      "entonces": [
+        "Se identifica al estudiante correspondiente al carné.",
+        "Se muestra la información necesaria para verificar su identidad.",
+        "El bibliotecario puede continuar con el registro de la entrega."
+      ]
+    },
+    {
+      "titulo": "Consulta del préstamo después de registrar la entrega",
+      "tipo": "exito",
+      "dado": [
+        "El bibliotecario ha registrado correctamente la entrega de un ejemplar.",
+        "El préstamo se encuentra activo."
+      ],
+      "cuando": "El estudiante consulta sus préstamos activos.",
+      "entonces": [
+        "El préstamo aparece asociado a su cuenta.",
+        "Se muestra la información del libro entregado.",
+        "Se indica la fecha de préstamo y la fecha prevista de devolución.",
+        "El estado del préstamo se muestra como activo."
+      ]
+    },
+    {
+      "titulo": "Entrega de un ejemplar reservado por el estudiante",
+      "tipo": "exito",
+      "dado": [
+        "El estudiante tiene una reserva activa de un ejemplar.",
+        "La reserva corresponde al estudiante identificado mediante el carné QR.",
+        "El estudiante recoge el ejemplar dentro del plazo establecido."
+      ],
+      "cuando": "El bibliotecario escanea el carné QR y confirma la entrega del ejemplar reservado.",
+      "entonces": [
+        "Se registra el préstamo a nombre del estudiante.",
+        "La reserva deja de figurar como pendiente de recogida.",
+        "El ejemplar cambia su estado a prestado.",
+        "Se informa la fecha de devolución correspondiente.",
+        "No se genera un préstamo duplicado."
+      ]
+    },
+    {
+      "titulo": "Intento de entrega con un carné QR no reconocido",
+      "tipo": "error",
+      "dado": [
+        "El bibliotecario se encuentra en la sección de registro de préstamos.",
+        "El código QR presentado no corresponde a un estudiante reconocido por BiblioUNSA."
+      ],
+      "cuando": "El bibliotecario intenta identificar al estudiante mediante el código QR.",
+      "entonces": [
+        "No se permite registrar la entrega.",
+        "Se informa que el carné no pudo ser reconocido.",
+        "No se genera ningún préstamo.",
+        "El ejemplar conserva su estado anterior."
+      ]
+    },
+    {
+      "titulo": "Intento de entrega con un código QR ilegible",
+      "tipo": "error",
+      "dado": [
+        "El bibliotecario intenta registrar la entrega de un ejemplar.",
+        "El estudiante presenta un carné cuyo código QR está dañado o no puede leerse."
+      ],
+      "cuando": "El bibliotecario intenta escanear el código QR.",
+      "entonces": [
+        "Se informa que no fue posible leer el código QR.",
+        "No se registra ningún préstamo sin identificar correctamente al estudiante.",
+        "El bibliotecario puede intentar nuevamente la identificación."
+      ]
+    },
+    {
+      "titulo": "Intento de entrega de un ejemplar ya prestado",
+      "tipo": "error",
+      "dado": [
+        "El bibliotecario ha identificado correctamente al estudiante.",
+        "El ejemplar seleccionado ya se encuentra prestado a otro usuario."
+      ],
+      "cuando": "El bibliotecario intenta registrar la entrega del ejemplar.",
+      "entonces": [
+        "El registro del nuevo préstamo es rechazado.",
+        "Se informa que el ejemplar no está disponible.",
+        "No se modifica el préstamo existente.",
+        "El ejemplar permanece asociado al préstamo original."
+      ]
+    },
+    {
+      "titulo": "Intento de entrega a un estudiante con préstamos restringidos",
+      "tipo": "error",
+      "dado": [
+        "El estudiante ha sido identificado mediante un carné QR válido.",
+        "El estudiante presenta una condición que le impide solicitar nuevos préstamos según las normas de la biblioteca.",
+        "El ejemplar seleccionado se encuentra disponible."
+      ],
+      "cuando": "El bibliotecario intenta confirmar la entrega del ejemplar.",
+      "entonces": [
+        "No se permite registrar el préstamo.",
+        "Se informa al bibliotecario que el estudiante tiene una restricción vigente.",
+        "No se modifica la disponibilidad del ejemplar.",
+        "Se mantiene la información de los préstamos anteriores."
+      ]
+    },
+    {
+      "titulo": "Intento de entrega por un usuario sin permisos de bibliotecario",
+      "tipo": "error",
+      "dado": [
+        "Una persona ha iniciado sesión en BiblioUNSA.",
+        "La persona no tiene autorización para registrar entregas de libros."
+      ],
+      "cuando": "La persona intenta registrar un préstamo mediante un carné QR.",
+      "entonces": [
+        "No se permite realizar el registro de la entrega.",
+        "Se informa que no cuenta con los permisos necesarios.",
+        "No se genera ningún préstamo.",
+        "La disponibilidad del ejemplar permanece sin cambios."
+      ]
+    },
+    {
+      "titulo": "Intento de entrega sin seleccionar un ejemplar",
+      "tipo": "error",
+      "dado": [
+        "El bibliotecario ha identificado correctamente al estudiante mediante su carné QR.",
+        "No se ha seleccionado ningún ejemplar para entregar."
+      ],
+      "cuando": "El bibliotecario intenta confirmar el registro del préstamo.",
+      "entonces": [
+        "No se completa el registro.",
+        "Se informa que debe seleccionar un ejemplar.",
+        "No se genera ningún préstamo hasta completar la información necesaria."
+      ]
+    },
+    {
+      "titulo": "Intento de entrega de un ejemplar reservado por otro estudiante",
+      "tipo": "error",
+      "dado": [
+        "El bibliotecario ha identificado al estudiante mediante su carné QR.",
+        "El ejemplar seleccionado tiene una reserva activa a nombre de otro estudiante.",
+        "La reserva se encuentra vigente."
+      ],
+      "cuando": "El bibliotecario intenta registrar la entrega al estudiante identificado.",
+      "entonces": [
+        "No se permite entregar el ejemplar a un estudiante diferente del titular de la reserva.",
+        "Se informa que el ejemplar está reservado.",
+        "La reserva original permanece vigente.",
+        "No se genera un nuevo préstamo."
+      ]
+    },
+    {
+      "titulo": "Intento de entrega con carné institucional inactivo",
+      "tipo": "error",
+      "dado": [
+        "El bibliotecario se encuentra registrando una entrega.",
+        "El estudiante presenta un carné QR asociado a una cuenta institucional inactiva o suspendida."
+      ],
+      "cuando": "El bibliotecario escanea el carné e intenta registrar el préstamo.",
+      "entonces": [
+        "Se identifica la restricción correspondiente al estudiante.",
+        "No se permite registrar el préstamo.",
+        "Se informa que la cuenta no está habilitada para recibir préstamos.",
+        "El ejemplar mantiene su disponibilidad."
+      ]
+    },
+    {
+      "titulo": "Entrega del último ejemplar disponible de un libro",
+      "tipo": "borde",
+      "dado": [
+        "Un libro tiene varios ejemplares registrados.",
+        "Solo uno de los ejemplares se encuentra disponible.",
+        "El estudiante cumple las condiciones para recibirlo."
+      ],
+      "cuando": "El bibliotecario identifica al estudiante mediante su carné QR y confirma la entrega del último ejemplar disponible.",
+      "entonces": [
+        "El préstamo se registra correctamente.",
+        "El ejemplar entregado cambia su estado a prestado.",
+        "El libro queda sin ejemplares disponibles para nuevos préstamos.",
+        "Los estados de los demás ejemplares permanecen sin modificaciones."
+      ]
+    },
+    {
+      "titulo": "Dos bibliotecarios intentan entregar el mismo ejemplar simultáneamente",
+      "tipo": "borde",
+      "dado": [
+        "Un ejemplar se encuentra disponible.",
+        "Dos bibliotecarios autorizados están registrando entregas del mismo ejemplar.",
+        "Cada bibliotecario ha identificado correctamente a un estudiante diferente."
+      ],
+      "cuando": "Ambos bibliotecarios intentan confirmar la entrega del mismo ejemplar prácticamente al mismo tiempo.",
+      "entonces": [
+        "Se permite registrar un solo préstamo activo para el ejemplar.",
+        "Uno de los registros se confirma correctamente.",
+        "El otro bibliotecario recibe un aviso de que el ejemplar ya no está disponible.",
+        "No se generan préstamos simultáneos del mismo ejemplar a estudiantes diferentes."
+      ]
+    },
+    {
+      "titulo": "Intento de registrar dos veces la misma entrega",
+      "tipo": "borde",
+      "dado": [
+        "El bibliotecario ha registrado correctamente un préstamo.",
+        "El ejemplar ya figura como prestado al estudiante identificado."
+      ],
+      "cuando": "El bibliotecario intenta registrar nuevamente la entrega del mismo ejemplar al mismo estudiante.",
+      "entonces": [
+        "No se genera un segundo préstamo activo del mismo ejemplar.",
+        "Se informa que el ejemplar ya tiene un préstamo registrado.",
+        "Se conserva el registro original sin duplicaciones.",
+        "La fecha de devolución original no se modifica."
+      ]
+    },
+    {
+      "titulo": "Entrega cuando el estudiante alcanza el límite máximo de préstamos",
+      "tipo": "borde",
+      "dado": [
+        "El estudiante tiene un carné QR válido.",
+        "El estudiante ya alcanzó el número máximo de préstamos simultáneos permitido por la biblioteca.",
+        "El ejemplar solicitado está disponible."
+      ],
+      "cuando": "El bibliotecario intenta registrar un préstamo adicional.",
+      "entonces": [
+        "No se permite registrar el préstamo adicional.",
+        "Se informa que el estudiante ha alcanzado el límite de préstamos permitido.",
+        "Los préstamos existentes permanecen sin modificaciones.",
+        "El ejemplar solicitado conserva su disponibilidad."
+      ]
+    },
+    {
+      "titulo": "Entrega de un ejemplar en la fecha límite de recogida de una reserva",
+      "tipo": "borde",
+      "dado": [
+        "El estudiante tiene una reserva activa.",
+        "La reserva se encuentra en su fecha límite de recogida.",
+        "La reserva todavía no ha vencido.",
+        "El estudiante presenta un carné QR válido."
+      ],
+      "cuando": "El bibliotecario identifica al estudiante y confirma la entrega antes del vencimiento de la reserva.",
+      "entonces": [
+        "La entrega se registra correctamente.",
+        "La reserva se considera atendida.",
+        "El ejemplar cambia su estado a prestado.",
+        "Se establece la fecha de devolución correspondiente."
+      ]
+    },
+    {
+      "titulo": "Consulta de los datos del préstamo antes de confirmar la entrega",
+      "tipo": "exito",
+      "dado": [
+        "El bibliotecario ha identificado correctamente al estudiante mediante su carné QR.",
+        "El ejemplar seleccionado se encuentra disponible.",
+        "El estudiante cumple las condiciones para recibir el préstamo."
+      ],
+      "cuando": "El bibliotecario revisa la información de la entrega antes de confirmarla.",
+      "entonces": [
+        "Se muestra la identidad del estudiante.",
+        "Se muestra la información del ejemplar seleccionado.",
+        "Se informa la fecha prevista de devolución.",
+        "El bibliotecario puede verificar que los datos corresponden a la entrega que desea registrar.",
+        "El préstamo no queda registrado definitivamente hasta su confirmación."
+      ]
+    }
+  ]
+}

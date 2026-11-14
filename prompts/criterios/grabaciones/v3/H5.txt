@@ -1,0 +1,66 @@
+{
+  "historia_id": "H5",
+  "invest_ok": true,
+  "preguntas": [],
+  "escenarios": [
+    {
+      "titulo": "Registro exitoso de devolución de un ejemplar",
+      "tipo": "exito",
+      "dado": [
+        "El bibliotecario se encuentra realizando el registro de una devolución",
+        "El ejemplar tiene un préstamo activo",
+        "El estudiante entrega el ejemplar prestado"
+      ],
+      "cuando": "El bibliotecario identifica el ejemplar y registra su devolución",
+      "entonces": [
+        "El sistema confirma que la devolución fue registrada correctamente",
+        "El préstamo correspondiente deja de figurar como activo",
+        "El ejemplar vuelve a mostrarse como disponible"
+      ]
+    },
+    {
+      "titulo": "Intento de devolución de un ejemplar sin préstamo activo",
+      "tipo": "error",
+      "dado": [
+        "El bibliotecario se encuentra en la sección de registro de devoluciones",
+        "El ejemplar identificado no tiene un préstamo activo"
+      ],
+      "cuando": "El bibliotecario intenta registrar la devolución del ejemplar",
+      "entonces": [
+        "El sistema informa que el ejemplar no tiene un préstamo activo",
+        "No se registra una nueva devolución",
+        "El estado del ejemplar permanece sin cambios"
+      ]
+    },
+    {
+      "titulo": "Intento de registrar dos veces la misma devolución",
+      "tipo": "borde",
+      "dado": [
+        "El bibliotecario registró correctamente la devolución de un ejemplar",
+        "El préstamo correspondiente ya no se encuentra activo"
+      ],
+      "cuando": "El bibliotecario intenta registrar nuevamente la devolución del mismo ejemplar",
+      "entonces": [
+        "El sistema informa que el ejemplar no tiene un préstamo activo",
+        "No se registra una segunda devolución",
+        "El estado del préstamo y la disponibilidad del ejemplar permanecen sin cambios"
+      ]
+    },
+    {
+      "titulo": "Devolución de un ejemplar con préstamo vencido",
+      "tipo": "borde",
+      "dado": [
+        "El ejemplar tiene un préstamo activo",
+        "La fecha de devolución prevista ya ha transcurrido",
+        "El estudiante entrega el ejemplar al bibliotecario"
+      ],
+      "cuando": "El bibliotecario registra la devolución del ejemplar",
+      "entonces": [
+        "El sistema confirma el registro de la devolución",
+        "El préstamo deja de figurar como activo",
+        "El ejemplar vuelve a mostrarse como disponible",
+        "La devolución queda registrada sin establecer automáticamente una multa cuyo criterio no ha sido definido"
+      ]
+    }
+  ]
+}

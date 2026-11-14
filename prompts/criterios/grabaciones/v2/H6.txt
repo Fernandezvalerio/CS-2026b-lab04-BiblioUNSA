@@ -1,0 +1,369 @@
+{
+  "historia_id": "H6",
+  "invest_ok": true,
+  "preguntas": [
+    "¿La consulta debe mostrar únicamente las reservas, préstamos y multas pendientes o también su historial?",
+    "¿Qué información debe mostrarse para cada reserva, préstamo y multa?",
+    "¿Las reservas deben mostrar la biblioteca donde se recogerá el ejemplar y la fecha límite de recogida?",
+    "¿Los préstamos deben mostrar la fecha de entrega, la fecha límite de devolución y los días de retraso?",
+    "¿Las multas deben mostrar su motivo, importe, fecha de generación y estado de pago?",
+    "¿Se permite consultar la información de diferentes bibliotecas de la UNSA en una sola sección?",
+    "¿El estudiante debe recibir alguna advertencia cuando tiene préstamos vencidos o reservas próximas a vencer?",
+    "¿Con qué frecuencia debe actualizarse la información de reservas, préstamos y multas?",
+    "¿Se pueden filtrar los registros por estado, fecha o biblioteca?",
+    "¿Qué sucede si el estudiante no tiene reservas, préstamos ni multas?",
+    "¿Se permite consultar el historial de multas pagadas y préstamos devueltos?",
+    "¿Qué opciones tiene el estudiante cuando encuentra información incorrecta en sus registros?"
+  ],
+  "escenarios": [
+    {
+      "titulo": "Consulta exitosa de reservas, préstamos y multas",
+      "tipo": "exito",
+      "dado": [
+        "El estudiante ha iniciado sesión en BiblioUNSA.",
+        "El estudiante tiene reservas activas, préstamos vigentes y multas pendientes."
+      ],
+      "cuando": "El estudiante accede a la sección de consulta de sus servicios de biblioteca.",
+      "entonces": [
+        "Se muestran las reservas asociadas a su cuenta.",
+        "Se muestran sus préstamos y sus estados actuales.",
+        "Se muestran las multas registradas a su nombre.",
+        "El estudiante puede identificar sus obligaciones pendientes.",
+        "La información se presenta de manera clara y organizada."
+      ]
+    },
+    {
+      "titulo": "Consulta de reservas activas",
+      "tipo": "exito",
+      "dado": [
+        "El estudiante ha iniciado sesión.",
+        "El estudiante tiene una o más reservas activas."
+      ],
+      "cuando": "El estudiante consulta la sección de sus reservas.",
+      "entonces": [
+        "Se muestran las reservas activas del estudiante.",
+        "Se presenta el título del libro y la información necesaria para identificar el ejemplar.",
+        "Se indica la biblioteca donde debe recogerlo.",
+        "Se muestra el estado de cada reserva.",
+        "Se informa la fecha límite de recogida correspondiente."
+      ]
+    },
+    {
+      "titulo": "Consulta de préstamos activos",
+      "tipo": "exito",
+      "dado": [
+        "El estudiante ha iniciado sesión.",
+        "El estudiante tiene uno o más préstamos activos."
+      ],
+      "cuando": "El estudiante consulta sus préstamos.",
+      "entonces": [
+        "Se muestran los libros que tiene prestados.",
+        "Se indica la fecha en que recibió cada ejemplar.",
+        "Se muestra la fecha límite de devolución.",
+        "Se informa el estado actual de cada préstamo.",
+        "El estudiante puede identificar los libros que todavía debe devolver."
+      ]
+    },
+    {
+      "titulo": "Consulta de multas pendientes",
+      "tipo": "exito",
+      "dado": [
+        "El estudiante ha iniciado sesión.",
+        "El estudiante tiene una o más multas pendientes."
+      ],
+      "cuando": "El estudiante accede a la sección de multas.",
+      "entonces": [
+        "Se muestran las multas pendientes asociadas al estudiante.",
+        "Se indica el motivo de cada multa.",
+        "Se muestra el importe correspondiente.",
+        "Se informa el estado de cada multa.",
+        "El estudiante puede identificar sus obligaciones económicas pendientes."
+      ]
+    },
+    {
+      "titulo": "Consulta de información de diferentes bibliotecas",
+      "tipo": "exito",
+      "dado": [
+        "El estudiante ha iniciado sesión.",
+        "El estudiante tiene reservas o préstamos registrados en diferentes bibliotecas de la UNSA."
+      ],
+      "cuando": "El estudiante consulta sus reservas y préstamos.",
+      "entonces": [
+        "Se muestran los registros correspondientes a las distintas bibliotecas.",
+        "Cada registro permite identificar la biblioteca relacionada.",
+        "El estudiante puede conocer sus obligaciones sin confundir los ejemplares de diferentes sedes."
+      ]
+    },
+    {
+      "titulo": "Consulta de préstamos devueltos",
+      "tipo": "exito",
+      "dado": [
+        "El estudiante ha iniciado sesión.",
+        "El estudiante tiene préstamos que ya fueron devueltos.",
+        "La consulta del historial de préstamos está habilitada."
+      ],
+      "cuando": "El estudiante consulta su historial de préstamos.",
+      "entonces": [
+        "Se muestran los préstamos finalizados asociados a su cuenta.",
+        "Se identifica el libro correspondiente a cada préstamo.",
+        "Se muestra la fecha en que se realizó la devolución.",
+        "Los préstamos finalizados se distinguen de los préstamos activos."
+      ]
+    },
+    {
+      "titulo": "Consulta sin reservas activas",
+      "tipo": "borde",
+      "dado": [
+        "El estudiante ha iniciado sesión.",
+        "El estudiante no tiene reservas activas."
+      ],
+      "cuando": "El estudiante consulta sus reservas.",
+      "entonces": [
+        "Se informa que no tiene reservas activas.",
+        "No se muestran reservas inexistentes.",
+        "El estudiante puede continuar utilizando los demás servicios de biblioteca."
+      ]
+    },
+    {
+      "titulo": "Consulta sin préstamos activos",
+      "tipo": "borde",
+      "dado": [
+        "El estudiante ha iniciado sesión.",
+        "El estudiante no tiene préstamos activos."
+      ],
+      "cuando": "El estudiante consulta sus préstamos.",
+      "entonces": [
+        "Se informa que no tiene préstamos activos.",
+        "No se muestran obligaciones de devolución inexistentes.",
+        "La información de sus demás servicios permanece accesible."
+      ]
+    },
+    {
+      "titulo": "Consulta sin multas pendientes",
+      "tipo": "borde",
+      "dado": [
+        "El estudiante ha iniciado sesión.",
+        "El estudiante no tiene multas pendientes."
+      ],
+      "cuando": "El estudiante consulta sus multas.",
+      "entonces": [
+        "Se informa que no tiene multas pendientes.",
+        "No se presentan importes pendientes inexistentes.",
+        "El estudiante puede identificar que no tiene obligaciones económicas registradas."
+      ]
+    },
+    {
+      "titulo": "Consulta de estudiante sin registros pendientes",
+      "tipo": "borde",
+      "dado": [
+        "El estudiante ha iniciado sesión.",
+        "El estudiante no tiene reservas activas, préstamos pendientes ni multas pendientes."
+      ],
+      "cuando": "El estudiante accede a la consulta general de sus servicios.",
+      "entonces": [
+        "Se informa que no tiene obligaciones pendientes.",
+        "Las secciones correspondientes muestran mensajes claros de ausencia de registros.",
+        "No se presentan datos pertenecientes a otros estudiantes.",
+        "El estudiante puede seguir navegando normalmente por BiblioUNSA."
+      ]
+    },
+    {
+      "titulo": "Consulta de un préstamo vencido",
+      "tipo": "borde",
+      "dado": [
+        "El estudiante ha iniciado sesión.",
+        "El estudiante tiene un préstamo activo cuya fecha límite de devolución ya venció."
+      ],
+      "cuando": "El estudiante consulta sus préstamos.",
+      "entonces": [
+        "El préstamo aparece entre sus registros activos.",
+        "Se identifica claramente que el préstamo está vencido.",
+        "Se muestra la fecha límite de devolución.",
+        "Se informa al estudiante que debe devolver el ejemplar.",
+        "Se muestra cualquier multa asociada si corresponde."
+      ]
+    },
+    {
+      "titulo": "Consulta de una reserva próxima a vencer",
+      "tipo": "borde",
+      "dado": [
+        "El estudiante ha iniciado sesión.",
+        "El estudiante tiene una reserva activa.",
+        "La fecha límite de recogida está próxima según las condiciones establecidas por la biblioteca."
+      ],
+      "cuando": "El estudiante consulta sus reservas.",
+      "entonces": [
+        "La reserva aparece como activa.",
+        "Se muestra claramente su fecha límite de recogida.",
+        "Se advierte que el plazo está próximo a vencer.",
+        "El estudiante puede identificar que debe recoger el ejemplar oportunamente."
+      ]
+    },
+    {
+      "titulo": "Consulta de una reserva vencida",
+      "tipo": "borde",
+      "dado": [
+        "El estudiante ha iniciado sesión.",
+        "El estudiante realizó una reserva anteriormente.",
+        "El plazo de recogida terminó sin que retirara el ejemplar.",
+        "La consulta del historial de reservas está habilitada."
+      ],
+      "cuando": "El estudiante consulta su historial de reservas.",
+      "entonces": [
+        "La reserva aparece identificada como vencida.",
+        "Se muestra la información del ejemplar correspondiente.",
+        "La reserva no se presenta como una obligación de recogida vigente.",
+        "El estudiante puede distinguir las reservas vencidas de las activas."
+      ]
+    },
+    {
+      "titulo": "Consulta de una multa ya pagada",
+      "tipo": "borde",
+      "dado": [
+        "El estudiante ha iniciado sesión.",
+        "El estudiante tenía una multa que fue pagada.",
+        "La consulta del historial de multas está habilitada."
+      ],
+      "cuando": "El estudiante consulta su historial de multas.",
+      "entonces": [
+        "La multa aparece identificada como pagada.",
+        "Se muestra el importe y motivo correspondiente.",
+        "La multa no se considera una obligación económica pendiente.",
+        "El estudiante puede distinguir las multas pagadas de las pendientes."
+      ]
+    },
+    {
+      "titulo": "Consulta con múltiples registros de diferentes estados",
+      "tipo": "borde",
+      "dado": [
+        "El estudiante ha iniciado sesión.",
+        "El estudiante tiene varias reservas, préstamos y multas con diferentes estados."
+      ],
+      "cuando": "El estudiante consulta la información de sus servicios de biblioteca.",
+      "entonces": [
+        "Se muestran los registros correspondientes a su cuenta.",
+        "Cada registro presenta su estado de manera identificable.",
+        "Se distinguen las obligaciones pendientes de las finalizadas.",
+        "El estudiante puede reconocer cuáles requieren su atención."
+      ]
+    },
+    {
+      "titulo": "Intento de consultar información sin iniciar sesión",
+      "tipo": "error",
+      "dado": [
+        "El estudiante no ha iniciado sesión en BiblioUNSA.",
+        "El estudiante intenta acceder a información personal de reservas, préstamos o multas."
+      ],
+      "cuando": "El estudiante solicita consultar sus registros personales.",
+      "entonces": [
+        "No se permite acceder a la información solicitada.",
+        "Se informa que debe iniciar sesión.",
+        "No se muestra información privada de ningún estudiante."
+      ]
+    },
+    {
+      "titulo": "Intento de consultar información perteneciente a otro estudiante",
+      "tipo": "error",
+      "dado": [
+        "El estudiante ha iniciado sesión en BiblioUNSA.",
+        "Existen reservas, préstamos o multas pertenecientes a otro estudiante."
+      ],
+      "cuando": "El estudiante intenta acceder a los registros personales de otro usuario.",
+      "entonces": [
+        "Se rechaza el acceso a la información ajena.",
+        "No se muestran los registros del otro estudiante.",
+        "Se mantiene la confidencialidad de los datos personales.",
+        "El estudiante conserva el acceso únicamente a la información autorizada de su cuenta."
+      ]
+    },
+    {
+      "titulo": "Consulta después del vencimiento de la sesión",
+      "tipo": "error",
+      "dado": [
+        "El estudiante inició sesión anteriormente.",
+        "Su sesión ha vencido."
+      ],
+      "cuando": "El estudiante intenta consultar sus reservas, préstamos o multas.",
+      "entonces": [
+        "No se permite consultar la información personal mediante la sesión vencida.",
+        "Se informa que debe iniciar sesión nuevamente.",
+        "No se muestra información privada hasta que el estudiante vuelva a identificarse correctamente."
+      ]
+    },
+    {
+      "titulo": "Consulta cuando la información no está disponible temporalmente",
+      "tipo": "error",
+      "dado": [
+        "El estudiante ha iniciado sesión.",
+        "La información de reservas, préstamos o multas no puede consultarse temporalmente."
+      ],
+      "cuando": "El estudiante intenta acceder a la sección correspondiente.",
+      "entonces": [
+        "Se informa que no fue posible consultar la información en ese momento.",
+        "No se presentan datos incompletos como si fueran definitivos.",
+        "El estudiante puede intentar realizar la consulta nuevamente.",
+        "No se modifica ningún registro existente."
+      ]
+    },
+    {
+      "titulo": "Actualización de una reserva después de recoger el ejemplar",
+      "tipo": "borde",
+      "dado": [
+        "El estudiante tenía una reserva activa.",
+        "El bibliotecario registró correctamente la entrega del ejemplar reservado."
+      ],
+      "cuando": "El estudiante consulta nuevamente sus reservas y préstamos.",
+      "entonces": [
+        "La reserva deja de figurar como pendiente de recogida.",
+        "El ejemplar aparece entre los préstamos activos del estudiante.",
+        "Se muestra la fecha prevista de devolución.",
+        "No se presenta simultáneamente como una reserva pendiente y un préstamo por recoger."
+      ]
+    },
+    {
+      "titulo": "Actualización de un préstamo después de registrar su devolución",
+      "tipo": "exito",
+      "dado": [
+        "El estudiante tenía un préstamo activo.",
+        "El bibliotecario registró correctamente la devolución del ejemplar."
+      ],
+      "cuando": "El estudiante consulta nuevamente sus préstamos.",
+      "entonces": [
+        "El préstamo deja de aparecer como pendiente de devolución.",
+        "Su estado se actualiza a finalizado.",
+        "Se muestra la fecha de devolución cuando se consulta el historial.",
+        "No se informa incorrectamente que el estudiante todavía debe devolver el ejemplar."
+      ]
+    },
+    {
+      "titulo": "Actualización de multas después de registrar un pago",
+      "tipo": "exito",
+      "dado": [
+        "El estudiante tenía una multa pendiente.",
+        "El pago de la multa fue registrado correctamente."
+      ],
+      "cuando": "El estudiante consulta nuevamente sus multas.",
+      "entonces": [
+        "La multa deja de figurar como pendiente de pago.",
+        "Se muestra su estado actualizado cuando se consulta el historial.",
+        "El importe pagado no se incluye entre las obligaciones económicas pendientes.",
+        "La información refleja correctamente la situación actual del estudiante."
+      ]
+    },
+    {
+      "titulo": "Consulta de registros asociados a libros con títulos iguales",
+      "tipo": "borde",
+      "dado": [
+        "El estudiante ha iniciado sesión.",
+        "El estudiante tiene registros asociados a ejemplares distintos de libros con el mismo título."
+      ],
+      "cuando": "El estudiante consulta sus reservas o préstamos.",
+      "entonces": [
+        "Se muestran los registros correspondientes a cada ejemplar.",
+        "Cada registro contiene información suficiente para distinguir los ejemplares.",
+        "Se muestran correctamente las fechas y estados de cada registro.",
+        "No se mezclan las obligaciones correspondientes a ejemplares diferentes."
+      ]
+    }
+  ]
+}

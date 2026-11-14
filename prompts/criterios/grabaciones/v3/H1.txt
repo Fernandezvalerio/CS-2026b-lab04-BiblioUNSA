@@ -1,0 +1,63 @@
+{
+  "historia_id": "H1",
+  "invest_ok": true,
+  "preguntas": [],
+  "escenarios": [
+    {
+      "titulo": "Reserva exitosa de un ejemplar disponible",
+      "tipo": "exito",
+      "dado": [
+        "El estudiante ha iniciado sesión en BiblioUNSA",
+        "El libro seleccionado tiene al menos un ejemplar disponible para reserva"
+      ],
+      "cuando": "El estudiante solicita reservar un ejemplar del libro",
+      "entonces": [
+        "El sistema confirma que la reserva se realizó correctamente",
+        "El estudiante puede consultar la reserva realizada",
+        "El ejemplar reservado aparece como apartado para el estudiante"
+      ]
+    },
+    {
+      "titulo": "Intento de reserva sin ejemplares disponibles",
+      "tipo": "error",
+      "dado": [
+        "El estudiante ha iniciado sesión en BiblioUNSA",
+        "Todos los ejemplares del libro seleccionado se encuentran no disponibles para reserva"
+      ],
+      "cuando": "El estudiante intenta reservar un ejemplar del libro",
+      "entonces": [
+        "El sistema informa que no existen ejemplares disponibles para reservar",
+        "No se registra ninguna reserva para el estudiante"
+      ]
+    },
+    {
+      "titulo": "Reserva del último ejemplar disponible",
+      "tipo": "borde",
+      "dado": [
+        "El estudiante ha iniciado sesión en BiblioUNSA",
+        "El libro seleccionado tiene exactamente un ejemplar disponible para reserva"
+      ],
+      "cuando": "El estudiante solicita reservar el último ejemplar disponible",
+      "entonces": [
+        "El sistema confirma la reserva si el ejemplar continúa disponible",
+        "El ejemplar queda apartado para el estudiante",
+        "El ejemplar deja de mostrarse como disponible para nuevas reservas"
+      ]
+    },
+    {
+      "titulo": "Intento de reservar un ejemplar que dejó de estar disponible",
+      "tipo": "error",
+      "dado": [
+        "El estudiante ha iniciado sesión en BiblioUNSA",
+        "El estudiante consultó un ejemplar que inicialmente estaba disponible",
+        "El ejemplar dejó de estar disponible antes de confirmar la reserva"
+      ],
+      "cuando": "El estudiante solicita reservar el ejemplar",
+      "entonces": [
+        "El sistema informa que el ejemplar ya no está disponible",
+        "No se confirma la reserva del ejemplar",
+        "El estudiante puede consultar nuevamente la disponibilidad del libro"
+      ]
+    }
+  ]
+}

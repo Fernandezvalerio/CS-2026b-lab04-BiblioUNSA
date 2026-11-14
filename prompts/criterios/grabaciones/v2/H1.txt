@@ -1,0 +1,148 @@
+{
+  "historia_id": "H1",
+  "invest_ok": true,
+  "preguntas": [
+    "¿Cuánto tiempo permanece reservado un ejemplar antes de que venza el plazo de recogida?",
+    "¿Cuántas reservas activas puede tener un estudiante simultáneamente?",
+    "¿Puede un estudiante reservar un ejemplar si tiene préstamos vencidos o multas pendientes?",
+    "¿Qué sucede si dos estudiantes intentan reservar el mismo ejemplar al mismo tiempo?",
+    "¿Cómo se informa al estudiante que su reserva fue confirmada?",
+    "¿Qué ocurre con el ejemplar cuando el estudiante no lo recoge dentro del plazo establecido?"
+  ],
+  "escenarios": [
+    {
+      "titulo": "Reserva exitosa de un ejemplar disponible",
+      "tipo": "exito",
+      "dado": [
+        "El estudiante ha iniciado sesión en BiblioUNSA.",
+        "El estudiante tiene permitido realizar reservas.",
+        "El ejemplar seleccionado se encuentra disponible."
+      ],
+      "cuando": "El estudiante solicita reservar el ejemplar y confirma la operación.",
+      "entonces": [
+        "La reserva se registra correctamente.",
+        "El ejemplar queda apartado para el estudiante.",
+        "El estudiante recibe una confirmación de su reserva.",
+        "El ejemplar deja de estar disponible para nuevas reservas durante la vigencia de la reserva."
+      ]
+    },
+    {
+      "titulo": "Consulta de una reserva confirmada",
+      "tipo": "exito",
+      "dado": [
+        "El estudiante ha realizado una reserva correctamente.",
+        "La reserva continúa vigente."
+      ],
+      "cuando": "El estudiante consulta sus reservas activas.",
+      "entonces": [
+        "La reserva aparece en su lista de reservas activas.",
+        "Se muestra la información del ejemplar reservado.",
+        "Se informa el plazo establecido para recoger el ejemplar."
+      ]
+    },
+    {
+      "titulo": "Intento de reservar un ejemplar no disponible",
+      "tipo": "error",
+      "dado": [
+        "El estudiante ha iniciado sesión.",
+        "El ejemplar seleccionado se encuentra prestado o reservado por otro estudiante."
+      ],
+      "cuando": "El estudiante intenta reservar el ejemplar.",
+      "entonces": [
+        "La reserva no se realiza.",
+        "El estudiante recibe un mensaje indicando que el ejemplar no está disponible.",
+        "No se genera ninguna reserva nueva."
+      ]
+    },
+    {
+      "titulo": "Intento de reserva sin iniciar sesión",
+      "tipo": "error",
+      "dado": [
+        "El estudiante no ha iniciado sesión.",
+        "Existe un ejemplar disponible para reservar."
+      ],
+      "cuando": "El estudiante intenta realizar una reserva.",
+      "entonces": [
+        "La reserva no se registra.",
+        "Se informa al estudiante que debe iniciar sesión para continuar.",
+        "El ejemplar mantiene su disponibilidad."
+      ]
+    },
+    {
+      "titulo": "Intento de reservar nuevamente el mismo ejemplar",
+      "tipo": "error",
+      "dado": [
+        "El estudiante ha iniciado sesión.",
+        "El estudiante ya tiene una reserva activa del ejemplar seleccionado."
+      ],
+      "cuando": "El estudiante intenta reservar nuevamente el mismo ejemplar.",
+      "entonces": [
+        "No se genera una reserva duplicada.",
+        "Se informa al estudiante que ya tiene una reserva activa de ese ejemplar.",
+        "La reserva original se mantiene sin modificaciones."
+      ]
+    },
+    {
+      "titulo": "Dos estudiantes intentan reservar el último ejemplar disponible",
+      "tipo": "borde",
+      "dado": [
+        "Solo queda un ejemplar disponible de un libro.",
+        "Dos estudiantes tienen permitido realizar reservas.",
+        "Ambos estudiantes intentan reservar el mismo ejemplar."
+      ],
+      "cuando": "Los dos estudiantes confirman sus solicitudes de reserva prácticamente al mismo tiempo.",
+      "entonces": [
+        "El ejemplar queda reservado para un solo estudiante.",
+        "El estudiante que obtiene la reserva recibe una confirmación.",
+        "El otro estudiante recibe un aviso indicando que el ejemplar ya no está disponible.",
+        "No existen dos reservas activas simultáneas sobre el mismo ejemplar."
+      ]
+    },
+    {
+      "titulo": "Vencimiento del plazo de recogida",
+      "tipo": "borde",
+      "dado": [
+        "El estudiante tiene una reserva activa.",
+        "La reserva tiene un plazo de recogida establecido.",
+        "El estudiante no ha recogido el ejemplar."
+      ],
+      "cuando": "Se cumple el plazo máximo de recogida sin que el estudiante retire el ejemplar.",
+      "entonces": [
+        "La reserva deja de estar activa.",
+        "El estudiante puede identificar que su reserva ha vencido.",
+        "El ejemplar vuelve a estar disponible para otros estudiantes, siempre que no exista otra restricción."
+      ]
+    },
+    {
+      "titulo": "Intento de reserva de un estudiante sin autorización",
+      "tipo": "error",
+      "dado": [
+        "El estudiante ha iniciado sesión.",
+        "El estudiante presenta una condición que le impide reservar según las normas de la biblioteca.",
+        "El ejemplar seleccionado se encuentra disponible."
+      ],
+      "cuando": "El estudiante intenta confirmar la reserva.",
+      "entonces": [
+        "La reserva no se registra.",
+        "Se informa al estudiante que no cumple las condiciones necesarias para reservar.",
+        "El ejemplar permanece disponible para otros estudiantes autorizados."
+      ]
+    },
+    {
+      "titulo": "Reserva del único ejemplar disponible de un título",
+      "tipo": "borde",
+      "dado": [
+        "Un libro tiene varios ejemplares registrados.",
+        "Todos los ejemplares están prestados o reservados, excepto uno.",
+        "El estudiante cumple las condiciones para reservar."
+      ],
+      "cuando": "El estudiante reserva el único ejemplar disponible.",
+      "entonces": [
+        "La reserva se confirma correctamente.",
+        "El ejemplar seleccionado queda apartado para el estudiante.",
+        "El título se muestra sin ejemplares disponibles para nuevas reservas.",
+        "Las condiciones de los demás ejemplares no se modifican."
+      ]
+    }
+  ]
+}

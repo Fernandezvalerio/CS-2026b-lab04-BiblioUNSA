@@ -1,0 +1,64 @@
+{
+  "historia_id": "H6",
+  "invest_ok": true,
+  "preguntas": [],
+  "escenarios": [
+    {
+      "titulo": "Consulta exitosa de reservas, préstamos y multas",
+      "tipo": "exito",
+      "dado": [
+        "El estudiante ha iniciado sesión en BiblioUNSA",
+        "El estudiante tiene reservas, préstamos y multas registrados a su nombre"
+      ],
+      "cuando": "El estudiante accede a la consulta de sus reservas, préstamos y multas",
+      "entonces": [
+        "El sistema muestra las reservas correspondientes al estudiante",
+        "El sistema muestra sus préstamos y permite identificar cuáles están activos",
+        "El sistema muestra las multas registradas y permite identificar cuáles están pendientes",
+        "El estudiante puede reconocer sus obligaciones pendientes"
+      ]
+    },
+    {
+      "titulo": "Consulta sin reservas, préstamos ni multas pendientes",
+      "tipo": "borde",
+      "dado": [
+        "El estudiante ha iniciado sesión en BiblioUNSA",
+        "El estudiante no tiene reservas, préstamos activos ni multas pendientes"
+      ],
+      "cuando": "El estudiante consulta sus reservas, préstamos y multas",
+      "entonces": [
+        "El sistema informa que no existen reservas pendientes",
+        "El sistema informa que no existen préstamos activos",
+        "El sistema informa que no existen multas pendientes",
+        "No se muestran obligaciones correspondientes a otros estudiantes"
+      ]
+    },
+    {
+      "titulo": "Consulta de préstamos y reservas sin multas pendientes",
+      "tipo": "exito",
+      "dado": [
+        "El estudiante ha iniciado sesión en BiblioUNSA",
+        "El estudiante tiene al menos una reserva y un préstamo activo",
+        "El estudiante no tiene multas pendientes"
+      ],
+      "cuando": "El estudiante consulta sus reservas, préstamos y multas",
+      "entonces": [
+        "El sistema muestra las reservas correspondientes al estudiante",
+        "El sistema muestra los préstamos activos del estudiante",
+        "El sistema informa que no existen multas pendientes"
+      ]
+    },
+    {
+      "titulo": "Intento de consulta sin iniciar sesión",
+      "tipo": "error",
+      "dado": [
+        "El estudiante no ha iniciado sesión en BiblioUNSA"
+      ],
+      "cuando": "El estudiante intenta consultar sus reservas, préstamos y multas personales",
+      "entonces": [
+        "El sistema solicita que el estudiante se identifique para acceder a su información",
+        "No se muestra información personal de reservas, préstamos ni multas sin identificar al estudiante"
+      ]
+    }
+  ]
+}

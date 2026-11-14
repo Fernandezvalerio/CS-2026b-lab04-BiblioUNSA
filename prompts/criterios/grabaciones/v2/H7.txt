@@ -1,0 +1,234 @@
+{
+  "historia_id": "H7",
+  "invest_ok": false,
+  "preguntas": [
+    "¿Qué significa exactamente que BiblioUNSA sea moderna, rápida y sencilla?",
+    "¿Qué funcionalidades y procesos deben incluirse en esta historia de usuario?",
+    "¿Cuál es el tiempo máximo aceptable para cargar las páginas principales?",
+    "¿Cuál es el tiempo máximo aceptable para realizar búsquedas, reservas y consultas?",
+    "¿Cuántos pasos debería necesitar un usuario para completar las tareas más frecuentes?",
+    "¿Qué criterios permitirán determinar si la interfaz resulta fácil de utilizar?",
+    "¿La plataforma debe funcionar correctamente en computadoras, tabletas y teléfonos móviles?",
+    "¿Qué navegadores y tamaños de pantalla deben ser compatibles?",
+    "¿Qué requisitos de accesibilidad debe cumplir la plataforma?",
+    "¿Se realizarán pruebas de usabilidad con estudiantes y bibliotecarios?",
+    "¿Qué porcentaje de usuarios debería completar las tareas principales sin ayuda?",
+    "¿Qué nivel de satisfacción de los usuarios se considera aceptable?",
+    "¿Cómo debe responder la plataforma cuando una operación demora más de lo esperado?",
+    "¿Qué debe suceder cuando ocurre un error durante una operación?",
+    "¿Es conveniente dividir esta historia en historias más pequeñas relacionadas con rendimiento, usabilidad, accesibilidad y diseño visual?"
+  ],
+  "escenarios": [
+    {
+      "titulo": "Acceso sencillo a las funciones principales",
+      "tipo": "exito",
+      "dado": [
+        "El usuario se encuentra en la página principal de BiblioUNSA.",
+        "Las funciones de búsqueda, reservas y consultas están habilitadas para su perfil."
+      ],
+      "cuando": "El usuario intenta localizar una de las funciones principales.",
+      "entonces": [
+        "El usuario puede identificar claramente la función que necesita.",
+        "Las opciones de navegación utilizan nombres comprensibles.",
+        "El usuario puede acceder a la función sin recorrer secciones innecesarias.",
+        "La navegación cumple los criterios de usabilidad previamente acordados."
+      ]
+    },
+    {
+      "titulo": "Búsqueda de libros con respuesta rápida",
+      "tipo": "exito",
+      "dado": [
+        "El usuario se encuentra en la sección de búsqueda.",
+        "Existen libros registrados en el catálogo.",
+        "Se ha establecido un tiempo máximo aceptable para las búsquedas."
+      ],
+      "cuando": "El usuario ingresa un criterio y realiza una búsqueda.",
+      "entonces": [
+        "Los resultados se presentan dentro del tiempo máximo establecido.",
+        "La información encontrada se muestra de forma clara y organizada.",
+        "El usuario puede identificar los libros relevantes sin realizar acciones innecesarias."
+      ]
+    },
+    {
+      "titulo": "Registro de reserva mediante un proceso sencillo",
+      "tipo": "exito",
+      "dado": [
+        "El estudiante ha iniciado sesión.",
+        "El estudiante cumple las condiciones para reservar.",
+        "Existe un ejemplar disponible."
+      ],
+      "cuando": "El estudiante intenta realizar una reserva.",
+      "entonces": [
+        "El proceso presenta instrucciones claras.",
+        "El estudiante puede identificar las acciones necesarias para completar la reserva.",
+        "La operación cumple el número máximo de pasos previamente acordado.",
+        "Se muestra una confirmación comprensible al finalizar."
+      ]
+    },
+    {
+      "titulo": "Presentación consistente de las secciones",
+      "tipo": "exito",
+      "dado": [
+        "El usuario tiene acceso a diferentes secciones de BiblioUNSA."
+      ],
+      "cuando": "El usuario navega entre la búsqueda de libros, las reservas y los préstamos.",
+      "entonces": [
+        "Las secciones mantienen una organización visual consistente.",
+        "Las acciones similares utilizan nombres y presentaciones coherentes.",
+        "El usuario puede reconocer fácilmente las opciones de navegación.",
+        "La información importante es legible y fácil de localizar."
+      ]
+    },
+    {
+      "titulo": "Uso de la plataforma desde un teléfono móvil",
+      "tipo": "exito",
+      "dado": [
+        "El usuario accede a BiblioUNSA desde un teléfono móvil compatible.",
+        "Las funciones principales están disponibles."
+      ],
+      "cuando": "El usuario busca un libro y consulta sus detalles.",
+      "entonces": [
+        "La información se presenta de manera adecuada al tamaño de la pantalla.",
+        "Los textos y controles son legibles y utilizables.",
+        "No es necesario desplazarse horizontalmente para realizar las acciones principales.",
+        "El usuario puede completar la consulta sin perder funcionalidades esenciales."
+      ]
+    },
+    {
+      "titulo": "Navegación mediante teclado",
+      "tipo": "exito",
+      "dado": [
+        "El usuario accede a BiblioUNSA desde una computadora.",
+        "El usuario utiliza el teclado para navegar."
+      ],
+      "cuando": "El usuario recorre las opciones principales y selecciona una función.",
+      "entonces": [
+        "Las funciones principales pueden utilizarse mediante el teclado.",
+        "El usuario puede identificar qué opción está seleccionada.",
+        "La navegación mantiene un orden comprensible.",
+        "No existen obstáculos que impidan completar las acciones esenciales mediante el teclado."
+      ]
+    },
+    {
+      "titulo": "Comprensión de mensajes y acciones",
+      "tipo": "exito",
+      "dado": [
+        "El usuario se encuentra realizando una operación en BiblioUNSA.",
+        "La operación requiere una confirmación."
+      ],
+      "cuando": "El usuario revisa el mensaje de confirmación antes de continuar.",
+      "entonces": [
+        "El mensaje utiliza un lenguaje claro y comprensible.",
+        "Se informa qué operación se realizará.",
+        "Las opciones disponibles permiten identificar cómo confirmar o cancelar.",
+        "El usuario puede tomar una decisión sin necesitar conocimientos técnicos."
+      ]
+    },
+    {
+      "titulo": "Respuesta ante una operación que demora demasiado",
+      "tipo": "borde",
+      "dado": [
+        "El usuario ha solicitado una operación válida.",
+        "La operación supera el tiempo de respuesta esperado."
+      ],
+      "cuando": "El usuario permanece en la sección mientras la operación continúa.",
+      "entonces": [
+        "Se informa que la operación continúa en proceso.",
+        "El usuario puede distinguir que la operación todavía no ha finalizado.",
+        "No se presenta una confirmación de éxito antes de completar la operación.",
+        "Se proporciona información comprensible si la operación no puede finalizar."
+      ]
+    },
+    {
+      "titulo": "Respuesta ante una interrupción de conexión",
+      "tipo": "error",
+      "dado": [
+        "El usuario se encuentra utilizando BiblioUNSA.",
+        "La conexión se interrumpe durante una operación."
+      ],
+      "cuando": "El usuario intenta continuar con la operación.",
+      "entonces": [
+        "Se informa que existe un problema de conexión.",
+        "El mensaje evita utilizar términos técnicos innecesarios.",
+        "No se presenta la operación como completada sin confirmación.",
+        "El usuario recibe una indicación clara sobre cómo continuar o volver a intentarlo."
+      ]
+    },
+    {
+      "titulo": "Presentación de mensajes ante datos incorrectos",
+      "tipo": "error",
+      "dado": [
+        "El usuario se encuentra completando una acción que requiere información obligatoria.",
+        "El usuario proporciona datos incompletos o incorrectos."
+      ],
+      "cuando": "El usuario intenta continuar con la operación.",
+      "entonces": [
+        "Se identifican claramente los datos que deben corregirse.",
+        "Se muestran mensajes fáciles de comprender.",
+        "El usuario puede corregir la información sin reiniciar innecesariamente todo el proceso.",
+        "La operación no se completa con datos inválidos."
+      ]
+    },
+    {
+      "titulo": "Comportamiento ante una acción repetida",
+      "tipo": "borde",
+      "dado": [
+        "El usuario ha iniciado una operación que todavía no ha finalizado.",
+        "La operación puede producir cambios en sus reservas o préstamos."
+      ],
+      "cuando": "El usuario intenta confirmar repetidamente la misma acción.",
+      "entonces": [
+        "El usuario recibe información clara sobre el estado de la operación.",
+        "No se generan operaciones duplicadas.",
+        "El resultado final se presenta de manera comprensible.",
+        "El usuario puede identificar si la acción se completó correctamente."
+      ]
+    },
+    {
+      "titulo": "Consulta de información cuando no existen resultados",
+      "tipo": "borde",
+      "dado": [
+        "El usuario accede a una sección de consulta.",
+        "No existen registros que coincidan con la consulta realizada."
+      ],
+      "cuando": "El usuario solicita visualizar los resultados.",
+      "entonces": [
+        "Se muestra un mensaje indicando que no existen resultados.",
+        "La sección mantiene una presentación clara y organizada.",
+        "El usuario puede modificar su búsqueda o regresar a otra sección.",
+        "No se confunde la ausencia de resultados con un error de funcionamiento."
+      ]
+    },
+    {
+      "titulo": "Uso de la plataforma por un usuario sin experiencia previa",
+      "tipo": "borde",
+      "dado": [
+        "Una persona utiliza BiblioUNSA por primera vez.",
+        "La persona conoce el objetivo de la tarea, pero no está familiarizada con la plataforma.",
+        "Se han definido criterios de éxito para las pruebas de usabilidad."
+      ],
+      "cuando": "La persona intenta buscar un libro y consultar su disponibilidad sin recibir instrucciones adicionales.",
+      "entonces": [
+        "La persona puede identificar las opciones necesarias para realizar la tarea.",
+        "Los nombres y mensajes de la plataforma resultan comprensibles.",
+        "La tarea puede completarse dentro de los criterios de usabilidad establecidos.",
+        "Las dificultades observadas pueden identificarse durante la evaluación."
+      ]
+    },
+    {
+      "titulo": "Rendimiento con múltiples usuarios simultáneos",
+      "tipo": "borde",
+      "dado": [
+        "Varios estudiantes y bibliotecarios utilizan BiblioUNSA simultáneamente.",
+        "Se han establecido límites aceptables de tiempo de respuesta y cantidad de usuarios concurrentes."
+      ],
+      "cuando": "Los usuarios realizan búsquedas, consultas y operaciones de biblioteca al mismo tiempo.",
+      "entonces": [
+        "Las operaciones se completan dentro de los tiempos máximos establecidos.",
+        "Los usuarios reciben resultados correspondientes a sus solicitudes.",
+        "La plataforma mantiene disponibles las funcionalidades principales dentro de las condiciones acordadas.",
+        "No se producen registros duplicados ni inconsistencias por el uso simultáneo."
+      ]
+    }
+  ]
+}

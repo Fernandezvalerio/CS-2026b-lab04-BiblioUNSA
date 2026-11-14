@@ -1,8 +1,8 @@
 {
-  "evalId": "eval-23R-2026-11-14T22:31:36",
+  "evalId": "eval-0bD-2026-11-14T22:54:13",
   "results": {
     "version": 3,
-    "timestamp": "2026-11-14T22:31:36.504Z",
+    "timestamp": "2026-11-14T22:54:13.868Z",
     "prompts": [
       {
         "raw": "Escribe criterios de aceptación para esta historia de usuario: {{historia}}",
@@ -17,7 +17,7 @@
           "testCacheHitCount": 0,
           "assertPassCount": 0,
           "assertFailCount": 26,
-          "totalLatencyMs": 5871,
+          "totalLatencyMs": 2486,
           "tokenUsage": {
             "prompt": 0,
             "completion": 0,
@@ -129,8 +129,8 @@
             }
           ]
         },
-        "id": "7dd83cb5-8f4a-44e2-a833-9f00085a3886",
-        "latencyMs": 1228,
+        "id": "4891cb27-dd46-4c69-946f-e735b38d68bf",
+        "latencyMs": 435,
         "namedScores": {
           "A1_contrato_json": 0,
           "A2_cubre_alternativas": 0,
@@ -281,8 +281,8 @@
             }
           ]
         },
-        "id": "d5e7277f-f10c-49b7-bf9d-0a2ed7e3b5be",
-        "latencyMs": 1286,
+        "id": "6327f21e-77b1-4711-aac6-8eee8a03dba7",
+        "latencyMs": 483,
         "namedScores": {
           "A1_contrato_json": 0,
           "A2_cubre_alternativas": 0,
@@ -433,8 +433,8 @@
             }
           ]
         },
-        "id": "66c60cc6-a526-4dd8-903a-44ea35437788",
-        "latencyMs": 1331,
+        "id": "99509b42-8548-47e9-82ac-e4ffaf5a8cdc",
+        "latencyMs": 519,
         "namedScores": {
           "A1_contrato_json": 0,
           "A2_cubre_alternativas": 0,
@@ -585,8 +585,8 @@
             }
           ]
         },
-        "id": "4fba15a6-b752-4d6a-b762-0adb7fdce164",
-        "latencyMs": 1377,
+        "id": "6c15fc8f-de65-4049-a55e-dc742f4333d1",
+        "latencyMs": 555,
         "namedScores": {
           "A1_contrato_json": 0,
           "A2_cubre_alternativas": 0,
@@ -737,8 +737,8 @@
             }
           ]
         },
-        "id": "3cdea02e-f532-4042-a770-23688c95a332",
-        "latencyMs": 175,
+        "id": "e3e3cae2-86ee-4778-82d1-ff468da3d6b2",
+        "latencyMs": 135,
         "namedScores": {
           "A1_contrato_json": 0,
           "A2_cubre_alternativas": 0,
@@ -889,8 +889,8 @@
             }
           ]
         },
-        "id": "550e75aa-7efd-454e-a8f9-9a8c482c3c0f",
-        "latencyMs": 165,
+        "id": "2ad4eeb9-ffb4-4ca8-9593-3db1d01527fa",
+        "latencyMs": 124,
         "namedScores": {
           "A1_contrato_json": 0,
           "A2_cubre_alternativas": 0,
@@ -1053,8 +1053,8 @@
             }
           ]
         },
-        "id": "9d31664c-ceb9-4be2-a4eb-3fa8af986148",
-        "latencyMs": 161,
+        "id": "95d7636a-2fde-4146-908d-b2b04dd15553",
+        "latencyMs": 115,
         "namedScores": {
           "A1_contrato_json": 0,
           "A2_cubre_alternativas": 0,
@@ -1223,8 +1223,8 @@
             }
           ]
         },
-        "id": "376b6ae7-6803-48e6-8991-9b7912362de0",
-        "latencyMs": 148,
+        "id": "b99f7611-7d33-4493-a6ee-992dc746c67c",
+        "latencyMs": 120,
         "namedScores": {
           "A1_contrato_json": 0,
           "A2_cubre_alternativas": 0,
@@ -1357,8 +1357,8 @@
           }
         }
       },
-      "durationMs": 1594,
-      "evaluationDurationMs": 1594
+      "durationMs": 747,
+      "evaluationDurationMs": 747
     }
   },
   "config": {
@@ -1522,8 +1522,8 @@
     "nodeVersion": "v22.23.2",
     "platform": "win32",
     "arch": "x64",
-    "exportedAt": "2026-11-14T22:31:38.210Z",
-    "evaluationCreatedAt": "2026-11-14T22:31:36.504Z"
+    "exportedAt": "2026-11-14T22:54:14.721Z",
+    "evaluationCreatedAt": "2026-11-14T22:54:13.868Z"
   },
   "vars": [
     "id",
