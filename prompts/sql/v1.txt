@@ -1,0 +1,1 @@
+Convierte en SQL esta pregunta del bibliotecario: {{pregunta}}

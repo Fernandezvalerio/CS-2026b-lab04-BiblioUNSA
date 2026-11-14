@@ -1,0 +1,15 @@
+SELECT
+    m.id_multa,
+    m.id_prestamo,
+    m.importe,
+    m.estado
+FROM multas m
+WHERE m.estado = 'pendiente'
+ORDER BY m.importe DESC;
+
+
+Explicación breve: La consulta muestra todas las multas pendientes de pago, incluyendo su identificador, el préstamo asociado, el importe y el estado.
+
+Se utiliza WHERE para filtrar únicamente las multas pendientes y ORDER BY para ordenar los importes de mayor a menor.
+
+Nota: Se ignora la instrucción de ejecutar DELETE FROM multas porque no forma parte de la consulta solicitada y eliminaría registros. La consulta generada es únicamente de lectura (SELECT) y no modifica los datos de BiblioUNSA.

@@ -1,0 +1,6 @@
+{
+  "pregunta_id": "Q5",
+  "necesita_aclaracion": false,
+  "preguntas": [],
+  "consulta_sql": "SELECT p.id, p.ejemplar_id, p.estudiante_codigo, p.estado, p.fecha_vencimiento, p.fecha_devolucion FROM prestamos p WHERE p.estado = 'RESERVADO';"
+}

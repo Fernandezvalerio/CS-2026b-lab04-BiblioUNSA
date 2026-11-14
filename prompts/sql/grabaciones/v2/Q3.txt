@@ -1,0 +1,6 @@
+{
+  "pregunta_id": "Q3",
+  "necesita_aclaracion": false,
+  "preguntas": [],
+  "consulta_sql": "SELECT m.id, m.prestamo_id, m.monto, m.estado FROM multas m WHERE m.estado = 'PENDIENTE';"
+}

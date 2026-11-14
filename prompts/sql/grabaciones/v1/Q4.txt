@@ -1,0 +1,15 @@
+SELECT
+    b.id_biblioteca,
+    b.nombre AS biblioteca,
+    COUNT(DISTINCT e.id_libro) AS total_titulos
+FROM bibliotecas b
+LEFT JOIN ejemplares e ON b.id_biblioteca = e.id_biblioteca
+GROUP BY b.id_biblioteca, b.nombre
+ORDER BY total_titulos DESC;
+
+
+Explicación breve: La consulta cuenta cuántos títulos diferentes tiene cada biblioteca mediante COUNT(DISTINCT e.id_libro), evitando contar varias veces un libro que tenga múltiples ejemplares.
+
+Se utiliza LEFT JOIN para incluir también las bibliotecas que no tengan ejemplares registrados, mostrando un total de 0.
+
+Nota: Se asume que existen las tablas bibliotecas y ejemplares, con las columnas indicadas. La consulta debe adaptarse al esquema real de BiblioUNSA.

@@ -1,0 +1,6 @@
+{
+  "pregunta_id": "Q4",
+  "necesita_aclaracion": false,
+  "preguntas": [],
+  "consulta_sql": "SELECT e.biblioteca, COUNT(DISTINCT e.libro_id) AS total_titulos FROM ejemplares e GROUP BY e.biblioteca ORDER BY e.biblioteca;"
+}

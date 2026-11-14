@@ -1,0 +1,6 @@
+{
+  "pregunta_id": "Q1",
+  "necesita_aclaracion": false,
+  "preguntas": [],
+  "consulta_sql": "SELECT DISTINCT l.id, l.titulo, l.autor FROM libros l JOIN ejemplares e ON l.id = e.libro_id WHERE e.biblioteca = 'Central' AND e.disponible = TRUE ORDER BY l.titulo"
+}

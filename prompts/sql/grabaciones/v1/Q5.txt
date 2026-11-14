@@ -1,0 +1,18 @@
+SELECT
+    p.id_prestamo,
+    l.titulo AS libro,
+    p.fecha_prestamo,
+    p.fecha_devolucion,
+    p.estado
+FROM prestamos p
+JOIN ejemplares e ON p.id_ejemplar = e.id_ejemplar
+JOIN libros l ON e.id_libro = l.id_libro
+WHERE p.estado = 'RESERVADO'
+ORDER BY p.fecha_prestamo DESC;
+
+
+Explicación breve: La consulta obtiene todos los préstamos cuyo estado es 'RESERVADO', mostrando el identificador del préstamo, el título del libro, las fechas correspondientes y su estado.
+
+Se utiliza WHERE para filtrar los préstamos reservados y ORDER BY para mostrar primero los más recientes.
+
+Nota: Se asume que el estado 'RESERVADO' pertenece a la tabla prestamos. Si BiblioUNSA administra las reservas en una tabla independiente, sería necesario consultar esa tabla.

@@ -1,0 +1,7 @@
+La solicitud «Necesito un reporte completo de la biblioteca» es demasiado general para convertirla en una consulta SQL precisa.
+
+Antes de generar la consulta, necesito aclarar lo siguiente:
+1. ¿Qué información debe incluir el reporte? Libros, ejemplares disponibles, préstamos, reservas, multas o todos estos datos.
+2. ¿De qué biblioteca se necesita el reporte? ¿De la biblioteca Central o de todas las bibliotecas?
+3. ¿Qué período debe abarcar? ¿Todos los registros históricos o únicamente los correspondientes al mes actual?
+Nota: No se genera SQL todavía porque sería necesario asumir información que el bibliotecario no ha especificado. Con estas respuestas se podrá construir una consulta verificable y ajustada al esquema de BiblioUNSA.

@@ -1,0 +1,43 @@
+description: BiblioUNSA - preguntas del bibliotecario a SQL de lectura
+
+# Activar una sola versión al medirla por separado.
+# Volver a activar las tres al hacer la comparación final.
+prompts:
+  - file://v1.txt
+  - file://v2.txt
+  - file://v3.txt
+
+providers:
+  - id: file://../proveedor_grabado.py
+    label: grabaciones-locales
+
+defaultTest:
+  assert:
+    - type: is-json
+      value: file://esquema.json
+      metric: B1_contrato_json
+    - type: javascript
+      metric: B2_solo_select
+      value: |
+        let d; try { d=JSON.parse(output); } catch (_) { return false; }
+        if (d.necesita_aclaracion === true) return d.consulta_sql === null;
+        if (typeof d.consulta_sql !== 'string') return false;
+        const s=d.consulta_sql.trim().replace(/;\s*$/, '');
+        return /^SELECT\s+/i.test(s)
+          && !/[;]/.test(s)
+          && !/--|\/\*/.test(s)
+          && !/\b(INSERT|UPDATE|DELETE|DROP|ALTER|CREATE|TRUNCATE|COPY|GRANT|REVOKE|EXEC|CALL|WITH|MERGE)\b/i.test(s);
+    - type: javascript
+      metric: B3_tablas_conocidas
+      value: |
+        let d; try { d=JSON.parse(output); } catch (_) { return false; }
+        if (d.necesita_aclaracion === true) return true;
+        const tablas=[...(d.consulta_sql||'').matchAll(/\b(?:FROM|JOIN)\s+([a-z_][a-z_0-9]*)/gi)].map(x=>x[1].toLowerCase());
+        return tablas.length>0 && tablas.every(t=>['libros','ejemplares','prestamos','multas'].includes(t));
+    - type: javascript
+      metric: B4_formato_aclaraciones
+      value: |
+        let d; try { d=JSON.parse(output); } catch (_) { return false; }
+        return d.necesita_aclaracion ? (d.consulta_sql===null && d.preguntas.length>=1) : (typeof d.consulta_sql==='string' && d.consulta_sql.trim().length>10 && d.preguntas.length===0);
+
+tests: file://casos.yaml

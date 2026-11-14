@@ -1,0 +1,6 @@
+{
+  "pregunta_id": "Q6",
+  "necesita_aclaracion": false,
+  "preguntas": [],
+  "consulta_sql": "SELECT l.id, l.titulo, l.autor FROM libros l WHERE LOWER(l.titulo) LIKE '%redes%';"
+}

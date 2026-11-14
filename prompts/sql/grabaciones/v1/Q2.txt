@@ -1,0 +1,18 @@
+SELECT
+    p.id_prestamo,
+    l.titulo AS libro,
+    p.fecha_prestamo,
+    p.fecha_devolucion
+FROM prestamos p
+JOIN ejemplares e ON p.id_ejemplar = e.id_ejemplar
+JOIN libros l ON e.id_libro = l.id_libro
+JOIN bibliotecas b ON e.id_biblioteca = b.id_biblioteca
+WHERE b.nombre = 'Central'
+  AND p.fecha_devolucion < CURRENT_DATE
+  AND p.estado = 'activo'
+ORDER BY p.fecha_devolucion ASC;
+
+
+Explicación breve: La consulta obtiene los préstamos de la biblioteca Central cuya fecha límite de devolución ya pasó y que siguen activos, es decir, cuyos ejemplares aún no han sido devueltos.
+
+Nota: Se asume que fecha_devolucion representa la fecha límite de devolución y que estado = 'activo' identifica los préstamos pendientes. Los nombres de tablas y columnas deben ajustarse al esquema real de BiblioUNSA.

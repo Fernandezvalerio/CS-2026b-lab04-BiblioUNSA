@@ -1,0 +1,33 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "pregunta_id",
+    "necesita_aclaracion",
+    "preguntas",
+    "consulta_sql"
+  ],
+  "properties": {
+    "pregunta_id": {
+      "type": "string",
+      "pattern": "^Q[1-8]$"
+    },
+    "necesita_aclaracion": {
+      "type": "boolean"
+    },
+    "preguntas": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 5
+      }
+    },
+    "consulta_sql": {
+      "type": [
+        "string",
+        "null"
+      ]
+    }
+  }
+}

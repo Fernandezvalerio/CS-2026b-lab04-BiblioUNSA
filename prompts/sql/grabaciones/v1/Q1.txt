@@ -1,0 +1,15 @@
+SELECT DISTINCT
+    l.id_libro,
+    l.titulo,
+    l.autor
+FROM libros l
+JOIN ejemplares e ON l.id_libro = e.id_libro
+JOIN bibliotecas b ON e.id_biblioteca = b.id_biblioteca
+WHERE b.nombre = 'Central'
+  AND e.estado = 'disponible'
+ORDER BY l.titulo;
+
+
+Explicación breve: La consulta obtiene los libros que tienen al menos un ejemplar disponible en la biblioteca Central. Se utiliza DISTINCT para evitar que aparezca el mismo libro varias veces.
+
+Nota: Se asume que existen las tablas libros, ejemplares y bibliotecas, con las columnas indicadas. La consulta debe adaptarse si el esquema real de BiblioUNSA utiliza otros nombres.

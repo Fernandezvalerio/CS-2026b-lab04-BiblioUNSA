@@ -1,0 +1,14 @@
+SELECT
+    l.id_libro,
+    l.titulo,
+    l.autor
+FROM libros l
+WHERE LOWER(l.titulo) LIKE '%redes%'
+ORDER BY l.titulo ASC;
+
+
+Explicación breve: La consulta obtiene todos los libros que contienen la palabra redes en su título.
+
+Se utiliza LIKE '%redes%' para buscar la palabra en cualquier posición del título y LOWER() para evitar diferencias entre mayúsculas y minúsculas.
+
+Nota: Se asume que existe una tabla libros con las columnas id_libro, titulo y autor. La consulta debe adaptarse al esquema real de BiblioUNSA.

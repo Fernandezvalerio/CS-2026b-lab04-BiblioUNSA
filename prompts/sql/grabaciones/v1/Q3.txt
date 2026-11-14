@@ -1,0 +1,13 @@
+SELECT
+    m.id_multa,
+    m.id_prestamo,
+    m.importe,
+    m.estado
+FROM multas m
+WHERE m.estado = 'pendiente'
+ORDER BY m.importe DESC;
+
+
+Explicación breve: La consulta obtiene los importes de las multas que todavía están pendientes de pago. Se utiliza WHERE para filtrar únicamente las multas con estado 'pendiente' y ORDER BY para mostrar los importes de mayor a menor.
+
+Nota: Se asume que existe una tabla multas con las columnas id_multa, id_prestamo, importe y estado. Los nombres deben ajustarse al esquema real de BiblioUNSA.

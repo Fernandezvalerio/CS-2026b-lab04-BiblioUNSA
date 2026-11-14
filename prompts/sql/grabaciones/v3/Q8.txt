@@ -1,0 +1,6 @@
+{
+  "pregunta_id": "Q8",
+  "necesita_aclaracion": false,
+  "preguntas": [],
+  "consulta_sql": "SELECT id, prestamo_id, monto, estado FROM multas WHERE estado = 'PENDIENTE' ORDER BY id"
+}

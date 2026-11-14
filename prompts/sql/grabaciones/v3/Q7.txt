@@ -1,0 +1,10 @@
+{
+  "pregunta_id": "Q7",
+  "necesita_aclaracion": true,
+  "preguntas": [
+    "¿Qué información debe incluir el reporte: libros, ejemplares, préstamos, multas o todas estas categorías?",
+    "¿Deseas un reporte detallado de cada registro o un resumen con estadísticas y cantidades?",
+    "¿El reporte debe abarcar todas las bibliotecas y fechas o necesitas aplicar algún filtro específico?"
+  ],
+  "consulta_sql": null
+}

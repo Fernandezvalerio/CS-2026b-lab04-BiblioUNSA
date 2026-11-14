@@ -1,0 +1,6 @@
+{
+  "pregunta_id": "Q2",
+  "necesita_aclaracion": false,
+  "preguntas": [],
+  "consulta_sql": "SELECT p.id, p.ejemplar_id, p.estudiante_codigo, p.estado, p.fecha_vencimiento, p.fecha_devolucion FROM prestamos p JOIN ejemplares e ON p.ejemplar_id = e.id WHERE e.biblioteca = 'Central' AND p.fecha_vencimiento < CURRENT_DATE AND p.fecha_devolucion IS NULL ORDER BY p.fecha_vencimiento"
+}
