@@ -11,7 +11,7 @@ jobs:
         with:
           python-version: "3.12"
       - name: Instalar dependencias
-        run: python -m pip install -r requirements-lab08.txt
+        run: python -m pip install -r requirements-lab09.txt
       - name: FF-01 y FF-02 contratos de importación
         env:
           PYTHONPATH: src

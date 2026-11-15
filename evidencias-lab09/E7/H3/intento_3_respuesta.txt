@@ -1,0 +1,10 @@
+{
+  "historia_id": "H3",
+  "invest_ok": false,
+  "preguntas": [
+    "¿BiblioUNSA permite iniciar sesión con el correo institucional UNSA o únicamente validar la matrícula institucional?",
+    "¿Qué servicios específicos de biblioteca podrá utilizar el estudiante después de iniciar sesión?",
+    "¿Qué debe observar el estudiante cuando intenta iniciar sesión con un correo no institucional o con credenciales inválidas?"
+  ],
+  "escenarios": []
+}

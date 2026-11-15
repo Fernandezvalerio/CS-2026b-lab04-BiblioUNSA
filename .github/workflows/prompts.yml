@@ -1,0 +1,78 @@
+name: Lab 09 - evaluacion de prompts
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  prompts:
+    runs-on: ubuntu-latest
+    env:
+      PROMPTFOO_DISABLE_TELEMETRY: "1"
+      PROMPTFOO_DISABLE_UPDATE: "1"
+    steps:
+      - name: Descargar el repositorio
+        uses: actions/checkout@v4
+
+      - name: Preparar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+
+      - name: Preparar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Instalar dependencias de las pruebas
+        run: python -m pip install -r requirements-lab09.txt
+
+      - name: Probar la integracion de E6
+        run: python -m pytest -q tests/test_generador_prompts.py
+
+      # -p fija v3 incluso si el archivo YAML local tiene v1 o v2 activa.
+      # Las versiones antiguas fallan intencionalmente y se comparan fuera del CI.
+      - name: Evaluar criterios de aceptacion (H1-H8, v3)
+        working-directory: prompts/criterios
+        run: |
+          npx --yes promptfoo@0.125.1 eval             -c promptfooconfig.yaml -p v3.txt             --no-cache --no-share --no-progress-bar             -o ../../resultados-criterios-ci.json
+
+      - name: Evaluar consultas SQL (Q1-Q8, v3)
+        working-directory: prompts/sql
+        run: |
+          npx --yes promptfoo@0.125.1 eval             -c promptfooconfig.yaml -p v3.txt             --no-cache --no-share --no-progress-bar             -o ../../resultados-sql-ci.json
+
+      - name: Comprobar resultados del CI
+        run: |
+          python - <<'PYVALIDAR'
+          import json
+          from pathlib import Path
+
+          for tarea, ruta in (
+              ('criterios', 'resultados-criterios-ci.json'),
+              ('sql', 'resultados-sql-ci.json'),
+          ):
+              documento = json.loads(Path(ruta).read_text(encoding='utf-8'))
+              versiones = documento['results']['prompts']
+              assert len(versiones) == 1, f'{tarea}: se esperaba solo v3'
+              assert 'v3.txt' in versiones[0]['label'], f'{tarea}: no se evalúo v3'
+              metricas = versiones[0]['metrics']
+              aprobados = metricas['testPassCount']
+              fallidos = metricas['testFailCount']
+              errores = metricas['testErrorCount']
+              print(f'{tarea}: {aprobados}/8 aprobados, {fallidos} fallidos, {errores} errores')
+              assert (aprobados, fallidos, errores) == (8, 0, 0), f'{tarea}: regresion o datos incompletos'
+          PYVALIDAR
+
+      - name: Guardar resultados como evidencia
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: promptfoo-lab09
+          path: |
+            resultados-criterios-ci.json
+            resultados-sql-ci.json
+          if-no-files-found: warn
