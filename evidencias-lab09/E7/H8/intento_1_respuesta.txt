@@ -1,0 +1,47 @@
+{
+  "historia_id": "H8",
+  "invest_ok": true,
+  "preguntas": [],
+  "escenarios": [
+    {
+      "titulo": "Consulta de préstamos activos",
+      "tipo": "exito",
+      "dado": [
+        "soy estudiante",
+        "tengo uno o más préstamos activos"
+      ],
+      "cuando": "consulto mis préstamos activos",
+      "entonces": [
+        "veo los libros que tengo actualmente en préstamo",
+        "puedo identificar qué libros debo devolver"
+      ]
+    },
+    {
+      "titulo": "Sin préstamos activos",
+      "tipo": "borde",
+      "dado": [
+        "soy estudiante",
+        "no tengo préstamos activos"
+      ],
+      "cuando": "consulto mis préstamos activos",
+      "entonces": [
+        "veo un mensaje que indica que no tengo préstamos activos",
+        "no se muestran libros pendientes de devolución"
+      ]
+    },
+    {
+      "titulo": "Exclusión de préstamos devueltos",
+      "tipo": "borde",
+      "dado": [
+        "soy estudiante",
+        "tengo un préstamo activo",
+        "he devuelto anteriormente otros libros"
+      ],
+      "cuando": "consulto mis préstamos activos",
+      "entonces": [
+        "veo el libro que permanece en préstamo",
+        "los libros ya devueltos no aparecen entre mis préstamos activos"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,49 @@
+{
+  "historia_id": "H1",
+  "invest_ok": true,
+  "preguntas": [],
+  "escenarios": [
+    {
+      "titulo": "Reserva exitosa de un ejemplar disponible",
+      "tipo": "exito",
+      "dado": [
+        "Soy estudiante de la UNSA",
+        "He encontrado un libro con un ejemplar disponible para reservar"
+      ],
+      "cuando": "Solicito reservar el ejemplar disponible",
+      "entonces": [
+        "Veo una confirmación de que la reserva se realizó correctamente",
+        "El ejemplar queda apartado para mi recogida",
+        "Puedo identificar el libro que he reservado"
+      ]
+    },
+    {
+      "titulo": "Intento de reserva de un ejemplar no disponible",
+      "tipo": "error",
+      "dado": [
+        "Soy estudiante de la UNSA",
+        "El ejemplar que deseo reservar no está disponible"
+      ],
+      "cuando": "Intento reservar ese ejemplar",
+      "entonces": [
+        "Veo un mensaje indicando que el ejemplar no está disponible para reservar",
+        "No se confirma ninguna reserva para ese ejemplar"
+      ]
+    },
+    {
+      "titulo": "Ejemplar deja de estar disponible antes de confirmar la reserva",
+      "tipo": "borde",
+      "dado": [
+        "Soy estudiante de la UNSA",
+        "He seleccionado un ejemplar que inicialmente estaba disponible",
+        "El ejemplar deja de estar disponible antes de completar mi reserva"
+      ],
+      "cuando": "Confirmo la solicitud de reserva",
+      "entonces": [
+        "Veo un mensaje indicando que el ejemplar ya no está disponible",
+        "No se confirma la reserva",
+        "No se muestra el ejemplar como apartado para mí"
+      ]
+    }
+  ]
+}

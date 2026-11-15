@@ -1,0 +1,10 @@
+{
+  "historia_id": "H8",
+  "invest_ok": false,
+  "preguntas": [
+    "¿La consulta de préstamos activos está incluida en el alcance de BiblioUNSA, considerando que no figura entre las funcionalidades especificadas?",
+    "¿Qué información debe visualizar el estudiante de cada préstamo activo para identificar los libros que debe devolver?",
+    "¿Qué debe mostrarse cuando el estudiante no tiene préstamos activos?"
+  ],
+  "escenarios": []
+}

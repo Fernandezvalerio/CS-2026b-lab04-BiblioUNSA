@@ -14,8 +14,10 @@ Este registro resume las decisiones tomadas con apoyo de ChatGPT durante los eje
 | 8 | Revisamos cómo conectar los prompts con el proyecto (E6). | Ya existía el puerto `ProveedorLLM` de Lab 07. | Reutilizamos ese puerto, añadimos validación con `jsonschema` y pruebas con respuestas grabadas, en lugar de crear otra interfaz. |
 | 9 | Preparamos una evaluación en cada Pull Request (E7). | Si se ejecutaran v1–v3 juntas, el CI fallaría por los errores intencionales de las versiones antiguas. | Dejamos la comparación histórica disponible en los archivos YAML, pero el CI ejecuta solo la v3 de cada tarea y verifica 8/8 por conjunto. |
 
-## No determinismo: pendiente de las nueve ejecuciones reales
+## No determinismo: nueve ejecuciones registradas
 
-La guía exige repetir el mejor prompt **tres veces para cada uno de tres casos**. Se eligieron H1, H3 y H8 con criterios v3, porque cubren reserva, autenticación e inyección. Las nueve respuestas y la comparación se guardan en `evidencias-lab09/E7/`; hay una plantilla `no-determinismo.md` con las rutas y cinco líneas para completar.
+Se reunieron tres respuestas para cada historia **H1, H3 y H8** usando el prompt de criterios v3 y se guardaron como archivos independientes en `evidencias-lab09/E7/`. Las nueve cumplen el esquema JSON y las reglas condicionales del prompt, y ninguna sigue la orden de inyección de H8.
 
-Releer una grabación tres veces **no cuenta** como tres generaciones del modelo, porque el proveedor grabado es determinista. No registraremos diferencias hasta contar con las nueve respuestas nuevas. Las grabaciones de E1–E4 siguen siendo una referencia de regresión, no una prueba de que el modelo siempre conteste igual.
+La comparación reveló una variación importante que no debe ocultarse: **H8 obtuvo `invest_ok=true` en el primer intento y `invest_ok=false` en los dos siguientes**. Esto no afecta al formato, pero sí cambia el comportamiento: generar escenarios o detenerse a pedir aclaraciones. H1 mantuvo tres escenarios con variación del caso límite; H3 mantuvo tres preguntas de aclaración con distintas formulaciones. Es una evidencia a favor de conservar grabaciones fijas para las regresiones y revisar manualmente las diferencias semánticas al generar salidas nuevas.
+
+Las cinco líneas solicitadas por la guía y los detalles por intento están en [`evidencias-lab09/E7/no-determinismo.md`](../evidencias-lab09/E7/no-determinismo.md). El archivo original no registra con certeza la versión del modelo ni su temperatura; por eso no atribuimos la variación a una configuración concreta.

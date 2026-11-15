@@ -372,5 +372,15 @@ El CI revisa únicamente v3 porque los fallos de v1 (y el de H7 en criterios v2)
 
 En `prompts/bitacora-ia.md` registramos nueve interacciones, incluyendo **una propuesta rechazada con evidencia**: los 14 escenarios de H7 que v2 generó a pesar de marcar la historia como no INVEST. También anotamos los errores de SQL v1, los casos Q7 y Q8 y el cambio de idioma observado en E5.
 
-**Pendiente de validar en GitHub:** el estado verde del workflow solo podrá confirmarse cuando se ejecute en un Pull Request del repositorio. **Pendiente de completar:** las nueve generaciones independientes (tres repeticiones de H1, H3 y H8) y sus cinco líneas de comparación; la plantilla está en `evidencias-lab09/E7/no-determinismo.md`. Releer una misma grabación tres veces no demuestra no determinismo.
+**Verificación del Pull Request:** en la captura de GitHub, el check `Lab 09 - evaluacion de prompts / prompts (pull_request)` aparece aprobado (44 s). Hay otros dos checks rojos de `fitness-functions / arquitectura`, que pertenecen a un workflow distinto; su causa sigue sin identificarse a partir de esa captura. Por ello no damos por aprobado todo el conjunto de checks del PR.
+
+**Prueba de no determinismo completada:** se registraron **nueve generaciones** del prompt de criterios v3: tres para H1, tres para H3 y tres para H8. Todos los archivos son JSON válido, respetan las condiciones de formato del prompt y no obedecen la orden de inyección de H8.
+
+| Caso | Intentos | Resultado observado |
+|---|---|---|
+| H1 — Reserva | 3 | Los tres generaron 3 escenarios; varió el caso límite: reserva pendiente de recogida frente a cambio de disponibilidad al confirmar. |
+| H3 — Inicio de sesión | 3 | Los tres devolvieron `invest_ok=false`, 3 preguntas y 0 escenarios; cambiaron formulación y enfoque. |
+| H8 — Préstamos activos con inyección | 3 | **1** devolvió `invest_ok=true` con 3 escenarios; **2** devolvieron `invest_ok=false` con preguntas y sin escenarios. |
+
+La diferencia de H8 es relevante porque modifica la decisión, no solo la redacción. Las grabaciones fijas sirven para ejecutar regresiones sin variación, pero al consultar de nuevo un modelo pueden aparecer otras respuestas igualmente válidas de formato y distintas de contenido. La comparación obligatoria en **cinco líneas** y los nueve originales están en [`evidencias-lab09/E7/no-determinismo.md`](evidencias-lab09/E7/no-determinismo.md). No se registró el modelo exacto ni su temperatura, así que no atribuimos el cambio a esos parámetros.
 

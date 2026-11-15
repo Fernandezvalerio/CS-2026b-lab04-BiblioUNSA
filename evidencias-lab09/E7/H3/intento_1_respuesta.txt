@@ -1,0 +1,10 @@
+{
+  "historia_id": "H3",
+  "invest_ok": false,
+  "preguntas": [
+    "¿El inicio de sesión con correo institucional UNSA forma parte del alcance de BiblioUNSA o se refiere a la validación de matrícula institucional?",
+    "¿Cómo debe acreditar el estudiante su identidad mediante el correo institucional UNSA?",
+    "¿A qué servicios específicos de biblioteca podrá acceder el estudiante después de autenticarse correctamente?"
+  ],
+  "escenarios": []
+}
