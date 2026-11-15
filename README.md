@@ -239,6 +239,20 @@ Decisiones y vistas:
 
 ## Prompt engineering (Lab 09)
 
+### Resultados finales de las dos tareas
+
+Este laboratorio compara tres versiones de prompts para BiblioUNSA: criterios de aceptación (tarea A) y preguntas del bibliotecario traducidas a SQL de solo lectura (tarea B). Usamos ocho casos por tarea y por versión, incluyendo preguntas ambiguas e instrucciones maliciosas. Los números siguientes corresponden a las **respuestas grabadas** y a las aserciones de promptfoo, no a consultas ejecutadas sobre una base real.
+
+| Versión | Criterios de aceptación (A) | Consultas SQL (B) |
+|---|---:|---:|
+| v1 — Inicial | 0/8 (0 %) | 0/8 (0 %) |
+| v2 — Con estructura y contexto | 7/8 (87,5 %) | 8/8 (100 %) |
+| v3 — Con reglas y defensas explícitas | **8/8 (100 %)** | **8/8 (100 %)** |
+
+![Comparación de aprobación de las tres versiones en ambas tareas](prompts/resultados-lab09.png)
+
+En ambas tareas, v3 cumplió el objetivo de al menos el 85 % y no perdió casos que v2 ya aprobaba. El 100 % obtenido en esta batería **no garantiza** la corrección de respuestas nuevas: E7 mostró variaciones entre ejecuciones, especialmente en la decisión INVEST de H8.
+
 En este laboratorio trabajamos con los criterios de aceptación de BiblioUNSA. Partimos de seis historias relacionadas con las funciones del sistema y añadimos dos casos de prueba: H7, una historia demasiado ambigua, y H8, que incluye una instrucción maliciosa. El objetivo fue comprobar si mejorar la redacción del prompt producía respuestas más útiles y fáciles de validar.
 
 ### E2 y E3: versiones y resultados
@@ -372,8 +386,6 @@ El CI revisa únicamente v3 porque los fallos de v1 (y el de H7 en criterios v2)
 
 En `prompts/bitacora-ia.md` registramos nueve interacciones, incluyendo **una propuesta rechazada con evidencia**: los 14 escenarios de H7 que v2 generó a pesar de marcar la historia como no INVEST. También anotamos los errores de SQL v1, los casos Q7 y Q8 y el cambio de idioma observado en E5.
 
-**Verificación del Pull Request:** en la captura de GitHub, el check `Lab 09 - evaluacion de prompts / prompts (pull_request)` aparece aprobado (44 s). Hay otros dos checks rojos de `fitness-functions / arquitectura`, que pertenecen a un workflow distinto; su causa sigue sin identificarse a partir de esa captura. Por ello no damos por aprobado todo el conjunto de checks del PR.
-
 **Prueba de no determinismo completada:** se registraron **nueve generaciones** del prompt de criterios v3: tres para H1, tres para H3 y tres para H8. Todos los archivos son JSON válido, respetan las condiciones de formato del prompt y no obedecen la orden de inyección de H8.
 
 | Caso | Intentos | Resultado observado |
@@ -384,3 +396,8 @@ En `prompts/bitacora-ia.md` registramos nueve interacciones, incluyendo **una pr
 
 La diferencia de H8 es relevante porque modifica la decisión, no solo la redacción. Las grabaciones fijas sirven para ejecutar regresiones sin variación, pero al consultar de nuevo un modelo pueden aparecer otras respuestas igualmente válidas de formato y distintas de contenido. La comparación obligatoria en **cinco líneas** y los nueve originales están en [`evidencias-lab09/E7/no-determinismo.md`](evidencias-lab09/E7/no-determinismo.md). No se registró el modelo exacto ni su temperatura, así que no atribuimos el cambio a esos parámetros.
 
+### E8: revisión final y entrega
+
+**Qué entregamos:** las tres versiones de prompts y sus grabaciones por tarea, contratos y datasets, reportes de evaluación, red teaming (E5), integración con el puerto `ProveedorLLM` y pruebas (E6), CI y bitácora (E7), y las nueve evidencias de no determinismo. Este gráfico resume las tasas medidas en `resultados-e3.json` y `resultados-sql-e4.json`.
+
+**Lecciones aprendidas.** Primero, un resultado comprensible no es suficiente si no tiene un formato validable: los prompts v1 fallaron el contrato JSON. Segundo, aportar contexto y esquemas concretos reduce las suposiciones del modelo; ese fue el salto de SQL v1 a v2. Tercero, para historias ambiguas conviene pedir aclaraciones antes de inventar criterios: H7 fue el caso que hizo mejorar criterios v3. Finalmente, una defensa no se demuestra con una sola frase de seguridad: se prueba con entradas adversarias y se comprueba que no se pierdan casos normales. El experimento de E7 recuerda que aprobar la evaluación sobre grabaciones fijas no elimina el no determinismo de las futuras ejecuciones.
