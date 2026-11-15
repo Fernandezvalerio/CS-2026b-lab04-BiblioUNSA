@@ -347,3 +347,19 @@ También encontramos un problema distinto a la inyección: cuatro respuestas de 
 
 La comparación detallada, las defensas y las rutas de cada respuesta están en [`prompts/seguridad/red-team.md`](prompts/seguridad/red-team.md). Son resultados de estas 12 ejecuciones guardadas, no una garantía de que el prompt resista cualquier otra variante del ataque.
 
+### E6: integración de los prompts en Python
+
+En esta parte conectamos los prompts de los ejercicios anteriores con el código del proyecto. No hicimos un proveedor nuevo: **reutilizamos `ProveedorLLM` de Lab 07** y añadimos `src/reservas/generador_prompts.py`. El generador lee `v3.txt` por defecto, aunque se puede elegir otra versión, y envía la plantilla rellenada al proveedor que se le pase.
+
+Antes de aceptar una respuesta, el generador comprueba que sea JSON y que cumpla el `esquema.json` de la tarea. También valida reglas que el esquema no cubre por sí solo: en criterios exige escenarios coherentes con INVEST; en SQL solo admite una consulta `SELECT` sobre las tablas de prueba. **El SQL se devuelve para revisión, nunca se ejecuta.** Esta validación es limitada y no reemplaza un parser SQL ni controles de seguridad de una base real.
+
+Las pruebas usan un `ProveedorGrabado` que implementa el mismo puerto y devuelve respuestas ya guardadas en `prompts/criterios/grabaciones/` y `prompts/sql/grabaciones/`. Así comprobamos respuestas válidas e inválidas sin usar Internet ni credenciales. Incluimos también intentos de inyección en delimitadores, una sentencia `DELETE`, sentencias múltiples y tablas inventadas.
+
+Para ejecutar las pruebas desde la **raíz del repositorio**, con Python y las grabaciones de E3 y E4 presentes:
+
+```powershell
+python -m pip install -r requirements-lab09.txt
+python -m pytest tests/test_generador_prompts.py -v
+```
+
+Los archivos nuevos de E6 son `src/reservas/generador_prompts.py`, `tests/test_generador_prompts.py` y `requirements-lab09.txt`. No se cambió el puerto `ProveedorLLM` ni el código de los laboratorios anteriores.
