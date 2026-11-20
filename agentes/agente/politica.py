@@ -2,7 +2,7 @@
 from dataclasses import dataclass, field
 from pathlib import PurePosixPath
 
-LECTURA = {"listar_archivos", "leer_archivo", "buscar", "ejecutar_pruebas", "ver_cambios"}
+LECTURA = {"listar_archivos", "leer_archivo", "buscar", "ejecutar_pruebas", "ver_cambios", "mapa_repo", "leer_notas"}
 
 @dataclass
 class Decision:
@@ -12,7 +12,7 @@ class Decision:
 
 @dataclass
 class Politica:
-    herramientas_permitidas: set = field(default_factory=lambda: LECTURA | {"editar_archivo", "ejecutar_comando"})
+    herramientas_permitidas: set = field(default_factory=lambda: LECTURA | {"editar_archivo", "ejecutar_comando", "anotar"})
     max_pasos: int = 12
     aprobar_edicion = None
 

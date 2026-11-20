@@ -94,6 +94,7 @@ class RepositorioPrestamosMemoria:
         """Préstamos activos con fecha de vencimiento anterior a hoy."""
         return [p for p in self.prestamos
                 if p.estado in (EstadoPrestamo.PRESTADO, EstadoPrestamo.VENCIDO)
+                and p.fecha_devolucion is None
                 and p.fecha_vencimiento is not None and p.fecha_vencimiento < hoy]
 
     def buscar_pendientes_reverificacion(self) -> list[Prestamo]:
