@@ -27,6 +27,8 @@ class AdaptadorMatriculaJSON(ValidadorMatricula):
         respuesta = self.cliente.consultar_matricula(
             estudiante_id, timeout_segundos=1
         )
+        if not isinstance(respuesta, dict) or not isinstance(respuesta.get("vigente"), bool):
+            raise IntegracionException("Respuesta inválida del sistema académico: vigente debe ser booleano")
         return ResultadoMatricula(
             vigente=respuesta["vigente"],
             fecha_consulta=respuesta["consultado_en"],

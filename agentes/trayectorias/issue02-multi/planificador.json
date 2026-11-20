@@ -1,0 +1,13 @@
+[
+  {
+    "pensamiento": "Revisar los requisitos y criterios de aceptación del ISSUE-02 antes de elaborar el plan.",
+    "accion": "leer_archivo",
+    "args": {
+      "ruta": "issues/ISSUE-02.md"
+    }
+  },
+  {
+    "pensamiento": "El defecto se origina en la conversión implícita de cadenas a booleanos. La solución debe validar estrictamente la respuesta del sistema académico.",
+    "final": "Plan: 1. Localizar el adaptador JSON responsable de interpretar la vigencia de la matrícula. 2. Sustituir la evaluación implícita por una validación estricta del tipo booleano, tratando cualquier valor no booleano como error de integración. 3. Garantizar que una respuesta inválida interrumpa la reserva antes de ocupar el ejemplar o crear un préstamo. 4. Ejecutar la prueba existente tests/test_issue_02.py::test_matricula_textual_no_autoriza. 5. Verificar que true autorice cuando se cumplan las demás condiciones, false rechace y los valores malformados no autoricen ni alteren el estado. 6. Ejecutar la suite completa para detectar regresiones. No modificar las pruebas ni introducir cambios ajenos al ISSUE-02. Durante la planificación no se editaron archivos ni se ejecutaron comandos."
+  }
+]

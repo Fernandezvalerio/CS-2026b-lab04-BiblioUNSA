@@ -1,0 +1,22 @@
+{
+  "pasos": 22,
+  "rondas": 1,
+  "acciones": 20,
+  "bloqueadas": 0,
+  "contrato": 0,
+  "herramientas": {
+    "leer_archivo": 11,
+    "ejecutar_pruebas": 3,
+    "mapa_repo": 1,
+    "editar_archivo": 1,
+    "ejecutar_comando": 1,
+    "ver_cambios": 2,
+    "listar_archivos": 1
+  },
+  "contexto_final": 51616,
+  "contextos_por_agente": {
+    "planificador_r1": 2489,
+    "ejecutor_r1": 31745,
+    "revisor_r1": 17382
+  }
+}
