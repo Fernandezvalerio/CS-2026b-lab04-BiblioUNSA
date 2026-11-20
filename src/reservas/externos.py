@@ -7,10 +7,10 @@ intencionalmente diferentes para el ejercicio de refactorización.
 
 from __future__ import annotations
 
-from datetime import datetime
+from datetime import date, datetime
 from uuid import UUID
 
-from reservas.dominio import Ejemplar, Prestamo
+from reservas.dominio import Ejemplar, EstadoPrestamo, Prestamo
 
 
 class SistemaAcademicoJSON:
@@ -89,6 +89,12 @@ class RepositorioPrestamosMemoria:
     def guardar(self, prestamo: Prestamo) -> None:
         if not any(p.id == prestamo.id for p in self.prestamos):
             self.prestamos.append(prestamo)
+
+    def buscar_vencidos(self, hoy: date) -> list[Prestamo]:
+        """Préstamos activos con fecha de vencimiento anterior a hoy."""
+        return [p for p in self.prestamos
+                if p.estado in (EstadoPrestamo.PRESTADO, EstadoPrestamo.VENCIDO)
+                and p.fecha_vencimiento is not None and p.fecha_vencimiento < hoy]
 
     def buscar_pendientes_reverificacion(self) -> list[Prestamo]:
         return [p for p in self.prestamos if p.requiere_reverificacion]

@@ -1,0 +1,119 @@
+........................................................................ [ 79%]
+...........F.FF....                                                      [100%]
+=================================== FAILURES ===================================
+____________________________ test_no_cobra_domingo _____________________________
+tests/test_issue_01.py:7: in test_no_cobra_domingo
+    assert calcular_multa(date(2026, 11, 14), date(2026, 11, 16), Decimal("2")) == Decimal("2")
+E   AssertionError: assert Decimal('4') == Decimal('2')
+E    +  where Decimal('4') = calcular_multa(datetime.date(2026, 11, 14), datetime.date(2026, 11, 16), Decimal('2'))
+E    +    where datetime.date(2026, 11, 14) = date(2026, 11, 14)
+E    +    and   datetime.date(2026, 11, 16) = date(2026, 11, 16)
+E    +    and   Decimal('2') = Decimal('2')
+E    +  and   Decimal('2') = Decimal('2')
+______________________ test_matricula_textual_no_autoriza ______________________
+tests/test_issue_02.py:17: in test_matricula_textual_no_autoriza
+    with pytest.raises((MatriculaNoVigente, IntegracionException)):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE any of (<class 'reservas.servicio.MatriculaNoVigente'>, <class 'reservas.validadores.IntegracionException'>)
+_____________________ test_devuelto_no_figura_como_vencido _____________________
+tests/test_issue_03.py:16: in test_devuelto_no_figura_como_vencido
+    assert repo.buscar_vencidos(hoy) == [activo]
+E   AssertionError: assert [Prestamo(est...00a724f55b'))] == [Prestamo(est...4e714eb81d'))]
+E     
+E     Left contains one more item: Prestamo(estudiante=Estudiante(correo_institucional='prueba@unsa.edu.pe', id=UUID('246fd750-800c-4deb-9dc4-4715b7e5dfa...: 'VENCIDO'>, requiere_reverificacion=False, monto_multa=Decimal('0'), id=UUID('456a5a30-786c-4806-bd5d-5500a724f55b'))
+E     
+E     Full diff:
+E       [
+E           Prestamo(
+E               estudiante=Estudiante(
+E                              correo_institucional='prueba@unsa.edu.pe',
+E                              id=UUID('246fd750-800c-4deb-9dc4-4715b7e5dfa2'),
+E                          ),
+E               ejemplar=Ejemplar(
+E                            codigo_inventario='LAB10-A',
+E                            biblioteca='Central',
+E                            disponible=True,
+E                            id=UUID('e40d7b7f-81ac-42b1-ad51-dd9ea3a0fe92'),
+E                        ),
+E               fecha_reserva=datetime.datetime(2026, 11, 20, 14, 48, 45, 28250),
+E               fecha_vencimiento=datetime.date(2026, 11, 18),
+E               fecha_devolucion=None,
+E               estado=<EstadoPrestamo.VENCIDO: 'VENCIDO'>,
+E               requiere_reverificacion=False,
+E               monto_multa=Decimal('0'),
+E               id=UUID('02b4b62a-53da-4e6d-9b9a-814e714eb81d'),
+E           ),
+E     +     Prestamo(
+E     +         estudiante=Estudiante(
+E     +                        correo_institucional='prueba@unsa.edu.pe',
+E     +                        id=UUID('246fd750-800c-4deb-9dc4-4715b7e5dfa2'),
+E     +                    ),
+E     +         ejemplar=Ejemplar(
+E     +                      codigo_inventario='LAB10-B',
+E     +                      biblioteca='Central',
+E     +                      disponible=True,
+E     +                      id=UUID('120b74e1-a6b4-4bb6-80f0-89c440aca5ad'),
+E     +                  ),
+E     +         fecha_reserva=datetime.datetime(2026, 11, 20, 14, 48, 45, 28260),
+E     +         fecha_vencimiento=datetime.date(2026, 11, 18),
+E     +         fecha_devolucion=datetime.date(2026, 11, 19),
+E     +         estado=<EstadoPrestamo.VENCIDO: 'VENCIDO'>,
+E     +         requiere_reverificacion=False,
+E     +         monto_multa=Decimal('0'),
+E     +         id=UUID('456a5a30-786c-4806-bd5d-5500a724f55b'),
+E     +     ),
+E       ]
+=========================== short test summary info ============================
+FAILED tests/test_issue_01.py::test_no_cobra_domingo - AssertionError: assert Decimal('4') == Decimal('2')
+ +  where Decimal('4') = calcular_multa(datetime.date(2026, 11, 14), datetime.date(2026, 11, 16), Decimal('2'))
+ +    where datetime.date(2026, 11, 14) = date(2026, 11, 14)
+ +    and   datetime.date(2026, 11, 16) = date(2026, 11, 16)
+ +    and   Decimal('2') = Decimal('2')
+ +  and   Decimal('2') = Decimal('2')
+FAILED tests/test_issue_02.py::test_matricula_textual_no_autoriza - Failed: DID NOT RAISE any of (<class 'reservas.servicio.MatriculaNoVigente'>, <class 'reservas.validadores.IntegracionException'>)
+FAILED tests/test_issue_03.py::test_devuelto_no_figura_como_vencido - AssertionError: assert [Prestamo(est...00a724f55b'))] == [Prestamo(est...4e714eb81d'))]
+  
+  Left contains one more item: Prestamo(estudiante=Estudiante(correo_institucional='prueba@unsa.edu.pe', id=UUID('246fd750-800c-4deb-9dc4-4715b7e5dfa...: 'VENCIDO'>, requiere_reverificacion=False, monto_multa=Decimal('0'), id=UUID('456a5a30-786c-4806-bd5d-5500a724f55b'))
+  
+  Full diff:
+    [
+        Prestamo(
+            estudiante=Estudiante(
+                           correo_institucional='prueba@unsa.edu.pe',
+                           id=UUID('246fd750-800c-4deb-9dc4-4715b7e5dfa2'),
+                       ),
+            ejemplar=Ejemplar(
+                         codigo_inventario='LAB10-A',
+                         biblioteca='Central',
+                         disponible=True,
+                         id=UUID('e40d7b7f-81ac-42b1-ad51-dd9ea3a0fe92'),
+                     ),
+            fecha_reserva=datetime.datetime(2026, 11, 20, 14, 48, 45, 28250),
+            fecha_vencimiento=datetime.date(2026, 11, 18),
+            fecha_devolucion=None,
+            estado=<EstadoPrestamo.VENCIDO: 'VENCIDO'>,
+            requiere_reverificacion=False,
+            monto_multa=Decimal('0'),
+            id=UUID('02b4b62a-53da-4e6d-9b9a-814e714eb81d'),
+        ),
+  +     Prestamo(
+  +         estudiante=Estudiante(
+  +                        correo_institucional='prueba@unsa.edu.pe',
+  +                        id=UUID('246fd750-800c-4deb-9dc4-4715b7e5dfa2'),
+  +                    ),
+  +         ejemplar=Ejemplar(
+  +                      codigo_inventario='LAB10-B',
+  +                      biblioteca='Central',
+  +                      disponible=True,
+  +                      id=UUID('120b74e1-a6b4-4bb6-80f0-89c440aca5ad'),
+  +                  ),
+  +         fecha_reserva=datetime.datetime(2026, 11, 20, 14, 48, 45, 28260),
+  +         fecha_vencimiento=datetime.date(2026, 11, 18),
+  +         fecha_devolucion=datetime.date(2026, 11, 19),
+  +         estado=<EstadoPrestamo.VENCIDO: 'VENCIDO'>,
+  +         requiere_reverificacion=False,
+  +         monto_multa=Decimal('0'),
+  +         id=UUID('456a5a30-786c-4806-bd5d-5500a724f55b'),
+  +     ),
+    ]
+3 failed, 88 passed in 1.24s
