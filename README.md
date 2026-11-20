@@ -401,3 +401,72 @@ La diferencia de H8 es relevante porque modifica la decisión, no solo la redacc
 **Qué entregamos:** las tres versiones de prompts y sus grabaciones por tarea, contratos y datasets, reportes de evaluación, red teaming (E5), integración con el puerto `ProveedorLLM` y pruebas (E6), CI y bitácora (E7), y las nueve evidencias de no determinismo. Este gráfico resume las tasas medidas en `resultados-e3.json` y `resultados-sql-e4.json`.
 
 **Lecciones aprendidas.** Primero, un resultado comprensible no es suficiente si no tiene un formato validable: los prompts v1 fallaron el contrato JSON. Segundo, aportar contexto y esquemas concretos reduce las suposiciones del modelo; ese fue el salto de SQL v1 a v2. Tercero, para historias ambiguas conviene pedir aclaraciones antes de inventar criterios: H7 fue el caso que hizo mejorar criterios v3. Finalmente, una defensa no se demuestra con una sola frase de seguridad: se prueba con entradas adversarias y se comprueba que no se pierdan casos normales. El experimento de E7 recuerda que aprobar la evaluación sobre grabaciones fijas no elimina el no determinismo de las futuras ejecuciones.
+
+## Sistemas agénticos (Lab 10)
+
+En este laboratorio incorporamos un sistema de agentes para localizar y corregir problemas de BiblioUNSA sobre copias del repositorio. A diferencia de los prompts del Lab 09, el agente puede consultar archivos, ejecutar pruebas, proponer una edición y revisar el resultado antes de finalizar. Las decisiones se validan y quedan registradas. No se requiere una clave de API: usamos un asistente en el navegador con `ModeloInteractivo` y conservamos las decisiones para reproducirlas mediante `ModeloGrabado`.
+
+### Diseño y organización
+
+Elegimos ReAct como arquetipo principal y usamos un planificador, un ejecutor y un revisor cuando se necesita coordinación. El planificador puede leer el issue; el ejecutor explora, ejecuta pruebas y edita únicamente archivos Python de `src/`; el revisor consulta el código, las pruebas y el diff sin editar. Cada ejecutor dispone de 12 pasos, cada revisor de 8 y el planificador de 4, con un máximo de dos rondas actor-crítico. El mapa del repositorio se obtiene mediante AST y las notas se guardan por ejecución. Desde E6, la aprobación humana de las ediciones está activa por defecto.
+
+| Issue | Problema | Solución incorporada |
+|---|---|---|
+| [ISSUE-01](issues/ISSUE-01.md) | Se cobran domingos en la multa. | Excluir domingos del intervalo de mora (`src/reservas/multas.py`). |
+| [ISSUE-02](issues/ISSUE-02.md) | Una matrícula textual inválida puede autorizar una reserva. | Validar que la respuesta sea un diccionario y que `vigente` sea booleano (`src/reservas/validadores.py`). |
+| [ISSUE-03](issues/ISSUE-03.md) | Una devolución sigue figurando entre los préstamos vencidos. | Excluir préstamos con fecha de devolución registrada (`src/reservas/externos.py`). |
+
+### Máquina de estados del agente
+
+![Máquina de estados del agente con aprobación humana](agentes/diseno/estados.png)
+
+[Fuente PlantUML](agentes/diseno/estados.puml). El contrato JSON y la política se evalúan antes de ejecutar herramientas. Cuando se solicita una edición, el agente espera autorización humana; si se rechaza, registra el bloqueo y devuelve la observación al bucle. La ejecución termina con una respuesta final o al alcanzar su límite de pasos.
+
+### Trayectoria con aprobación humana
+
+![Trayectoria del ISSUE-02 con aprobación humana](agentes/trazas/issue02-aprobacion/trayectoria.png)
+
+[Fuente Mermaid](agentes/trazas/issue02-aprobacion/trayectoria.mmd) · [Traza JSONL](agentes/trazas/issue02-aprobacion/ejecutor.jsonl). En E6 reproducimos la trayectoria del agente único y duplicamos su solicitud de edición para verificar el control humano. La entrada `tal vez` fue rechazada por el programa; en el paso 6 se negó la edición y en el paso 7 se autorizó. La solución definitiva del repositorio sigue siendo la versión multiagente de E5.
+
+### Resultados de las ejecuciones (E7)
+
+Las siguientes métricas corresponden a las ejecuciones del equipo. En la variante multiagente el contexto final suma los historiales finales del planificador, ejecutor y revisor; está expresado en caracteres, no en tokens ni en costo de API. Las acciones incluyen solicitudes de herramientas bloqueadas; los rechazos del contrato se contabilizan por separado.
+
+| Ejecución | Pasos | Rondas | Acciones | Herramientas (llamadas) | Contrato rechazado | Bloqueadas | Contexto final (caracteres) |
+|---|---:|---:|---:|---|---:|---:|---:|
+| ISSUE-01 (`issue01-unico`) | 8 | 1 | 7 | leer_archivo (2), ejecutar_pruebas (2), editar_archivo (1), ejecutar_comando (1), ver_cambios (1) | 0 | 0 | 8027 |
+| ISSUE-02 (`issue02-multi`) | 22 | 1 | 20 | leer_archivo (11), ejecutar_pruebas (3), mapa_repo (1), editar_archivo (1), ejecutar_comando (1), ver_cambios (2), listar_archivos (1) | 0 | 0 | 51616 |
+| ISSUE-03 (`issue03-unico`) | 12 | 1 | 11 | mapa_repo (1), leer_archivo (3), ejecutar_pruebas (2), anotar (1), leer_notas (1), editar_archivo (1), ejecutar_comando (1), ver_cambios (1) | 0 | 0 | 24432 |
+
+#### Ejecuciones complementarias
+
+| Ejecución | Pasos | Rondas | Acciones | Herramientas (llamadas) | Contrato rechazado | Bloqueadas | Contexto final (caracteres) |
+|---|---:|---:|---:|---|---:|---:|---:|
+| Agente único (`issue02-unico`) | 10 | 1 | 9 | leer_archivo (3), ejecutar_pruebas (2), buscar (1), editar_archivo (1), ejecutar_comando (1), ver_cambios (1) | 0 | 0 | 18362 |
+| Aprobación humana (`issue02-aprobacion`) | 11 | 1 | 10 | leer_archivo (3), ejecutar_pruebas (2), buscar (1), editar_archivo (2), ejecutar_comando (1), ver_cambios (1) | 0 | 1 | 19401 |
+
+El mapa y las notas del ISSUE-03 permitieron conservar la hipótesis de trabajo, aunque se necesitaron más pasos y contexto que en el ISSUE-01. Como se trata de problemas diferentes, no podemos atribuir toda esa diferencia a las herramientas nuevas. En el ISSUE-02, ambas variantes resolvieron el caso original, pero la multiagente también verificó el tipo de la respuesta completa. Esta mejora fue introducida por el ejecutor y aprobada por el revisor en una sola ronda. La revisión añadió confianza, pero aumentó el contexto de 18362 a 51616 caracteres. Por ello, preferimos empezar con un agente y recurrir a la coordinación cuando el riesgo lo justifica.
+
+### Verificación y reproducción
+
+Desde la raíz del repositorio:
+
+```powershell
+python -m pip install -r requirements-lab10.txt
+python -B -m pytest -q tests agentes/pruebas_agente
+python agentes/observar.py
+```
+
+La suite incluye las pruebas de los tres issues, del contrato, de las herramientas, de la aprobación humana y los dos casos de regresión adicionales de E7. Estos últimos comprueban respuestas académicas que no son diccionarios. Para reproducir la ejecución de E6 sin alterar su evidencia, se puede crear una trayectoria con un nombre distinto y copiar allí las decisiones grabadas. Se necesita conservar la base defectuosa del E4 para repetir el experimento, ya que el código definitivo tiene los tres issues corregidos. Las grabaciones permiten repetir decisiones, pero no garantizan que otra consulta al modelo produzca las mismas respuestas.
+
+### Documentación y evidencias
+
+- [ADR-010: arquitectura del sistema agéntico](docs/architecture/adr/010-sistema-agentico.md)
+- [Lienzo de diseño](agentes/diseno/lienzo.md)
+- [Comparación E2 y E4](agentes/trazas/issue03-unico/comparacion-e4.md)
+- [Comparación agente único y multiagente](agentes/comparacion-e5.md)
+- [Delegación progresiva](agentes/delegacion.md)
+- [Observación de trazas](agentes/observacion.md)
+- [Bitácora de IA](agentes/bitacora-ia.md)
+
+El sistema se usa como apoyo al desarrollo, no como un servicio autónomo de producción. El agente propone y actúa dentro de las restricciones; el equipo revisa el diff y las pruebas antes de integrar. Las copias locales facilitan la reversión, pero no sustituyen un sandbox del sistema operativo. No se deben utilizar credenciales reales ni ejecutar código que no sea de confianza.

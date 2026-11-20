@@ -1,0 +1,75 @@
+[
+  {
+    "pensamiento": "Identificar la estructura del código antes de investigar el ISSUE-03.",
+    "accion": "mapa_repo",
+    "args": {}
+  },
+  {
+    "pensamiento": "Consultar los requisitos y criterios de aceptación del ISSUE-03.",
+    "accion": "leer_archivo",
+    "args": {
+      "ruta": "issues/ISSUE-03.md"
+    }
+  },
+  {
+    "pensamiento": "Reproducir el fallo de la consulta de préstamos vencidos antes de modificar el código.",
+    "accion": "ejecutar_pruebas",
+    "args": {}
+  },
+  {
+    "pensamiento": "El fallo está reproducido; inspeccionar la implementación de buscar_vencidos para localizar el filtro incorrecto.",
+    "accion": "leer_archivo",
+    "args": {
+      "ruta": "src/reservas/externos.py"
+    }
+  },
+  {
+    "pensamiento": "Confirmar el atributo de devolución del préstamo antes de corregir el filtro del repositorio.",
+    "accion": "leer_archivo",
+    "args": {
+      "ruta": "src/reservas/dominio.py"
+    }
+  },
+  {
+    "pensamiento": "Registrar la causa raíz y la corrección prevista antes de editar.",
+    "accion": "anotar",
+    "args": {
+      "texto": "ISSUE-03 reproducido: 1 prueba fallida (exit=1). RepositorioPrestamosMemoria.buscar_vencidos(), en src/reservas/externos.py, no comprueba fecha_devolucion. El dominio confirma que este atributo admite None. Añadir el filtro p.fecha_devolucion is None, conservando los estados PRESTADO y VENCIDO y la comparación estricta fecha_vencimiento < hoy. No modificar la máquina State ni las pruebas. Después, ejecutar las pruebas del issue, la suite completa y revisar el diff."
+    }
+  },
+  {
+    "pensamiento": "Recuperar las notas guardadas para verificar el diagnóstico y mantener el alcance de la corrección.",
+    "accion": "leer_notas",
+    "args": {}
+  },
+  {
+    "pensamiento": "Aplicar la corrección mínima en el repositorio, excluyendo préstamos con fecha de devolución sin alterar los demás criterios.",
+    "accion": "editar_archivo",
+    "args": {
+      "ruta": "src/reservas/externos.py",
+      "antes": "                and p.fecha_vencimiento is not None and p.fecha_vencimiento < hoy]",
+      "despues": "                and p.fecha_devolucion is None\n                and p.fecha_vencimiento is not None and p.fecha_vencimiento < hoy]"
+    }
+  },
+  {
+    "pensamiento": "La corrección fue aplicada correctamente. Ejecutar nuevamente la prueba del ISSUE-03 para comprobar que el fallo desapareció.",
+    "accion": "ejecutar_pruebas",
+    "args": {}
+  },
+  {
+    "pensamiento": "La prueba específica pasó correctamente. Ejecutar la suite completa para detectar posibles regresiones.",
+    "accion": "ejecutar_comando",
+    "args": {
+      "comando": "python -m pytest -q"
+    }
+  },
+  {
+    "pensamiento": "La prueba del ISSUE-03 pasa. La suite completa registra 90 pruebas exitosas y un fallo correspondiente al ISSUE-02, fuera del alcance solicitado. Revisar el diff para confirmar que únicamente se modificó el filtro de préstamos vencidos.",
+    "accion": "ver_cambios",
+    "args": {}
+  },
+  {
+    "pensamiento": "La corrección del ISSUE-03 está validada y el diff confirma que solo se añadió el filtro necesario.",
+    "final": "ISSUE-03 resuelto correctamente. Se añadió la condición p.fecha_devolucion is None al método buscar_vencidos() de src/reservas/externos.py. Ahora se excluyen los préstamos devueltos, se conservan los préstamos activos atrasados y no se incluyen los que vencen hoy. Pruebas antes: 1 failed (exit=1). Pruebas después: 1 passed (exit=0). Suite completa: 90 passed, 1 failed, correspondiente al ISSUE-02, fuera del alcance solicitado; no se verificó su fallo previo a la modificación. Diff revisado: únicamente una línea añadida. Se utilizaron mapa_repo(), anotar() y leer_notas(). No se modificaron las pruebas ni la máquina State. No se realizaron commits."
+  }
+]

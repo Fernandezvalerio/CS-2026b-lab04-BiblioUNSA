@@ -1,0 +1,80 @@
+[
+  {
+    "pensamiento": "Reproducir el defecto con la prueba existente antes de modificar el adaptador.",
+    "accion": "ejecutar_pruebas",
+    "args": {}
+  },
+  {
+    "pensamiento": "Confirmado el fallo de reproducción. Localizar el adaptador JSON y la excepción de integración existente.",
+    "accion": "mapa_repo",
+    "args": {}
+  },
+  {
+    "pensamiento": "Inspeccionar AdaptadorMatriculaJSON y el manejo existente de IntegracionException para aplicar una corrección mínima.",
+    "accion": "leer_archivo",
+    "args": {
+      "ruta": "src/reservas/validadores.py"
+    }
+  },
+  {
+    "pensamiento": "Comprobar el orden de validación y las posibles excepciones del servicio antes de corregir el adaptador JSON.",
+    "accion": "leer_archivo",
+    "args": {
+      "ruta": "src/reservas/servicio.py"
+    }
+  },
+  {
+    "pensamiento": "El servicio valida la matrícula antes de modificar el ejemplar o crear el préstamo. Comprobar que el decorador propaga IntegracionException sin activar la recuperación por caché.",
+    "accion": "leer_archivo",
+    "args": {
+      "ruta": "src/reservas/decoradores.py"
+    }
+  },
+  {
+    "pensamiento": "El decorador solo captura TimeoutError. Validar estrictamente el campo vigente en el adaptador impedirá autorizar reservas con respuestas malformadas, sin modificar el servicio ni su política de caché.",
+    "accion": "editar_archivo",
+    "args": {
+      "ruta": "src/reservas/validadores.py",
+      "antes": "        return ResultadoMatricula(\n            vigente=respuesta[\"vigente\"],\n            fecha_consulta=respuesta[\"consultado_en\"],\n            desde_cache=False,\n        )",
+      "despues": "        if not isinstance(respuesta, dict) or not isinstance(respuesta.get(\"vigente\"), bool):\n            raise IntegracionException(\"Respuesta inválida del sistema académico: vigente debe ser booleano\")\n        return ResultadoMatricula(\n            vigente=respuesta[\"vigente\"],\n            fecha_consulta=respuesta[\"consultado_en\"],\n            desde_cache=False,\n        )"
+    }
+  },
+  {
+    "pensamiento": "La modificación del adaptador fue confirmada. Ejecutar nuevamente la prueba del ISSUE-02 para verificar que el defecto quedó corregido.",
+    "accion": "ejecutar_pruebas",
+    "args": {}
+  },
+  {
+    "pensamiento": "La prueba específica pasó de fallar a aprobarse. Ejecutar la suite completa para verificar posibles regresiones y conservar el comportamiento de las respuestas booleanas válidas.",
+    "accion": "ejecutar_comando",
+    "args": {
+      "comando": "python -m pytest -q"
+    }
+  },
+  {
+    "pensamiento": "La suite completa aprobó las 91 pruebas sin regresiones detectadas. Revisar el diff para confirmar que únicamente se modificó el adaptador JSON y que las pruebas permanecen intactas.",
+    "accion": "ver_cambios",
+    "args": {}
+  },
+  {
+    "pensamiento": "El diff confirma que solo se añadieron dos líneas al adaptador JSON. Revisar las aserciones de la prueba específica para comprobar que también verifica la disponibilidad del ejemplar y la ausencia de préstamos.",
+    "accion": "leer_archivo",
+    "args": {
+      "ruta": "tests/test_issue_02.py"
+    }
+  },
+  {
+    "pensamiento": "La prueba específica confirma el rechazo de la matrícula textual, la disponibilidad del ejemplar y la ausencia de préstamos. Localizar las pruebas existentes que cubren los booleanos válidos para completar la verificación.",
+    "accion": "listar_archivos",
+    "args": {
+      "carpeta": "tests"
+    }
+  },
+  {
+    "pensamiento": "Inspeccionar las pruebas de comportamiento para identificar los casos de matrícula vigente y no vigente cubiertos por la suite aprobada.",
+    "accion": "leer_archivo",
+    "args": {
+      "ruta": "tests/test_comportamiento.py"
+    }
+  }
+]

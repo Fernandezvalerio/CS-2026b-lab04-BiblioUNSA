@@ -1,0 +1,54 @@
+sequenceDiagram
+    autonumber
+    actor U as Humano
+    participant PL as Planificador
+    participant EJ as Ejecutor
+    participant RV as Revisor
+    participant C as Contrato
+    participant P as Política
+    participant H as Herramientas
+    U->>PL: Objetivo ronda 1
+    PL->>H: leer_archivo
+    H-->>PL:   1| N. ISSUE-02 — El adaptador JSON interpreta una matrícula inv
+    PL-->>U: Respuesta final (revisión humana pendiente)
+    U->>EJ: Objetivo ronda 1
+    EJ->>H: ejecutar_pruebas
+    H-->>EJ: exit=1
+    EJ->>H: mapa_repo
+    H-->>EJ: src/reservas/decoradores.py
+    EJ->>H: leer_archivo
+    H-->>EJ:   1| """E2: Strategy, Adapter y Factory para validar matrículas.
+    EJ->>H: leer_archivo
+    H-->>EJ:   1| """E2-E4: reservas con Strategy/Adapter/Factory, Decorator y
+    EJ->>H: leer_archivo
+    H-->>EJ:   1| """Lab 07, E4: responsabilidades transversales con Decorator
+    EJ->>H: editar_archivo
+    H-->>EJ: OK: src/reservas/validadores.py modificado
+    EJ->>H: ejecutar_pruebas
+    H-->>EJ: exit=0
+    EJ->>H: ejecutar_comando
+    H-->>EJ: exit=0
+    EJ->>H: ver_cambios
+    H-->>EJ: --- a/src\reservas\validadores.py
+    EJ->>H: leer_archivo
+    H-->>EJ:   1| from datetime import datetime
+    EJ->>H: listar_archivos
+    H-->>EJ: tests/conftest.py
+    EJ->>H: leer_archivo
+    H-->>EJ:   1| """Caracterización de HU-03: estos casos se conservarán en E
+    U->>RV: Objetivo ronda 1
+    RV->>H: leer_archivo
+    H-->>RV:   1| N. ISSUE-02 — El adaptador JSON interpreta una matrícula inv
+    RV->>H: ver_cambios
+    H-->>RV: --- a/src\reservas\validadores.py
+    RV->>H: leer_archivo
+    H-->>RV:   1| """E2: Strategy, Adapter y Factory para validar matrículas.
+    RV->>H: leer_archivo
+    H-->>RV:   1| """E2-E4: reservas con Strategy/Adapter/Factory, Decorator y
+    RV->>H: leer_archivo
+    H-->>RV:   1| """Lab 07, E4: responsabilidades transversales con Decorator
+    RV->>H: leer_archivo
+    H-->>RV:   1| from datetime import datetime
+    RV->>H: ejecutar_pruebas
+    H-->>RV: exit=0
+    RV-->>U: Respuesta final (revisión humana pendiente)
