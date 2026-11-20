@@ -1,0 +1,47 @@
+[
+  {
+    "pensamiento": "Realizar leer archivo",
+    "accion": "leer_archivo",
+    "args": {
+      "ruta": "issues/ISSUE-01.md"
+    }
+  },
+  {
+    "pensamiento": "Realizar ejecutar pruebas",
+    "accion": "ejecutar_pruebas",
+    "args": {}
+  },
+  "Leer el archivo de multas (texto libre, no JSON).",
+  {
+    "pensamiento": "Realizar buscar",
+    "accion": "buscar",
+    "args": {
+      "patron": "def calcular_multa"
+    }
+  },
+  {
+    "pensamiento": "Realizar leer archivo",
+    "accion": "leer_archivo",
+    "args": {
+      "ruta": "src/reservas/multas.py"
+    }
+  },
+  {
+    "pensamiento": "Realizar editar archivo",
+    "accion": "editar_archivo",
+    "args": {
+      "ruta": "src/reservas/multas.py",
+      "antes": "    dias = max(0, (devolucion - vencimiento).days)\n    return tarifa * dias",
+      "despues": "    dias = max(0, (devolucion - vencimiento).days)\n    cobrables = sum(date.fromordinal(vencimiento.toordinal() + i).weekday() != 6\n                    for i in range(1, dias + 1))\n    return tarifa * cobrables"
+    }
+  },
+  {
+    "pensamiento": "Realizar ejecutar pruebas",
+    "accion": "ejecutar_pruebas",
+    "args": {}
+  },
+  {
+    "pensamiento": "Cerrar y dejar el cambio para revisión humana",
+    "final": "ISSUE-01 corregido: se excluyen domingos. Las pruebas del issue pasan. Revisar el diff antes de integrar."
+  }
+]

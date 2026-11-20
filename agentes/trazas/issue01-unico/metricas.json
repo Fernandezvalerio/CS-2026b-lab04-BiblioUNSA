@@ -1,0 +1,17 @@
+{
+  "pasos": 8,
+  "rondas": 1,
+  "acciones": 6,
+  "bloqueadas": 0,
+  "contrato": 1,
+  "herramientas": {
+    "leer_archivo": 2,
+    "ejecutar_pruebas": 2,
+    "buscar": 1,
+    "editar_archivo": 1
+  },
+  "contexto_final": 5430,
+  "contextos_por_agente": {
+    "ejecutor_r1": 5430
+  }
+}

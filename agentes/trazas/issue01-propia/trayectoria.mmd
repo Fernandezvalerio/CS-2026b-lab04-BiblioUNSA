@@ -1,0 +1,25 @@
+sequenceDiagram
+    autonumber
+    actor U as Humano
+    participant PL as Planificador
+    participant EJ as Ejecutor
+    participant RV as Revisor
+    participant C as Contrato
+    participant P as Política
+    participant H as Herramientas
+    U->>EJ: Objetivo ronda 1
+    EJ->>H: leer_archivo
+    H-->>EJ:   1| N. ISSUE-01 — La multa incluye domingos
+    EJ->>H: ejecutar_pruebas
+    H-->>EJ: exit=1
+    EJ->>H: leer_archivo
+    H-->>EJ:   1| """Cálculo de multa por retraso (regla de laboratorio)."""
+    EJ->>H: editar_archivo
+    H-->>EJ: OK: src/reservas/multas.py modificado
+    EJ->>H: ejecutar_pruebas
+    H-->>EJ: exit=0
+    EJ->>H: ejecutar_comando
+    H-->>EJ: exit=1
+    EJ->>H: ver_cambios
+    H-->>EJ: --- a/src\reservas\multas.py
+    EJ-->>U: Respuesta final (revisión humana pendiente)
