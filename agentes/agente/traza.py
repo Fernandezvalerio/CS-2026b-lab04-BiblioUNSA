@@ -31,6 +31,9 @@ def a_mermaid(eventos):
         a=alias.get(e["agente"],"EJ")
         if e["tipo"]=="objetivo":
             l.append(f"    U->>{a}: Objetivo ronda {e['ronda']}")
+        elif e["tipo"]=="aprobacion":
+            l.extend([f"    P->>U: Solicita aprobación de edición",
+                      f"    U-->>P: {'Aprobada (s)' if e['permitida'] else 'Rechazada (n)'}"])
         elif e["tipo"]=="accion":
             if e["estado"]=="CONTRATO_INVALIDO":
                 l.extend([f"    {a}->>C: Decisión",f"    C--x{a}: Contrato inválido"])

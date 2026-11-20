@@ -39,6 +39,10 @@ class Agente:
                 acc,args = d["accion"],d["args"]
                 self._estado("EVALUANDO_POLITICA",paso)
                 veredicto = self.politica.evaluar(acc,args,paso)
+                if veredicto.permitido and acc == "editar_archivo" and self.politica.aprobar_edicion is not None:
+                    self._estado("ESPERANDO_APROBACION",paso)
+                    veredicto = self.politica.autorizacion_humana(args)
+                    self._registrar(tipo="aprobacion",estado="APROBACION_HUMANA",paso=paso,permitida=veredicto.permitido,ruta=args.get("ruta"))
                 if veredicto.permitido:
                     self._estado("EJECUTANDO",paso)
                     try:

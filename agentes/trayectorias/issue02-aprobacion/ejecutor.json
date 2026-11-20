@@ -1,0 +1,74 @@
+[
+  {
+    "pensamiento": "Revisar los requisitos del ISSUE-02 antes de reproducir el error mediante pruebas.",
+    "accion": "leer_archivo",
+    "args": {
+      "ruta": "issues/ISSUE-02.md"
+    }
+  },
+  {
+    "pensamiento": "Reproducir el defecto con las pruebas del ISSUE-02 antes de modificar el código y confirmar el fallo inicial.",
+    "accion": "ejecutar_pruebas",
+    "args": {}
+  },
+  {
+    "pensamiento": "El fallo quedó reproducido. Localizar el adaptador JSON y las validaciones de matrícula para identificar la causa exacta.",
+    "accion": "buscar",
+    "args": {
+      "patron": "matricula|matrícula|IntegracionException|bool\\("
+    }
+  },
+  {
+    "pensamiento": "El adaptador JSON parece estar en validadores.py. Revisar su implementación y el tratamiento de errores antes de aplicar la corrección.",
+    "accion": "leer_archivo",
+    "args": {
+      "ruta": "src/reservas/validadores.py"
+    }
+  },
+  {
+    "pensamiento": "La causa está identificada: el adaptador transfiere vigente al dominio sin comprobar su tipo. Revisar cómo el servicio gestiona IntegracionException y la caché para garantizar que una respuesta inválida no autorice la reserva.",
+    "accion": "leer_archivo",
+    "args": {
+      "ruta": "src/reservas/servicio.py"
+    }
+  },
+  {
+    "pensamiento": "Validar estrictamente el campo vigente en el adaptador JSON antes de construir ResultadoMatricula. Lanzar IntegracionException ante valores no booleanos evita actualizar la caché, ocupar el ejemplar y crear préstamos.",
+    "accion": "editar_archivo",
+    "args": {
+      "ruta": "src/reservas/validadores.py",
+      "antes": "        return ResultadoMatricula(\n            vigente=respuesta[\"vigente\"],\n            fecha_consulta=respuesta[\"consultado_en\"],\n            desde_cache=False,\n        )",
+      "despues": "        vigente = respuesta.get(\"vigente\")\n        if not isinstance(vigente, bool):\n            raise IntegracionException(\"El campo vigente debe ser booleano\")\n        return ResultadoMatricula(\n            vigente=vigente,\n            fecha_consulta=respuesta[\"consultado_en\"],\n            desde_cache=False,\n        )"
+    }
+  },
+  {
+    "pensamiento": "Validar estrictamente el campo vigente en el adaptador JSON antes de construir ResultadoMatricula. Lanzar IntegracionException ante valores no booleanos evita actualizar la caché, ocupar el ejemplar y crear préstamos.",
+    "accion": "editar_archivo",
+    "args": {
+      "ruta": "src/reservas/validadores.py",
+      "antes": "        return ResultadoMatricula(\n            vigente=respuesta[\"vigente\"],\n            fecha_consulta=respuesta[\"consultado_en\"],\n            desde_cache=False,\n        )",
+      "despues": "        vigente = respuesta.get(\"vigente\")\n        if not isinstance(vigente, bool):\n            raise IntegracionException(\"El campo vigente debe ser booleano\")\n        return ResultadoMatricula(\n            vigente=vigente,\n            fecha_consulta=respuesta[\"consultado_en\"],\n            desde_cache=False,\n        )"
+    }
+  },
+  {
+    "pensamiento": "La modificación del adaptador JSON fue aplicada correctamente. Ejecutar nuevamente la prueba específica del ISSUE-02 para comprobar que la respuesta no booleana ya no autoriza la reserva.",
+    "accion": "ejecutar_pruebas",
+    "args": {}
+  },
+  {
+    "pensamiento": "La prueba específica del ISSUE-02 pasó correctamente después de la corrección. Ejecutar la suite completa para detectar posibles regresiones.",
+    "accion": "ejecutar_comando",
+    "args": {
+      "comando": "python -m pytest -q"
+    }
+  },
+  {
+    "pensamiento": "La suite completa pasó con 91 pruebas exitosas. Revisar el diff final para confirmar que la corrección está limitada al adaptador JSON y que no se modificaron pruebas ni archivos fuera de src/.",
+    "accion": "ver_cambios",
+    "args": {}
+  },
+  {
+    "pensamiento": "Corrección verificada mediante la prueba específica, la suite completa y la revisión del diff. No se requieren cambios adicionales.",
+    "final": "ISSUE-02 resuelto correctamente. Causa raíz: AdaptadorMatriculaJSON transfería el campo vigente al dominio sin validar su tipo, permitiendo interpretar la cadena \"false\" como verdadera. Corrección: se modificó únicamente src/resas/validadores.py (src/reservas/validadores.py) para exigir un valor booleano mediante isinstance(vigente, bool) y lanzar IntegracionException cuando el campo sea inválido o esté ausente, impidiendo autorizar la reserva, ocupar el ejemplar o crear un préstamo. Prueba inicial: 1 failed (exit=1). Prueba posterior: 1 passed (exit=0). Suite completa: 91 passed en 0.40 segundos (exit=0). Diff revisado: modificación localizada exclusivamente en src/reservas/validadores.py. No se modificaron pruebas ni se realizaron commits. Sin regresiones detectadas ni bloqueos pendientes."
+  }
+]
