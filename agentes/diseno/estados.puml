@@ -1,0 +1,23 @@
+@startuml
+skinparam shadowing false
+skinparam state {
+ BackgroundColor #edf4fa
+ BorderColor #567389
+}
+[*] --> DECIDIENDO : INICIO
+DECIDIENDO --> VALIDANDO_CONTRATO : decisión JSON o texto
+VALIDANDO_CONTRATO --> CONTRATO_INVALIDO : [contrato inválido]
+CONTRATO_INVALIDO --> DECIDIENDO : observación [queda presupuesto]
+VALIDANDO_CONTRATO --> FINALIZADO : [final válido]
+VALIDANDO_CONTRATO --> EVALUANDO_POLITICA : [acción válida]
+EVALUANDO_POLITICA --> BLOQUEADO : [acción denegada]
+EVALUANDO_POLITICA --> EJECUTANDO : [acción permitida]
+EJECUTANDO --> OBSERVANDO : resultado o error
+OBSERVANDO --> DECIDIENDO : [queda presupuesto]
+BLOQUEADO --> DECIDIENDO : [queda presupuesto]
+OBSERVANDO --> LIMITE_ALCANZADO : [presupuesto agotado]
+CONTRATO_INVALIDO --> LIMITE_ALCANZADO : [presupuesto agotado]
+BLOQUEADO --> LIMITE_ALCANZADO : [presupuesto agotado]
+FINALIZADO --> [*] : resumen TERMINADO
+LIMITE_ALCANZADO --> [*] : resumen TERMINADO
+@enduml
