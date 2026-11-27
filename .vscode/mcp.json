@@ -1,0 +1,15 @@
+{
+  "servers": {
+    "bibliounsa": {
+      "type": "stdio",
+      "command": "python",
+      "args": [
+        "${workspaceFolder}/agentes/mcp/servidor_mcp/bibliounsa_mcp.py"
+      ],
+      "env": {
+        "PYTHONDONTWRITEBYTECODE": "1",
+        "PYTHONUTF8": "1"
+      }
+    }
+  }
+}
