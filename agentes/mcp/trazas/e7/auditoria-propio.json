@@ -1,0 +1,41 @@
+{
+  "servidor": "bibliounsa",
+  "herramientas": [
+    "buscar_libro",
+    "prestamos_vencidos",
+    "crear_reserva"
+  ],
+  "hallazgos": [
+    {
+      "regla": "R09",
+      "severidad": "MEDIA",
+      "herramienta": "buscar_libro",
+      "motivo": "parámetro de texto 'biblioteca' sin maxLength en el esquema publicado"
+    },
+    {
+      "regla": "R09",
+      "severidad": "MEDIA",
+      "herramienta": "buscar_libro",
+      "motivo": "parámetro de texto 'consulta' sin maxLength en el esquema publicado"
+    },
+    {
+      "regla": "R09",
+      "severidad": "MEDIA",
+      "herramienta": "prestamos_vencidos",
+      "motivo": "parámetro de texto 'hoy' sin maxLength en el esquema publicado"
+    },
+    {
+      "regla": "R09",
+      "severidad": "MEDIA",
+      "herramienta": "crear_reserva",
+      "motivo": "parámetro de texto 'ejemplar_id' sin maxLength en el esquema publicado"
+    },
+    {
+      "regla": "R09",
+      "severidad": "MEDIA",
+      "herramienta": "crear_reserva",
+      "motivo": "parámetro de texto 'estudiante_id' sin maxLength en el esquema publicado"
+    }
+  ],
+  "bloqueado": false
+}
