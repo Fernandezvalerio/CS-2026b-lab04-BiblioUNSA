@@ -17,6 +17,10 @@ class Politica:
     max_pasos: int = 12
     aprobar_edicion: Callable[[dict], bool] | None = None
 
+    requieren_aprobacion: set = field(default_factory=set)
+    aprobar: Callable[[str, dict], bool] | None = None
+    registrar_aprobacion: Callable[[dict], None] | None = None
+
     def evaluar(self, accion, args, paso):
         if paso > self.max_pasos:
             return Decision(False, "Se alcanzó el máximo de pasos")
@@ -31,6 +35,14 @@ class Politica:
             p = PurePosixPath(ruta)
             if p.is_absolute() or ".." in p.parts or not p.parts or p.parts[0] != "src" or p.suffix != ".py":
                 return Decision(False, "Ruta protegida: solo código Python en src/")
+        if accion in self.requieren_aprobacion:
+            permitida = self.aprobar is not None and self.aprobar(accion, dict(args)) is True
+            if self.registrar_aprobacion is not None:
+                self.registrar_aprobacion({"tipo": "aprobacion", "paso": paso,
+                                           "accion": accion, "args": dict(args),
+                                           "permitida": permitida})
+            if not permitida:
+                return Decision(False, f"{accion} requiere aprobación humana y no fue aprobada")
         return Decision(True)
 
     def autorizacion_humana(self, args):
