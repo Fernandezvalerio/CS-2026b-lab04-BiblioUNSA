@@ -1,0 +1,102 @@
+{
+  "mensajes": 14,
+  "bytes_json_utf8_normalizados": 12393,
+  "metodos": {
+    "server/discover": 1,
+    "tools/list": 1,
+    "tools/call": 5
+  },
+  "errores": {
+    "herramienta": 1
+  },
+  "sin_respuesta": 0,
+  "latencias_ms": {
+    "server/discover": {
+      "n": 1,
+      "media": 1180.968,
+      "min": 1180.968,
+      "max": 1180.968,
+      "muestras": [
+        1180.968
+      ]
+    },
+    "tools/list": {
+      "n": 1,
+      "media": 1.294,
+      "min": 1.294,
+      "max": 1.294,
+      "muestras": [
+        1.294
+      ]
+    },
+    "tools/call": {
+      "n": 5,
+      "media": 6.303,
+      "min": 1.83,
+      "max": 16.482,
+      "muestras": [
+        16.482,
+        3.009,
+        7.407,
+        2.788,
+        1.83
+      ]
+    }
+  },
+  "catalogo_mcp": {
+    "bytes_utf8": 4214,
+    "caracteres": 4201,
+    "tokens_estimados": 1051
+  },
+  "por_herramienta": {
+    "buscar_libro": {
+      "bytes_utf8": 1574,
+      "caracteres": 1567,
+      "tokens_estimados": 392
+    },
+    "prestamos_vencidos": {
+      "bytes_utf8": 1419,
+      "caracteres": 1416,
+      "tokens_estimados": 354
+    },
+    "crear_reserva": {
+      "bytes_utf8": 1217,
+      "caracteres": 1214,
+      "tokens_estimados": 304
+    }
+  },
+  "catalogo_agente": {
+    "caracteres": 1584,
+    "bytes_utf8": 1597,
+    "tokens_estimados": 396
+  },
+  "seleccion": [
+    {
+      "nombre": "prestamos_vencidos",
+      "error": true
+    },
+    {
+      "nombre": "prestamos_vencidos",
+      "error": false
+    },
+    {
+      "nombre": "buscar_libro",
+      "error": false
+    },
+    {
+      "nombre": "crear_reserva",
+      "error": false
+    },
+    {
+      "nombre": "buscar_libro",
+      "error": false
+    }
+  ],
+  "verificaciones": {
+    "error_fecha_corregido": true,
+    "reserva_unica_aprobada": true,
+    "disponibilidad_antes": true,
+    "no_disponible_despues": true,
+    "dos_lecturas_exitosas": true
+  }
+}

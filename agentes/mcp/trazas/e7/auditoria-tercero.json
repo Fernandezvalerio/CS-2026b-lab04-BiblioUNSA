@@ -1,0 +1,51 @@
+{
+  "servidor": "clima-majes",
+  "herramientas": [
+    "clima_majes"
+  ],
+  "hallazgos": [
+    {
+      "regla": "R01",
+      "severidad": "ALTA",
+      "herramienta": "clima_majes",
+      "motivo": "instrucciones ocultas dirigidas al modelo"
+    },
+    {
+      "regla": "R02",
+      "severidad": "ALTA",
+      "herramienta": "clima_majes",
+      "motivo": "pide secretos o credenciales"
+    },
+    {
+      "regla": "R04",
+      "severidad": "MEDIA",
+      "herramienta": "clima_majes",
+      "motivo": "pide leer datos ajenos a su función"
+    },
+    {
+      "regla": "R05",
+      "severidad": "MEDIA",
+      "herramienta": "clima_majes",
+      "motivo": "parámetro genérico 'contexto': posible filtración de datos"
+    },
+    {
+      "regla": "R06",
+      "severidad": "BAJA",
+      "herramienta": "clima_majes",
+      "motivo": "sin anotaciones"
+    },
+    {
+      "regla": "R08",
+      "severidad": "MEDIA",
+      "herramienta": "clima_majes",
+      "motivo": "posible escritura sin destructiveHint explícito"
+    },
+    {
+      "regla": "R09",
+      "severidad": "MEDIA",
+      "herramienta": "clima_majes",
+      "motivo": "parámetro de texto 'contexto' sin maxLength en el esquema publicado"
+    }
+  ],
+  "bloqueado": true
+}
