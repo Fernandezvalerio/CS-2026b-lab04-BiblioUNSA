@@ -470,3 +470,116 @@ La suite incluye las pruebas de los tres issues, del contrato, de las herramient
 - [Bitácora de IA](agentes/bitacora-ia.md)
 
 El sistema se usa como apoyo al desarrollo, no como un servicio autónomo de producción. El agente propone y actúa dentro de las restricciones; el equipo revisa el diff y las pruebas antes de integrar. Las copias locales facilitan la reversión, pero no sustituyen un sandbox del sistema operativo. No se deben utilizar credenciales reales ni ejecutar código que no sea de confianza.
+
+
+## Servidor MCP (Lab 11)
+
+BiblioUNSA expone un catálogo reducido de herramientas, recursos y prompts mediante Model Context Protocol (MCP). El servidor local usa el SDK Python v2, transporte stdio y JSON-RPC 2.0, con la especificación objetivo 2026-07-28 de la guía. Reutiliza las reglas del dominio y permite que el agente del Lab 10 y GitHub Copilot consulten el mismo servicio. Los datos son ficticios y se almacenan en memoria durante cada proceso.
+
+### Catálogo MCP
+
+| Tipo | Identificador | Función |
+|---|---|---|
+| Herramienta de lectura | `buscar_libro(consulta, biblioteca="")` | Buscar libros y consultar sus ejemplares y disponibilidad. |
+| Herramienta de lectura | `prestamos_vencidos(hoy)` | Consultar préstamos vencidos a una fecha AAAA-MM-DD. |
+| Herramienta de escritura | `crear_reserva(estudiante_id, ejemplar_id)` | Crear una reserva ficticia con aprobación humana en el host. |
+| Recurso | `bibliounsa://prestamos/reglas` | Consultar reglas de préstamos y reservas del proyecto. |
+| Plantilla de recurso | `bibliounsa://adr/{numero}` | Consultar ADR mediante un número de tres dígitos, por ejemplo `011`. |
+| Prompt | `aviso_vencimiento(titulo, fecha_vencimiento)` | Redactar un aviso de vencimiento sin enviar correos. |
+| Prompt | `generar_criterios(id, historia)` | Generar criterios de aceptación con la plantilla del Lab 09. |
+
+### Instalación y conexión
+
+Desde la raíz del repositorio, utilizando un entorno Python compatible con el SDK v2:
+
+```powershell
+python -m pip install -r requirements-lab11.txt
+$env:PYTHONDONTWRITEBYTECODE = "1"
+python agentes/mcp/cliente/explorar.py
+```
+
+El explorador inicia el servidor, muestra el nombre y la versión del protocolo reportada por el SDK y consulta sus capacidades. Sin `--reservar` no realiza escrituras.
+
+Para conectarlo a GitHub Copilot en Visual Studio Code, abrir el repositorio como carpeta de trabajo y utilizar la configuración versionada [`.vscode/mcp.json`](.vscode/mcp.json):
+
+```json
+{
+  "servers": {
+    "bibliounsa": {
+      "type": "stdio",
+      "command": "python",
+      "args": ["${workspaceFolder}/agentes/mcp/servidor_mcp/bibliounsa_mcp.py"],
+      "env": {"PYTHONDONTWRITEBYTECODE": "1", "PYTHONUTF8": "1"}
+    }
+  }
+}
+```
+
+Iniciar el servidor desde la configuración MCP de VS Code, comprobar el descubrimiento de tres herramientas y usar el chat en modo Agent con permisos predeterminados. Si `python` no apunta al entorno con las dependencias instaladas, ajustar localmente el intérprete. Ejemplo de consulta: «Utiliza BiblioUNSA para buscar Redes de computadoras en la biblioteca Central; muestra los ejemplares y su disponibilidad sin modificar registros». Toda reserva debe solicitar aprobación humana antes de ejecutarse; no habilitar aprobación automática.
+
+Para repetir el escenario del agente interactivo del Lab 10, usar un nombre de ejecución que aún no exista:
+
+```powershell
+python agentes/mcp/analista_mcp.py --nombre e8-verificacion
+```
+
+### Diagrama de secuencia
+
+El siguiente diagrama se obtuvo de la traza JSON-RPC de E4 y conserva la aprobación humana registrada. La fecha inválida inicial es una prueba deliberada de validación.
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor U as Humano
+    participant A as Agente Lab 10
+    participant S as Servidor MCP BiblioUNSA
+    A->>S: server/discover
+    S-->>A: Resultado de server/discover
+    A->>S: tools/list
+    S-->>A: 3 herramientas con esquema
+    A->>S: tools/call prestamos_vencidos
+    S--xA: Error de herramienta
+    A->>S: tools/call prestamos_vencidos
+    S-->>A: Resultado de tools/call
+    A->>S: tools/call buscar_libro
+    S-->>A: Resultado de tools/call
+    A->>U: Solicitar aprobación de reserva
+    U-->>A: Aprobación registrada
+    A->>S: tools/call crear_reserva
+    S-->>A: Resultado de tools/call
+    A->>S: tools/call buscar_libro
+    S-->>A: Resultado de tools/call
+```
+
+[Fuente Mermaid](agentes/mcp/trazas/e6/mcp_trafico.mmd) · [Traza original](agentes/mcp/trazas/e4/mcp_trafico.jsonl) · [Traza optimizada](agentes/mcp/trazas/e6-optimizado/mcp_trafico.jsonl).
+
+### Resultados y controles
+
+| Evidencia | Resultado observado |
+|---|---|
+| E3: contratos MCP | 24 pruebas de contrato. |
+| E4: agente | Cinco llamadas, una fecha inválida corregida, dos préstamos vencidos y una reserva ficticia aprobada y verificada. |
+| E5: host real | Copilot descubrió tres herramientas y completó las consultas y la reserva. El aviso generado coincide con la plantilla, aunque la captura no demuestra por sí sola la invocación del prompt. |
+| E6: costo de contexto | Catálogo MCP: 1086 → 1051 tokens estimados (3.22 %); catálogo del agente: 432 → 396 (8.33 %). |
+| E7: auditoría propia | Cinco advertencias medias R09, ninguna alta; revisión humana requerida. |
+| E7: auditoría de terceros | Dos altas, cuatro medias y una baja; no conectar `clima-majes`. |
+| Pruebas generales | 151 aprobadas (incluidas nueve del auditor). |
+
+La reducción de contexto se calculó con una estimación de cuatro caracteres por token, no con el tokenizador de un modelo. Los contratos y la selección de herramientas se mantuvieron en el escenario evaluado. La reserva requiere aprobación del host, no del servidor por sí solo. La validación de los parámetros existe en Python, aunque cinco límites no se publican en el esquema JSON. El servidor no es un servicio de producción: no usa datos institucionales reales, no tiene persistencia entre procesos ni autenticación institucional.
+
+### Pruebas y documentación
+
+```powershell
+python -m pytest -q tests agentes/pruebas_agente agentes/mcp/pruebas
+```
+
+| Ejercicio | Evidencia |
+|---|---|
+| E1 | [Diseño del catálogo](agentes/mcp/diseno/catalogo-mcp.md) |
+| E2 | [Servidor MCP](agentes/mcp/servidor_mcp/bibliounsa_mcp.py) · [Explorador](agentes/mcp/cliente/explorar.py) |
+| E3 | [Pruebas de contrato](agentes/mcp/pruebas/test_servidor_mcp.py) · [Inspector](agentes/mcp/pruebas/inspector.md) |
+| E4 | [Resumen del agente](agentes/mcp/trazas/e4/resumen.md) · [Aprobaciones](agentes/mcp/trazas/e4/aprobaciones.jsonl) |
+| E5 | [Uso en un host real](agentes/mcp/uso-en-host.md) |
+| E6 | [Análisis del protocolo y contexto](agentes/mcp/protocolo.md) |
+| E7 | [Seguridad](agentes/mcp/seguridad.md) · [Bitácora de IA](agentes/mcp/bitacora-ia.md) |
+| E8 | [ADR-011: exposición mediante MCP](docs/architecture/adr/011-exposicion-mcp.md) |
