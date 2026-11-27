@@ -103,9 +103,7 @@ def _uuid(valor: str, campo: str) -> UUID:
 
 @mcp.tool(title="Buscar libros y ejemplares", annotations=SOLO_LECTURA)
 def buscar_libro(consulta: str, biblioteca: str = "") -> BusquedaSalida:
-    """Busca por título o autor parcial (1–100 caracteres); biblioteca opcional (0–80).
-    No distingue mayúsculas. Devuelve hasta 20 libros y 20 ejemplares por libro,
-    con UUID y disponibilidad. Una consulta sin coincidencias devuelve lista vacía."""
+    """Busca título/autor parcial sin distinguir mayúsculas. consulta: 1–100 caracteres; biblioteca opcional: 0–80. Retorna hasta 20 libros, 20 ejemplares por libro, UUID y disponibilidad; sin coincidencias, lista vacía."""
     consulta = _texto(consulta, "consulta", 1, 100)
     biblioteca = _texto(biblioteca, "biblioteca", 0, 80)
     with BLOQUEO:
@@ -120,9 +118,7 @@ def buscar_libro(consulta: str, biblioteca: str = "") -> BusquedaSalida:
 
 @mcp.tool(title="Consultar préstamos vencidos", annotations=SOLO_LECTURA)
 def prestamos_vencidos(hoy: str) -> VencidosSalida:
-    """Lista préstamos PRESTADO o VENCIDO no devueltos con vencimiento anterior a hoy.
-    hoy: fecha real AAAA-MM-DD. Devuelve el total y hasta 20 registros con días de atraso;
-    no incluye datos personales ni modifica estados o multas."""
+    """Lista préstamos PRESTADO/VENCIDO no devueltos, con vencimiento anterior a hoy (AAAA-MM-DD real). Retorna total y hasta 20 registros con días de atraso; sin datos personales ni cambios."""
     corte = _fecha(hoy)
     with BLOQUEO:
         filas = DATOS.repo_prestamos.buscar_vencidos(corte)
@@ -136,10 +132,7 @@ def prestamos_vencidos(hoy: str) -> VencidosSalida:
 
 @mcp.tool(title="Crear reserva de prueba", annotations=ESCRITURA)
 def crear_reserva(estudiante_id: str, ejemplar_id: str) -> ReservaSalida:
-    """Crea un préstamo RESERVADO en memoria. Requiere aprobación humana del host.
-    estudiante_id: UUID de alumno ficticio (00000000-0000-4000-8000-000000000001 tiene matrícula vigente).
-    ejemplar_id: UUID disponible obtenido con buscar_libro. Devuelve UUID de la reserva,
-    estado, fecha ISO 8601 y reverificación. No edita ni borra préstamos existentes."""
+    """Crea RESERVADO en memoria; exige aprobación humana del host. estudiante_id: UUID de alumno ficticio vigente (00000000-0000-4000-8000-000000000001); ejemplar_id: UUID disponible de buscar_libro. Retorna UUID, estado, fecha ISO 8601 y reverificación; no edita/borra préstamos."""
     alumno = _uuid(estudiante_id, "estudiante_id")
     ejemplar = _uuid(ejemplar_id, "ejemplar_id")
     with BLOQUEO:

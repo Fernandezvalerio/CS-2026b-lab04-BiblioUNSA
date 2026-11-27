@@ -1,0 +1,21 @@
+sequenceDiagram
+    autonumber
+    actor U as Humano
+    participant A as Agente Lab 10
+    participant S as Servidor MCP BiblioUNSA
+    A->>S: server/discover
+    S-->>A: Resultado de server/discover
+    A->>S: tools/list
+    S-->>A: 3 herramientas con esquema
+    A->>S: tools/call prestamos_vencidos
+    S--xA: Error de herramienta
+    A->>S: tools/call prestamos_vencidos
+    S-->>A: Resultado de tools/call
+    A->>S: tools/call buscar_libro
+    S-->>A: Resultado de tools/call
+    A->>U: Solicitar aprobación de reserva
+    U-->>A: Aprobación registrada
+    A->>S: tools/call crear_reserva
+    S-->>A: Resultado de tools/call
+    A->>S: tools/call buscar_libro
+    S-->>A: Resultado de tools/call

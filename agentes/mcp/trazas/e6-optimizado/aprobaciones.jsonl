@@ -1,0 +1,1 @@
+{"tipo": "aprobacion", "paso": 4, "accion": "crear_reserva", "args": {"estudiante_id": "00000000-0000-4000-8000-000000000001", "ejemplar_id": "00000000-0000-4000-8000-000000000101"}, "permitida": true, "fecha_utc": "2026-11-27T22:28:58.263468+00:00"}
